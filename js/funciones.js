@@ -26,6 +26,7 @@ var vidas;
 var balaAlien;
 var disparoHora = 0;
 var textoResultado;
+var velocidadMov = 2000;
 var enemigosVivos = [];
 
 function create() {
@@ -101,8 +102,8 @@ function crearAliens() {
     aliens.x = 100;
     aliens.y = 50;	
     
-	var tween = game.add.tween(aliens).to( { x: 200 }, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);
-    tween.onLoop.add(descend, this);
+	var movimientoX = game.add.tween(aliens).to( { x: 200 }, velocidadMov, Phaser.Easing.Linear.None, true, 0, velocidadMov, true);
+	var movimientoY = game.time.events.loop(velocidadMov * 2, descender, this);
 }
 
 function setupInvader(alien) {
@@ -111,8 +112,8 @@ function setupInvader(alien) {
     alien.animations.add('boom');
 }
 
-function descend() {
-    aliens.y += 10;
+function descender() {
+    aliens.y += 20;
 }
 
 function update() {

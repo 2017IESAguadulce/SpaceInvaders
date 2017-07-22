@@ -54,6 +54,7 @@ function create() {
     nave = game.add.sprite(400, 500, 'nave');
     nave.anchor.setTo(0.5, 0.5);
     game.physics.enable(nave, Phaser.Physics.ARCADE);
+	nave.body.collideWorldBounds = true;
 
     aliens = game.add.group();
     aliens.enableBody = true;

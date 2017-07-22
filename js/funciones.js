@@ -27,6 +27,8 @@ var balaAlien;
 var disparoHora = 0;
 var textoResultado;
 var velocidadMov = 2000;
+var movimientoX;
+var movimientoY;
 var enemigosVivos = [];
 
 function create() {
@@ -103,8 +105,8 @@ function crearAliens() {
     aliens.x = 100;
     aliens.y = 50;	
     
-	var movimientoX = game.add.tween(aliens).to( { x: 200 }, velocidadMov, Phaser.Easing.Linear.None, true, 0, velocidadMov, true);
-	var movimientoY = game.time.events.loop(velocidadMov * 2, descender, this);
+	movimientoX = game.add.tween(aliens).to( { x: 200 }, velocidadMov, Phaser.Easing.Linear.None, true, 0, velocidadMov, true);
+	movimientoY = game.time.events.loop(velocidadMov * 2, descender, this);
 }
 
 function setupInvader(alien) {
@@ -138,6 +140,8 @@ function update() {
         game.physics.arcade.overlap(balas, aliens, manejadorDisparoNave, null, this);
         game.physics.arcade.overlap(balasAlien, nave, manejadorDisparoEnemigo, null, this);
     }
+	
+
 }
 
 function render() {
@@ -158,6 +162,8 @@ function manejadorDisparoNave(bala, alien) {
     if (aliens.countLiving() == 0) {
         puntos += 1000;
         puntosTexto.text = puntosCadena + puntos;
+		game.tweens.remove(movimientoX);
+		game.time.events.remove(movimientoY);
         balasAlien.callAll('kill',this);
         textoResultado.text = " ¡Has Ganado! \n Click para reiniciar";
         textoResultado.visible = true;
@@ -165,7 +171,7 @@ function manejadorDisparoNave(bala, alien) {
     }
 }
 
-function manejadorDisparoEnemigo(nave,bala) {
+function manejadorDisparoEnemigo(nave, bala) {		
     bala.kill();
 	game.sfxExplosion.play();
     vida = vidas.getFirstAlive();
@@ -178,6 +184,8 @@ function manejadorDisparoEnemigo(nave,bala) {
     if (vidas.countLiving() < 1) {
         nave.kill();
         balasAlien.callAll('kill');
+		game.tweens.remove(movimientoX);
+		game.time.events.remove(movimientoY);
         textoResultado.text=" Has Perdido. \n Click para reiniciar";
         textoResultado.visible = true;
         game.input.onTap.addOnce(reiniciar,this);

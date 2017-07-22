@@ -1,4 +1,4 @@
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'space', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game(800, 600, Phaser.AUTO, 'space', { preload: preload, create: create, update: update });
 
 function preload() {
     game.load.image('bala', 'assets/games/invaders/bullet.png');
@@ -26,17 +26,15 @@ var botonDisparo;
 var explosiones;
 var fondo;
 var puntos = 0;
-var puntosCadena = '';
 var puntosTexto;
 var vidas;
 var ayudas;
 var balaAlien;
 var disparoHora = 0;
 var textoResultado;
-var ayudaMax = 3;
 var velocidadMov = 2000;
-var movimientoX;
-var movimientoY;
+var movimientoAlienX;
+var movimientoAlienY;
 var enemigosVivos = [];
 
 function create() {
@@ -71,9 +69,7 @@ function create() {
     aliens.physicsBodyType = Phaser.Physics.ARCADE;
     crearAliens();
 
-    puntosCadena = 'Puntos: ';
-    puntosTexto = game.add.text(10, 10, puntosCadena + puntos, { font: '34px Arial', fill: '#fff' });
-
+    puntosTexto = game.add.text(10, 10, 'Puntos: ' + puntos, { font: '34px Arial', fill: '#fff' });
     vidas = game.add.group();
     game.add.text(game.world.width - 115, 10, 'Vidas: ', { font: '34px Arial', fill: '#fff' });
 
@@ -88,6 +84,11 @@ function create() {
         naveImagen.alpha = 0.4;
     }
 	
+	ayudas = game.add.group();
+    ayudas.enableBody = true;
+	ayudas.physicsBodyType = Phaser.Physics.ARCADE;
+	game.physics.arcade.gravity.y = 50;
+
     explosiones = game.add.group();
     explosiones.createMultiple(30, 'boom');
     explosiones.forEach(configurarEnemigo, this);
@@ -96,64 +97,13 @@ function create() {
 	game.sfxDisparo = game.add.audio('disparo');
 	game.sfxExplosion = game.add.audio('explosion');
 	
-	cargarPowerUps();
     cursores = game.input.keyboard.createCursorKeys();
     botonDisparo = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 }
 
-function crearAliens() {
-    for (var y = 0; y < 4; y++) {
-        for (var x = 0; x < 10; x++) {
-            var alien = aliens.create(x * 48, y * 50, 'alien');
-            alien.anchor.setTo(0.5, 0.5);
-            alien.animations.add('fly', [ 0, 1, 2, 3 ], 20, true);
-            alien.play('fly');
-            alien.body.moves = false;
-        }
-    }
-
-    aliens.x = 100;
-    aliens.y = 50;	
-    
-	movimientoX = game.add.tween(aliens).to( { x: 200 }, velocidadMov, Phaser.Easing.Linear.None, true, 0, velocidadMov, true);
-	movimientoY = game.time.events.loop(velocidadMov * 2, descender, this);
-}
-
-function cargarPowerUps() {
-	ayudas = game.add.group();
-    ayudas.enableBody = true;
-	game.physicsBodyType = Phaser.Physics.ARCADE;
-	game.physics.arcade.gravity.y = 20;
-    for (var i = 1; i <= ayudaMax; i++) {
-		var objeto;
-        if (i % 3 == 0) {
-			objeto = ayudas.create(game.world.randomX, game.world.randomY, 'mejoraVelocidad');
-			objeto.name = "mejoraVelocidad";
-        } else if (i % 2 == 0) {
-			objeto = ayudas.create(game.world.randomX, game.world.randomY, 'mejoraVida');
-			objeto.name = "mejoraVida";
-        } else {
-			objeto = ayudas.create(game.world.randomX, game.world.randomY, 'mejoraArma');
-			objeto.name = "mejoraArma";
-        } 
-		objeto.body.collideWorldBounds = false;
-		objeto.alpha = 0.4;
-    }
-}
-
-function configurarEnemigo(alien) {
-    alien.anchor.x = 0.5;
-    alien.anchor.y = 0.5;
-    alien.animations.add('boom');
-}
-
-function descender() {
-    aliens.y += 20;
-}
-
 function update() {
-    fondo.tilePosition.y += 2;
     if (nave.alive) {
+		fondo.tilePosition.y += 2;
         nave.body.velocity.setTo(0, 0);
         if (cursores.left.isDown) {
             nave.body.velocity.x = -naveVelocidad;
@@ -175,26 +125,23 @@ function update() {
     }
 }
 
-function render() {
-    // for (var i = 0; i < aliens.length; i++) {
-    //     game.debug.body(aliens.children[i]);
-    // }
-}
-
 function manejadorDisparoNave(bala, alien) {
+	lanzarAyuda(alien);
     bala.kill();
     alien.kill();
     puntos += 20;
 	game.sfxExplosion.play();
-    puntosTexto.text = puntosCadena + puntos;
+    puntosTexto.text = 'Puntos: ' + puntos;
+
     var explosion = explosiones.getFirstExists(false);
     explosion.reset(alien.body.x, alien.body.y);
     explosion.play('boom', 30, false, true);
+	
     if (aliens.countLiving() == 0) {
         puntos += 1000;
-        puntosTexto.text = puntosCadena + puntos;
-		game.tweens.remove(movimientoX);
-		game.time.events.remove(movimientoY);
+        puntosTexto.text = 'Puntos: ' + puntos;
+		game.tweens.remove(movimientoAlienX);
+		game.time.events.remove(movimientoAlienY);
         balasAlien.callAll('kill',this);
         textoResultado.text = " ¡Has Ganado! \n Click para reiniciar";
         textoResultado.visible = true;
@@ -209,14 +156,16 @@ function manejadorDisparoEnemigo(nave, bala) {
     if (vida) {
         vida.kill();
     }
+	
     var explosion = explosiones.getFirstExists(false);
     explosion.reset(nave.body.x, nave.body.y);
     explosion.play('boom', 30, false, true);
+	
     if (vidas.countLiving() < 1) {
         nave.kill();
         balasAlien.callAll('kill');
-		game.tweens.remove(movimientoX);
-		game.time.events.remove(movimientoY);
+		game.tweens.remove(movimientoAlienX);
+		game.time.events.remove(movimientoAlienY);
         textoResultado.text=" Has Perdido. \n Click para reiniciar";
         textoResultado.visible = true;
         game.input.onTap.addOnce(reiniciar,this);
@@ -234,27 +183,78 @@ function manejadorColisionNaveAyuda(nave, ayuda) {
 			naveImagen.alpha = 0.4;
 		}
 	} else if (ayuda.name == "mejoraArma") {
-		naveBalasRatio /= 2;
-	} else {
-		naveVelocidad *= 2;
+		naveBalasRatio /= 1.5;
+	} else if (ayuda.name == "mejoraVelocidad") {
+		naveVelocidad *= 1.5;
 	}
+}
+
+function crearAliens() {
+    for (var y = 0; y < 4; y++) {
+        for (var x = 0; x < 10; x++) {
+            var alien = aliens.create(x * 48, y * 50, 'alien');
+            alien.anchor.setTo(0.5, 0.5);
+            alien.animations.add('fly', [ 0, 1, 2, 3 ], 20, true);
+            alien.play('fly');
+            alien.body.moves = false;
+        }
+    }
+    aliens.x = 100;
+    aliens.y = 50;	
+	movimientoAlienX = game.add.tween(aliens).to( { x: 200 }, velocidadMov, Phaser.Easing.Linear.None, true, 0, velocidadMov, true);
+	movimientoAlienY = game.time.events.loop(velocidadMov * 2, descender, this);
+}
+
+
+
+function configurarEnemigo(alien) {
+    alien.anchor.x = 0.5;
+    alien.anchor.y = 0.5;
+    alien.animations.add('boom');
+}
+
+function descender() {
+    aliens.y += 20;
 }
 
 function disparoEnemigo() {
     balaAlien = balasAlien.getFirstExists(false);
-    enemigosVivos.length=0;
+    enemigosVivos.length = 0;
     aliens.forEachAlive(function(alien){
         enemigosVivos.push(alien);
     });
 
     if (balaAlien && enemigosVivos.length > 0) {
-        var aleatorio=game.rnd.integerInRange(0,enemigosVivos.length-1);
+        var aleatorio=game.rnd.integerInRange(0, enemigosVivos.length-1);
         var seleccion=enemigosVivos[aleatorio];
         balaAlien.reset(seleccion.body.x, seleccion.body.y);
-        game.physics.arcade.moveToObject(balaAlien,nave,120);
+        game.physics.arcade.moveToObject(balaAlien, nave, 120);
         disparoHora = game.time.now + 2000;
 		game.sfxDisparo.play();
     }
+}
+
+function lanzarAyuda(alien) {
+	var aleatorio = Math.random();
+	console.log(aleatorio);
+	if (aleatorio < 0.15) {
+		var mejora = "mejoraVida";
+		if (aleatorio < 0.05) {
+			mejora = "mejoraArma";
+		} else if (aleatorio < 0.1) {
+			mejora = "mejoraVelocidad";
+		}
+		cargarPowerUp(mejora, alien.body.x, alien.body.y);
+	}
+}
+
+function cargarPowerUp(tipoMejora, locX, locY) {
+	console.log(tipoMejora);
+	var objeto = ayudas.create(locX, locY, tipoMejora);
+	objeto.name = tipoMejora;
+	objeto.body.collideWorldBounds = false;
+	objeto.alpha = 0.4;
+	game.physics.arcade.gravity.y = 50;
 }
 
 function dispararBala() {

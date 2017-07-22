@@ -5,13 +5,19 @@ function preload() {
     game.load.image('balaAlien', 'assets/games/invaders/enemy-bullet.png');
     game.load.image('nave', 'assets/games/invaders/player.png');
     game.load.image('fondo', 'assets/games/invaders/starfield.png');
+	game.load.image('mejoraVida', 'assets/games/invaders/player.png');
+	game.load.image('mejoraArma', 'assets/sprites/pangball2.png');
+	game.load.image('mejoraVelocidad', 'assets/sprites/pangball3.png');
     game.load.spritesheet('alien', 'assets/games/invaders/invader32x32x4.png', 32, 32);
 	game.load.spritesheet('boom', 'assets/games/invaders/explode.png', 128, 128);
+	game.load.audio('ayuda', 'assets/audio/SoundEffects/key.wav');
 	game.load.audio('disparo', 'assets/audio/SoundEffects/blaster.mp3');
 	game.load.audio('explosion', 'assets/audio/SoundEffects/alien_death1.wav');
 }
 
 var nave;
+var naveVelocidad = 200;
+var naveBalasRatio = 200;
 var aliens;
 var balas;
 var balaHora = 0;
@@ -23,9 +29,11 @@ var puntos = 0;
 var puntosCadena = '';
 var puntosTexto;
 var vidas;
+var ayudas;
 var balaAlien;
 var disparoHora = 0;
 var textoResultado;
+var ayudaMax = 3;
 var velocidadMov = 2000;
 var movimientoX;
 var movimientoY;
@@ -44,6 +52,11 @@ function create() {
     balas.setAll('outOfBoundsKill', true);
     balas.setAll('checkWorldBounds', true);
 
+    nave = game.add.sprite(400, 500, 'nave');
+    nave.anchor.setTo(0.5, 0.5);
+    game.physics.enable(nave, Phaser.Physics.ARCADE);
+	nave.body.collideWorldBounds = true;
+	
     balasAlien = game.add.group();
     balasAlien.enableBody = true;
     balasAlien.physicsBodyType = Phaser.Physics.ARCADE;
@@ -52,11 +65,6 @@ function create() {
     balasAlien.setAll('anchor.y', 1);
     balasAlien.setAll('outOfBoundsKill', true);
     balasAlien.setAll('checkWorldBounds', true);
-
-    nave = game.add.sprite(400, 500, 'nave');
-    nave.anchor.setTo(0.5, 0.5);
-    game.physics.enable(nave, Phaser.Physics.ARCADE);
-	nave.body.collideWorldBounds = true;
 
     aliens = game.add.group();
     aliens.enableBody = true;
@@ -79,14 +87,16 @@ function create() {
         naveImagen.angle = 90;
         naveImagen.alpha = 0.4;
     }
-
+	
     explosiones = game.add.group();
     explosiones.createMultiple(30, 'boom');
-    explosiones.forEach(setupInvader, this);
+    explosiones.forEach(configurarEnemigo, this);
 
+	game.sfxAyuda = game.add.audio('ayuda');
 	game.sfxDisparo = game.add.audio('disparo');
 	game.sfxExplosion = game.add.audio('explosion');
 	
+	cargarPowerUps();
     cursores = game.input.keyboard.createCursorKeys();
     botonDisparo = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 }
@@ -109,7 +119,29 @@ function crearAliens() {
 	movimientoY = game.time.events.loop(velocidadMov * 2, descender, this);
 }
 
-function setupInvader(alien) {
+function cargarPowerUps() {
+	ayudas = game.add.group();
+    ayudas.enableBody = true;
+	game.physicsBodyType = Phaser.Physics.ARCADE;
+	game.physics.arcade.gravity.y = 20;
+    for (var i = 1; i <= ayudaMax; i++) {
+		var objeto;
+        if (i % 3 == 0) {
+			objeto = ayudas.create(game.world.randomX, game.world.randomY, 'mejoraVelocidad');
+			objeto.name = "mejoraVelocidad";
+        } else if (i % 2 == 0) {
+			objeto = ayudas.create(game.world.randomX, game.world.randomY, 'mejoraVida');
+			objeto.name = "mejoraVida";
+        } else {
+			objeto = ayudas.create(game.world.randomX, game.world.randomY, 'mejoraArma');
+			objeto.name = "mejoraArma";
+        } 
+		objeto.body.collideWorldBounds = false;
+		objeto.alpha = 0.4;
+    }
+}
+
+function configurarEnemigo(alien) {
     alien.anchor.x = 0.5;
     alien.anchor.y = 0.5;
     alien.animations.add('boom');
@@ -124,9 +156,9 @@ function update() {
     if (nave.alive) {
         nave.body.velocity.setTo(0, 0);
         if (cursores.left.isDown) {
-            nave.body.velocity.x = -200;
+            nave.body.velocity.x = -naveVelocidad;
         } else if (cursores.right.isDown) {
-            nave.body.velocity.x = 200;
+            nave.body.velocity.x = naveVelocidad;
         }
 
         if (botonDisparo.isDown) {
@@ -136,12 +168,11 @@ function update() {
         if (game.time.now > disparoHora) {
             disparoEnemigo();
         }
-
+		
+		game.physics.arcade.overlap(nave, ayudas, manejadorColisionNaveAyuda, null, this);
         game.physics.arcade.overlap(balas, aliens, manejadorDisparoNave, null, this);
         game.physics.arcade.overlap(balasAlien, nave, manejadorDisparoEnemigo, null, this);
     }
-	
-
 }
 
 function render() {
@@ -192,6 +223,23 @@ function manejadorDisparoEnemigo(nave, bala) {
     }
 }
 
+function manejadorColisionNaveAyuda(nave, ayuda) {
+	ayuda.kill();
+	game.sfxAyuda.play();
+	if (ayuda.name == "mejoraVida") {
+		if (vidas.countLiving() < 3) {
+			var naveImagen = vidas.create(game.world.width - 100 + ((vidas.countLiving() == 1) ? 30 : 0), 60, 'nave');
+			naveImagen.anchor.setTo(0.5, 0.5);
+			naveImagen.angle = 90;
+			naveImagen.alpha = 0.4;
+		}
+	} else if (ayuda.name == "mejoraArma") {
+		naveBalasRatio /= 2;
+	} else {
+		naveVelocidad *= 2;
+	}
+}
+
 function disparoEnemigo() {
     balaAlien = balasAlien.getFirstExists(false);
     enemigosVivos.length=0;
@@ -216,7 +264,7 @@ function dispararBala() {
 			game.sfxDisparo.play();
             bala.reset(nave.x, nave.y + 8);
             bala.body.velocity.y = -400;
-            balaHora = game.time.now + 200;
+            balaHora = game.time.now + naveBalasRatio;
         }
     }
 }

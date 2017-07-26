@@ -1,5 +1,10 @@
+// Variable global usada para almacenar la propia referencia al juego y sus métodos internos
 var game = new Phaser.Game(800, 600, Phaser.AUTO, 'space', { preload: preload, create: create, update: update });
 
+/**
+ * Método usado para precargar los recursos utilizados en el proyecto
+ * @method preload
+ */
 function preload() {
     game.load.image('bala', 'assets/games/invaders/bullet.png');
     game.load.image('balaAlien', 'assets/games/invaders/enemy-bullet.png');
@@ -15,6 +20,7 @@ function preload() {
 	game.load.audio('explosion', 'assets/audio/SoundEffects/alien_death1.wav');
 }
 
+// Variables globales utilizadas de forma estática
 var nave;
 var naveVelocidad = 200;
 var naveBalasRatio = 200;
@@ -37,6 +43,10 @@ var movimientoAlienX;
 var movimientoAlienY;
 var enemigosVivos = [];
 
+/**
+ * Método usado para crear y cargar los recursos usados por el juego
+ * @method create
+ */
 function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
     fondo = game.add.tileSprite(0, 0, 800, 600, 'fondo');
@@ -91,7 +101,7 @@ function create() {
 
     explosiones = game.add.group();
     explosiones.createMultiple(30, 'boom');
-    explosiones.forEach(configurarEnemigo, this);
+    explosiones.forEach(configurarExplosion, this);
 
 	game.sfxAyuda = game.add.audio('ayuda');
 	game.sfxDisparo = game.add.audio('disparo');
@@ -101,6 +111,10 @@ function create() {
     botonDisparo = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 }
 
+/**
+ * Método ejecutado cada frame para actualizar la lógica del juego
+ * @method update
+ */
 function update() {
     if (nave.alive) {
 		fondo.tilePosition.y += 2;
@@ -110,11 +124,11 @@ function update() {
         } else if (cursores.right.isDown) {
             nave.body.velocity.x = naveVelocidad;
         }
-
+		
         if (botonDisparo.isDown) {
             dispararBala();
         }
-
+		
         if (game.time.now > disparoHora) {
             disparoEnemigo();
         }
@@ -125,6 +139,12 @@ function update() {
     }
 }
 
+/**
+ * Función usada para gestionar las colisiones producidas entre nuestras balas y los aliens
+ * @method manejadorDisparoNave
+ * @param {} bala
+ * @param {} alien
+ */
 function manejadorDisparoNave(bala, alien) {
 	lanzarAyuda(alien);
     bala.kill();
@@ -149,6 +169,12 @@ function manejadorDisparoNave(bala, alien) {
     }
 }
 
+/**
+ * Función usada para gestionar las colisiones producidas entre las balas enemigas y nuestra nave
+ * @method manejadorDisparoEnemigo
+ * @param {} nave
+ * @param {} bala
+ */
 function manejadorDisparoEnemigo(nave, bala) {		
     bala.kill();
 	game.sfxExplosion.play();
@@ -172,6 +198,12 @@ function manejadorDisparoEnemigo(nave, bala) {
     }
 }
 
+/**
+ * Función usada para gestionar las colisiones producidas entre nuestra nave y las ayudas
+ * @method manejadorColisionNaveAyuda
+ * @param {} nave
+ * @param {} ayuda
+ */
 function manejadorColisionNaveAyuda(nave, ayuda) {
 	ayuda.kill();
 	game.sfxAyuda.play();
@@ -189,6 +221,10 @@ function manejadorColisionNaveAyuda(nave, ayuda) {
 	}
 }
 
+/**
+ * Función usada para crear los enemigos y posicionarlos en pantalla agregándoles movimiento
+ * @method crearAliens
+ */
 function crearAliens() {
     for (var y = 0; y < 4; y++) {
         for (var x = 0; x < 10; x++) {
@@ -205,18 +241,29 @@ function crearAliens() {
 	movimientoAlienY = game.time.events.loop(velocidadMov * 2, descender, this);
 }
 
-
-
-function configurarEnemigo(alien) {
-    alien.anchor.x = 0.5;
-    alien.anchor.y = 0.5;
-    alien.animations.add('boom');
+/**
+ * Función usada para configurar objetos agregándoles una animación
+ * @method configurarExplosion
+ * @param {} objeto
+ */
+function configurarExplosion(objeto) {
+    objeto.anchor.x = 0.5;
+    objeto.anchor.y = 0.5;
+    objeto.animations.add('boom');
 }
 
+/**
+ * Función usada para controlar el descenso de los enemigos de tipo alien
+ * @method descender
+ */
 function descender() {
     aliens.y += 20;
 }
 
+/**
+ * Función usada para gestionar los disparos de los enemigos de tipo alien
+ * @method disparoEnemigo
+ */
 function disparoEnemigo() {
     balaAlien = balasAlien.getFirstExists(false);
     enemigosVivos.length = 0;
@@ -225,8 +272,8 @@ function disparoEnemigo() {
     });
 
     if (balaAlien && enemigosVivos.length > 0) {
-        var aleatorio=game.rnd.integerInRange(0, enemigosVivos.length-1);
-        var seleccion=enemigosVivos[aleatorio];
+        var aleatorio = game.rnd.integerInRange(0, enemigosVivos.length-1);
+        var seleccion = enemigosVivos[aleatorio];
         balaAlien.reset(seleccion.body.x, seleccion.body.y);
         game.physics.arcade.moveToObject(balaAlien, nave, 120);
         disparoHora = game.time.now + 2000;
@@ -234,9 +281,13 @@ function disparoEnemigo() {
     }
 }
 
+/**
+ * Función usada para controlar la aleatoriedad a la hora de lanzar los paquetes de ayuda
+ * @method lanzarAyuda
+ * @param {} alien
+ */
 function lanzarAyuda(alien) {
 	var aleatorio = Math.random();
-	console.log(aleatorio);
 	if (aleatorio < 0.15) {
 		var mejora = "mejoraVida";
 		if (aleatorio < 0.05) {
@@ -248,6 +299,13 @@ function lanzarAyuda(alien) {
 	}
 }
 
+/**
+ * Función usada para cargar la ayuda en pantalla a partir de su nombre y localización
+ * @method cargarPowerUp
+ * @param {} tipoMejora
+ * @param {} locX
+ * @param {} locY
+ */
 function cargarPowerUp(tipoMejora, locX, locY) {
 	console.log(tipoMejora);
 	var objeto = ayudas.create(locX, locY, tipoMejora);
@@ -257,6 +315,10 @@ function cargarPowerUp(tipoMejora, locX, locY) {
 	game.physics.arcade.gravity.y = 50;
 }
 
+/**
+ * Función usada para disparar balas desde nuestra nave
+ * @method dispararBala
+ */
 function dispararBala() {
     if (game.time.now > balaHora) {
         bala = balas.getFirstExists(false);
@@ -269,11 +331,20 @@ function dispararBala() {
     }
 }
 
+/**
+ * Función usada para eliminar la bala que sale del marco (actualmente no se usa)
+ * @method reiniciarBala
+ * @param {} bala
+ */
 function reiniciarBala(bala) {
     bala.kill();
 }
 
-function reiniciar () {
+/**
+ * Función usada para reiniciar el juego una vez hayamos perdido o ganado la partida
+ * @method reiniciar
+ */
+function reiniciar() {
     vidas.callAll('revive');
     aliens.removeAll();
     crearAliens();

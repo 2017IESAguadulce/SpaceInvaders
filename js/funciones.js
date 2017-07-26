@@ -58,8 +58,8 @@ function create() {
     balas.setAll('anchor.x', 0.5);
     balas.setAll('anchor.y', 1);
     balas.setAll('outOfBoundsKill', true);
-    balas.setAll('checkWorldBounds', true);
-
+    balas.setAll('checkWorldBounds', true);	
+	
     nave = game.add.sprite(400, 500, 'nave');
     nave.anchor.setTo(0.5, 0.5);
     game.physics.enable(nave, Phaser.Physics.ARCADE);
@@ -288,11 +288,11 @@ function disparoEnemigo() {
  */
 function lanzarAyuda(alien) {
 	var aleatorio = Math.random();
-	if (aleatorio < 0.15) {
+	if (aleatorio < 0.06) {
 		var mejora = "mejoraVida";
-		if (aleatorio < 0.05) {
+		if (aleatorio < 0.04) {
 			mejora = "mejoraArma";
-		} else if (aleatorio < 0.1) {
+		} else if (aleatorio < 0.02) {
 			mejora = "mejoraVelocidad";
 		}
 		cargarPowerUp(mejora, alien.body.x, alien.body.y);

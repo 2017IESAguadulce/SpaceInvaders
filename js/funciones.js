@@ -23,7 +23,7 @@ function preload() {
 // Variables globales utilizadas de forma estática
 var nave;
 var naveVelocidad = 200;
-var naveBalasRatio = 200;
+var naveBalasRatio = 300;
 var aliens;
 var balas;
 var balaHora = 0;
@@ -128,11 +128,11 @@ function update() {
         if (botonDisparo.isDown) {
             dispararBala();
         }
-		
         if (game.time.now > disparoHora) {
             disparoEnemigo();
         }
-		
+
+		girarNave();
 		game.physics.arcade.overlap(nave, ayudas, manejadorColisionNaveAyuda, null, this);
         game.physics.arcade.overlap(balas, aliens, manejadorDisparoNave, null, this);
         game.physics.arcade.overlap(balasAlien, nave, manejadorDisparoEnemigo, null, this);
@@ -324,11 +324,21 @@ function dispararBala() {
         bala = balas.getFirstExists(false);
         if (bala) {
 			game.sfxDisparo.play();
-            bala.reset(nave.x, nave.y + 8);
+			bala.reset(nave.x, nave.y + 8);
             bala.body.velocity.y = -400;
             balaHora = game.time.now + naveBalasRatio;
         }
     }
+}
+
+/**
+ * Función usada para girar la nave y dar la sensación de movilidad
+ * @method girarNave
+ */
+function girarNave() {
+	var giro = nave.body.velocity.x / 1000;
+	nave.scale.x = 1 - Math.abs(giro) / 2;
+	nave.angle = giro * 30;
 }
 
 /**

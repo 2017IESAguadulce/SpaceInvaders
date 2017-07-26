@@ -237,7 +237,7 @@ function crearAliens() {
     }
     aliens.x = 100;
     aliens.y = 50;	
-	movimientoAlienX = game.add.tween(aliens).to( { x: 200 }, velocidadMov, Phaser.Easing.Linear.None, true, 0, velocidadMov, true);
+	movimientoAlienX = game.add.tween(aliens).to( { x: 250 }, velocidadMov, Phaser.Easing.Linear.None, true, 0, velocidadMov, true);
 	movimientoAlienY = game.time.events.loop(velocidadMov * 2, descender, this);
 }
 
@@ -257,7 +257,7 @@ function configurarExplosion(objeto) {
  * @method descender
  */
 function descender() {
-    aliens.y += 20;
+    aliens.y += 30;
 }
 
 /**

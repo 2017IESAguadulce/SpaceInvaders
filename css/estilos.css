@@ -4,19 +4,7 @@ body {
 	background-color: #000000;
 	display: table;
 }
-#space, body, html {
+body, html {
 	height: 100%;
 	width: 100%;
-}
-#space { 
-	text-align: center;
-	vertical-align: middle;
-	width: 100%;
-	height: 100%;
-	display: table-cell;
-}
-#space canvas {  
-	margin: 0px auto;
-	border: 2px solid white;
-	width: 1000px;
 }

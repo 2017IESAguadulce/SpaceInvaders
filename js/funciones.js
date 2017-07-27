@@ -48,6 +48,16 @@ var enemigosVivos = [];
  * @method create
  */
 function create() {
+
+    //Uso el Scale Manager para definir el modo de escalado 
+    //y que se muestre todo el Canvas en pantalla
+    this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+    //Para centrar el Canvas en la pantalla horizontal y verticalmente
+    this.scale.pageAlignHorizontally = true;
+    this.scale.pageAlignVertically = true;
+    this.scale.refresh();
+
+
     game.physics.startSystem(Phaser.Physics.ARCADE);
     fondo = game.add.tileSprite(0, 0, 800, 600, 'fondo');
 	

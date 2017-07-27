@@ -18,12 +18,24 @@ function preload() {
 	game.load.audio('ayuda', 'assets/audio/SoundEffects/key.wav');
 	game.load.audio('disparo', 'assets/audio/SoundEffects/blaster.mp3');
 	game.load.audio('explosion', 'assets/audio/SoundEffects/alien_death1.wav');
-//// INTRO ////
 	game.load.image('star', 'assets/sprites/star2.png');
-	game.load.image('logo_phaser', 'assets/sprites/phaser.png');
+	game.load.image('logo', 'assets/sprites/phaser.png');
 }
 
-// Variables globales utilizadas de forma estática
+//// INTRO ////
+// Variables para logo
+var velocidadLogo = 0.1;
+var logo;
+// Variables para las estrellas
+var distanciaEstrellas = 300;
+var velocidadEstrellas = 1;
+var maxEstrellas = 1000;
+var estrellas = [];
+var estrellasX = [];
+var estrellasY = [];
+var estrellasZ = [];
+//// JUEGO ////
+// Variables globales utilizadas de juego
 var nave;
 var naveVelocidad = 200;
 var naveBalasRatio = 300;
@@ -45,25 +57,12 @@ var velocidadMov = 2000;
 var movimientoAlienX;
 var movimientoAlienY;
 var enemigosVivos = [];
-//// INTRO ////
-	// variables para las estrellas
-	var distance = 300;//distacia
-	var speed_stars = 1;//velocidad estrellas
-	max = 1000;//cantida de estrellas
-	var xx = [];
-	var yy = [];
-	var zz = [];
-	// variables para las logo phaser
-	var speed_phaser = 0.1;
-	var logo_phaser;
 
 /**
  * Método usado para crear y cargar los recursos usados por el juego
  * @method create
  */
 function create() {
-
-
 
     //Uso el Scale Manager para definir el modo de escalado 
     //y que se muestre todo el Canvas en pantalla
@@ -72,7 +71,6 @@ function create() {
     this.scale.pageAlignHorizontally = true;
     this.scale.pageAlignVertically = true;
     this.scale.refresh();
-
 
     game.physics.startSystem(Phaser.Physics.ARCADE);
     fondo = game.add.tileSprite(0, 0, 800, 600, 'fondo');
@@ -136,7 +134,7 @@ function create() {
     cursores = game.input.keyboard.createCursorKeys();
     botonDisparo = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
-	create_stars();
+	crearEstrellas();
 }
 
 /**
@@ -145,9 +143,6 @@ function create() {
  */
 function update() {
 	
-		update_stars();
-
-
     if (nave.alive) {
 		fondo.tilePosition.y += 2;
         nave.body.velocity.setTo(0, 0);
@@ -165,11 +160,11 @@ function update() {
         }
 
 		girarNave();
+		actualizarEstrellas();
 		game.physics.arcade.overlap(nave, ayudas, manejadorColisionNaveAyuda, null, this);
         game.physics.arcade.overlap(balas, aliens, manejadorDisparoNave, null, this);
         game.physics.arcade.overlap(balasAlien, nave, manejadorDisparoEnemigo, null, this);
-
-}
+	}
 }
 
 /**
@@ -272,6 +267,51 @@ function crearAliens() {
     aliens.y = 50;	
 	movimientoAlienX = game.add.tween(aliens).to( { x: 250 }, velocidadMov, Phaser.Easing.Linear.None, true, 0, velocidadMov, true);
 	movimientoAlienY = game.time.events.loop(velocidadMov * 2, descender, this);
+}
+
+/**
+ * Función usada para mostrar un halo de estrellas que crea una sensación de velocidad
+ * @method crearEstrellas
+ */
+function crearEstrellas() {
+    var sprites = game.add.spriteBatch();
+    for (var i = 0; i < maxEstrellas; i++) {
+        estrellasX[i] = Math.floor(Math.random() * 800) - 400;
+        estrellasY[i] = Math.floor(Math.random() * 600) - 300;
+        estrellasZ[i] = Math.floor(Math.random() * 1700) - 100;
+        var star = game.make.sprite(0, 0, 'star');
+        star.anchor.set(0.5);
+        sprites.addChild(star);
+        estrellas.push(star);
+    }
+	logo = game.add.sprite(400, 300, 'logo');
+	logo.anchor.set(0.5);
+	logo.scale.x = 0.1;
+	logo.scale.y = 0.1;
+}
+
+/**
+ * Función usada para actualizar el halo de estrellas mostrado durante el juego
+ * @method actualizarEstrellas
+ */
+function actualizarEstrellas() {
+	for (var i = 0; i < maxEstrellas; i++) {
+        estrellas[i].perspective = distanciaEstrellas / (distanciaEstrellas - estrellasZ[i]);
+        estrellas[i].x = game.world.centerX + estrellasX[i] * estrellas[i].perspective;
+        estrellas[i].y = game.world.centerY + estrellasY[i] * estrellas[i].perspective;
+        estrellasZ[i] += velocidadEstrellas;
+        if (estrellasZ[i] > 290) {
+            estrellasZ[i] -= 600;
+        }
+        estrellas[i].alpha = Math.min(estrellas[i].perspective / 2, 1);
+        estrellas[i].scale.set(estrellas[i].perspective / 2);
+        estrellas[i].rotation += 0.1;
+    }
+	if (logo.scale.x < 500) {
+		velocidadLogo += 0.01;
+		logo.scale.x += velocidadLogo;
+		logo.scale.y += velocidadLogo;
+	}
 }
 
 /**
@@ -393,58 +433,4 @@ function reiniciar() {
     crearAliens();
     nave.revive();
     textoResultado.visible = false;
-}
-
-function create_stars() {
-        
-    var sprites = game.add.spriteBatch();
-
-    stars = [];
-
-    for (var i = 0; i < max; i++)
-    {
-        xx[i] = Math.floor(Math.random() * 800) - 400;
-        yy[i] = Math.floor(Math.random() * 600) - 300;
-        zz[i] = Math.floor(Math.random() * 1700) - 100;
-
-        var star = game.make.sprite(0, 0, 'star');
-        star.anchor.set(0.5);
-		
-        sprites.addChild(star);
-
-        stars.push(star);
-    }
-
-logo_phaser = game.add.sprite(400, 300, 'logo_phaser');
-logo_phaser.anchor.set(0.5);
-logo_phaser.scale.x = 0.1;
-logo_phaser.scale.y = 0.1;
-	
-}
-
-function update_stars() {
-	    for (var i = 0; i < max; i++)
-    {
-        stars[i].perspective = distance / (distance - zz[i]);
-        stars[i].x = game.world.centerX + xx[i] * stars[i].perspective;
-        stars[i].y = game.world.centerY + yy[i] * stars[i].perspective;
-
-        zz[i] += speed_stars;
-
-        if (zz[i] > 290)
-        {
-            zz[i] -= 600;
-        }
-
-        stars[i].alpha = Math.min(stars[i].perspective / 2, 1);
-        stars[i].scale.set(stars[i].perspective / 2);
-        stars[i].rotation += 0.1;
-
-    }
-	if (logo_phaser.scale.x<500){
-	speed_phaser +=0.01;
-	logo_phaser.scale.x += speed_phaser;
-	logo_phaser.scale.y += speed_phaser;
-	}
-	
 }

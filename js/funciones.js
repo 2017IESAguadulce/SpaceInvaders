@@ -18,6 +18,9 @@ function preload() {
 	game.load.audio('ayuda', 'assets/audio/SoundEffects/key.wav');
 	game.load.audio('disparo', 'assets/audio/SoundEffects/blaster.mp3');
 	game.load.audio('explosion', 'assets/audio/SoundEffects/alien_death1.wav');
+//// INTRO ////
+	game.load.image('star', 'assets/sprites/star2.png');
+	game.load.image('logo_phaser', 'assets/sprites/phaser.png');
 }
 
 // Variables globales utilizadas de forma estática
@@ -42,12 +45,25 @@ var velocidadMov = 2000;
 var movimientoAlienX;
 var movimientoAlienY;
 var enemigosVivos = [];
+//// INTRO ////
+	// variables para las estrellas
+	var distance = 300;//distacia
+	var speed_stars = 1;//velocidad estrellas
+	max = 1000;//cantida de estrellas
+	var xx = [];
+	var yy = [];
+	var zz = [];
+	// variables para las logo phaser
+	var speed_phaser = 0.1;
+	var logo_phaser;
 
 /**
  * Método usado para crear y cargar los recursos usados por el juego
  * @method create
  */
 function create() {
+
+
 
     //Uso el Scale Manager para definir el modo de escalado 
     //y que se muestre todo el Canvas en pantalla
@@ -119,6 +135,8 @@ function create() {
 	
     cursores = game.input.keyboard.createCursorKeys();
     botonDisparo = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
+	create_stars();
 }
 
 /**
@@ -126,6 +144,10 @@ function create() {
  * @method update
  */
 function update() {
+	
+		update_stars();
+
+
     if (nave.alive) {
 		fondo.tilePosition.y += 2;
         nave.body.velocity.setTo(0, 0);
@@ -146,7 +168,8 @@ function update() {
 		game.physics.arcade.overlap(nave, ayudas, manejadorColisionNaveAyuda, null, this);
         game.physics.arcade.overlap(balas, aliens, manejadorDisparoNave, null, this);
         game.physics.arcade.overlap(balasAlien, nave, manejadorDisparoEnemigo, null, this);
-    }
+
+}
 }
 
 /**
@@ -370,4 +393,58 @@ function reiniciar() {
     crearAliens();
     nave.revive();
     textoResultado.visible = false;
+}
+
+function create_stars() {
+        
+    var sprites = game.add.spriteBatch();
+
+    stars = [];
+
+    for (var i = 0; i < max; i++)
+    {
+        xx[i] = Math.floor(Math.random() * 800) - 400;
+        yy[i] = Math.floor(Math.random() * 600) - 300;
+        zz[i] = Math.floor(Math.random() * 1700) - 100;
+
+        var star = game.make.sprite(0, 0, 'star');
+        star.anchor.set(0.5);
+		
+        sprites.addChild(star);
+
+        stars.push(star);
+    }
+
+logo_phaser = game.add.sprite(400, 300, 'logo_phaser');
+logo_phaser.anchor.set(0.5);
+logo_phaser.scale.x = 0.1;
+logo_phaser.scale.y = 0.1;
+	
+}
+
+function update_stars() {
+	    for (var i = 0; i < max; i++)
+    {
+        stars[i].perspective = distance / (distance - zz[i]);
+        stars[i].x = game.world.centerX + xx[i] * stars[i].perspective;
+        stars[i].y = game.world.centerY + yy[i] * stars[i].perspective;
+
+        zz[i] += speed_stars;
+
+        if (zz[i] > 290)
+        {
+            zz[i] -= 600;
+        }
+
+        stars[i].alpha = Math.min(stars[i].perspective / 2, 1);
+        stars[i].scale.set(stars[i].perspective / 2);
+        stars[i].rotation += 0.1;
+
+    }
+	if (logo_phaser.scale.x<500){
+	speed_phaser +=0.01;
+	logo_phaser.scale.x += speed_phaser;
+	logo_phaser.scale.y += speed_phaser;
+	}
+	
 }

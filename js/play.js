@@ -14,74 +14,14 @@ var playState = {
 		this.scale.refresh();
 		// Variables para el logo inicial
 		game.velocidadLogo = 0.1;
-		// Agregamos imagen de fondo a tablero
-		game.fondo = game.add.tileSprite(0, 0, 800, 600, 'fondo');
-		// Variables para nuestra nave
-		game.nave = game.add.sprite(400, 500, 'nave');
-		game.nave.anchor.setTo(0.5, 0.5);
-		game.physics.enable(game.nave, Phaser.Physics.ARCADE);
-		game.nave.body.collideWorldBounds = true;
-		game.naveVelocidad = 200;
-		game.naveBalasRatio = 300;
-		game.naveDisparoHora = 0;
-		// Variables referentes a las balas de nuestra nave
-		game.balas = game.add.group();
-		game.balas.enableBody = true;
-		game.balas.physicsBodyType = Phaser.Physics.ARCADE;
-		game.balas.createMultiple(30, 'bala');
-		game.balas.setAll('anchor.x', 0.5);
-		game.balas.setAll('anchor.y', 1);
-		game.balas.setAll('outOfBoundsKill', true);
-		game.balas.setAll('checkWorldBounds', true);
-		// Variables de los aliens
-		game.aliens = game.add.group();
-		game.aliens.enableBody = true;
-		game.aliens.physicsBodyType = Phaser.Physics.ARCADE;
-		game.alienDisparoHora = 0;
-		game.alienVelocidad = 2000;
-		game.alienVivos = [];
-		this.crearAliens();
-		// Variables referentes a las balas de los aliens
-		game.balasAlien = game.add.group();
-		game.balasAlien.enableBody = true;
-		game.balasAlien.physicsBodyType = Phaser.Physics.ARCADE;
-		game.balasAlien.createMultiple(30, 'balaAlien');
-		game.balasAlien.setAll('anchor.x', 0.5);
-		game.balasAlien.setAll('anchor.y', 1);
-		game.balasAlien.setAll('outOfBoundsKill', true);
-		game.balasAlien.setAll('checkWorldBounds', true);
-		// Variables con textos y puntos mostrados por pantalla
-		game.puntos = 0;
-		game.puntosTexto = game.add.text(10, 10, 'Puntos: ' + game.puntos, { font: '34px Arial', fill: '#fff' });
-		game.vidas = game.add.group();
-		game.add.text(game.world.width - 115, 10, 'Vidas: ', { font: '34px Arial', fill: '#fff' });
-		game.textoResultado = game.add.text(game.world.centerX, game.world.centerY,' ', { font: '64px Arial', fill: '#fff' });
-		game.textoResultado.anchor.setTo(0.5, 0.5);
-		game.textoResultado.visible = false;
-		// Mostramos las vidas del jugador
-		for (var i = 0; i < 3; i++) {
-			var naveImagen = game.vidas.create(game.world.width - 100 + (30 * i), 60, 'nave');
-			naveImagen.anchor.setTo(0.5, 0.5);
-			naveImagen.angle = 90;
-			naveImagen.alpha = 0.4;
-		}
-		// Variables con las ayudas y powerups para nuestra nave
-		game.ayudas = game.add.group();
-		game.ayudas.enableBody = true;
-		game.ayudas.physicsBodyType = Phaser.Physics.ARCADE;
-		game.physics.arcade.gravity.y = 50;
-		// Variables con las animaciones de las explosiones para los objetos de juego
-		game.explosiones = game.add.group();
-		game.explosiones.createMultiple(30, 'boom');
-		game.explosiones.forEach(this.configurarExplosion, this);
-		// Variables con los audios usados en el juego
-		game.sfxAyuda = game.add.audio('ayuda');
-		game.sfxDisparo = game.add.audio('disparo');
-		game.sfxExplosion = game.add.audio('explosion');
-		// Preparamos los cursores y controles de juego
-		game.cursores = game.input.keyboard.createCursorKeys();
-		game.botonDisparo = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-		this.crearEstrellas();
+		// Cargamos e iniciamos las diferentes variables usadas por el juego
+		this.cargarInterfaz();
+		this.cargarNave();
+		this.cargarAliens();
+		this.cargarAnimaciones();
+		this.cargarAudios();
+		this.cargarControles();
+		this.cargarEstrellas();
     },
 	
 	/**
@@ -207,10 +147,71 @@ var playState = {
 	},
 
 	/**
-	 * Función usada para crear los enemigos y posicionarlos en pantalla agregándoles movimiento
-	 * @method crearAliens
+	 * Función usada para crear e inicializar las variables de la interfaz de juego
+	 * @method cargarInterfaz
 	 */
-	crearAliens: function() {
+	cargarInterfaz: function() {
+		// Agregamos imagen de fondo a tablero
+		game.fondo = game.add.tileSprite(0, 0, 800, 600, 'fondo');
+		// Variables con textos y puntos mostrados por pantalla
+		game.puntos = 0;
+		game.puntosTexto = game.add.text(10, 10, 'Puntos: ' + game.puntos, { font: '34px Arial', fill: '#fff' });
+		game.vidas = game.add.group();
+		game.add.text(game.world.width - 115, 10, 'Vidas: ', { font: '34px Arial', fill: '#fff' });
+		game.textoResultado = game.add.text(game.world.centerX, game.world.centerY,' ', { font: '64px Arial', fill: '#fff' });
+		game.textoResultado.anchor.setTo(0.5, 0.5);
+		game.textoResultado.visible = false;
+		// Mostramos las vidas del jugador
+		for (var i = 0; i < 3; i++) {
+			var naveImagen = game.vidas.create(game.world.width - 100 + (30 * i), 60, 'nave');
+			naveImagen.anchor.setTo(0.5, 0.5);
+			naveImagen.angle = 90;
+			naveImagen.alpha = 0.4;
+		}
+	},
+	
+	/**
+	 * Función usada para crear e inicializar las variables de nuestra nave
+	 * @method cargarNave
+	 */
+	cargarNave: function() {
+		// Variables de nuestra nave
+		game.nave = game.add.sprite(400, 500, 'nave');
+		game.nave.anchor.setTo(0.5, 0.5);
+		game.physics.enable(game.nave, Phaser.Physics.ARCADE);
+		game.nave.body.collideWorldBounds = true;
+		game.naveVelocidad = 200;
+		game.naveBalasRatio = 300;
+		game.naveDisparoHora = 0;
+		// Variables referentes a las balas de nuestra nave
+		game.balas = game.add.group();
+		game.balas.enableBody = true;
+		game.balas.physicsBodyType = Phaser.Physics.ARCADE;
+		game.balas.createMultiple(30, 'bala');
+		game.balas.setAll('anchor.x', 0.5);
+		game.balas.setAll('anchor.y', 1);
+		game.balas.setAll('outOfBoundsKill', true);
+		game.balas.setAll('checkWorldBounds', true);
+		// Variables con las ayudas y powerups para nuestra nave
+		game.ayudas = game.add.group();
+		game.ayudas.enableBody = true;
+		game.ayudas.physicsBodyType = Phaser.Physics.ARCADE;
+		game.physics.arcade.gravity.y = 50;
+	},
+	
+	/**
+	 * Función usada para crear, inicializar y posicionar los enemigos en pantalla agregándoles movimiento
+	 * @method cargarAliens
+	 */
+	cargarAliens: function() {
+		// Variables de los aliens
+		game.aliens = game.add.group();
+		game.aliens.enableBody = true;
+		game.aliens.physicsBodyType = Phaser.Physics.ARCADE;
+		game.alienDisparoHora = 0;
+		game.alienVelocidad = 2000;
+		game.alienVivos = [];
+		
 		for (var y = 0; y < 4; y++) {
 			for (var x = 0; x < 10; x++) {
 				var alien = game.aliens.create(x * 48, y * 50, 'alien');
@@ -220,17 +221,59 @@ var playState = {
 				alien.body.moves = false;
 			}
 		}
+		
 		game.aliens.x = 100;
 		game.aliens.y = 50;	
 		game.movimientoAlienX = game.add.tween(game.aliens).to( { x: 250 }, game.alienVelocidad, Phaser.Easing.Linear.None, true, 0, game.alienVelocidad, true);
 		game.movimientoAlienY = game.time.events.loop(game.alienVelocidad * 2, this.descender, this);
+		// Variables referentes a las balas de los aliens
+		game.balasAlien = game.add.group();
+		game.balasAlien.enableBody = true;
+		game.balasAlien.physicsBodyType = Phaser.Physics.ARCADE;
+		game.balasAlien.createMultiple(30, 'balaAlien');
+		game.balasAlien.setAll('anchor.x', 0.5);
+		game.balasAlien.setAll('anchor.y', 1);
+		game.balasAlien.setAll('outOfBoundsKill', true);
+		game.balasAlien.setAll('checkWorldBounds', true);
+	},
+	
+	/**
+	 * Función usada para crear y cargar las animaciones usadas en el juego
+	 * @method cargarAnimaciones
+	 */
+	cargarAnimaciones: function() {
+		// Variables con las animaciones de las explosiones para los objetos de juego
+		game.explosiones = game.add.group();
+		game.explosiones.createMultiple(30, 'boom');
+		game.explosiones.forEach(this.configurarExplosion, this);
+	},
+	
+	/**
+	 * Función usada para crear e cargar los audios usados en el juego
+	 * @method cargarAudios
+	 */
+	cargarAudios: function() {
+		// Variables con los audios utilizados en el juego
+		game.sfxAyuda = game.add.audio('ayuda');
+		game.sfxDisparo = game.add.audio('disparo');
+		game.sfxExplosion = game.add.audio('explosion');
+	},
+	
+	/**
+	 * Función usada para crear y cargar los controles de juego 
+	 * @method cargarControles
+	 */
+	cargarControles: function() {
+		// Preparamos los cursores y controles de juego
+		game.cursores = game.input.keyboard.createCursorKeys();
+		game.botonDisparo = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 	},
 
 	/**
 	 * Función usada para mostrar un halo de estrellas que crea una sensación de velocidad
-	 * @method crearEstrellas
+	 * @method cargarEstrellas
 	 */
-	crearEstrellas: function() {
+	cargarEstrellas: function() {
 		// Variables referentes a las estrellas
 		game.estrellas = [];
 		game.estrellasX = [];
@@ -385,7 +428,7 @@ var playState = {
 	reiniciar: function() {
 		game.vidas.callAll('revive');
 		game.aliens.removeAll();
-		this.crearAliens();
+		this.cargarAliens();
 		game.nave.revive();
 		game.textoResultado.visible = false;
 	},

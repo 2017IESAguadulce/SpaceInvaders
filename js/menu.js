@@ -6,13 +6,12 @@ var menuState = {
 	 */
 	create: function() {
 		// Mostramos el título y menú principal de juego.
-        var nameLabel = game.add.text(80, 80, 'Space Invaders', { font: '50px Arial', fill: 'white' });
+        var titulo = game.add.text(80, 80, 'Space Invaders', { font: '50px Arial', fill: 'white' });
         // Añadiendo un mensaje decriptivo con instrucciones para poder comenzar
-        var startLabel = game.add.text(80, game.world.height-80, 'Pulsa "Intro" para comenzar', {font: '25px Arial', fill: 'white' });
-        
+        var inicio = game.add.text(80, game.world.height-80, 'Pulsa "Intro" para comenzar', {font: '25px Arial', fill: 'white' });
         // Definimos la variable que captura la pulsación de la tecla intro
-        var intro = game.input.keyboard.addKey(Phaser.Keyboard.Enter);
-        // Y le asignamos un evento para que comienza el juego al pulsarla
+        var intro = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
+        // Y le asignamos un evento para que comience el juego al pulsarla
         intro.onDown.addOnce(this.start, this);
 	},
 	

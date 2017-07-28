@@ -8,14 +8,13 @@ var menuState = {
 		// Mostramos el título y demás mensajes agregando instrucciones para iniciar el juego.
         var titulo = game.add.text(80, 80, 'Space Invaders', { font: '54px Arial', fill: 'white' });
         var inicio = game.add.text(80, game.world.height-100, 'Pulsa "Intro" para comenzar', {font: '30px Arial', fill: 'white' });
+		// Asignamos velocidad inicial de logo mostrado y cargamos animaciones
+		game.velocidadLogo = 0.1;
+		this.cargarEstrellas();
         // Definimos la variable que captura la pulsación de la tecla intro
         var intro = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
         // Y le asignamos un evento para que comience el juego al pulsarla
         intro.onDown.addOnce(this.start, this);
-		
-		// Variables para el logo inicial
-		game.velocidadLogo = 0.1;
-		this.cargarEstrellas();
 	},
 	
 	/**

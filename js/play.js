@@ -94,7 +94,7 @@ var playState = {
 			vida.kill();
 		}
 		
-		var explosion = explosiones.getFirstExists(false);
+		var explosion = game.explosiones.getFirstExists(false);
 		explosion.reset(nave.body.x, nave.body.y);
 		explosion.play('boom', 30, false, true);
 		
@@ -103,7 +103,7 @@ var playState = {
 			game.balasAlien.callAll('kill');
 			game.tweens.remove(game.movimientoAlienX);
 			game.time.events.remove(game.movimientoAlienY);
-			game.textoResultado.text = " Has Perdido. \n Click para reiniciar";
+			game.textoResultado.text = " Has Perdido. \n Intro para reiniciar";
 			game.textoResultado.visible = true;
 			// Definimos la variable que captura la pulsación de la tecla intro
 			var intro = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
@@ -285,7 +285,7 @@ var playState = {
 		var balaAlien = game.balasAlien.getFirstExists(false);
 		game.alienVivos.length = 0;
 		game.aliens.forEachAlive(function(alien){
-			//game.alienVivos.push(alien);
+			game.alienVivos.push(alien);
 		});
 
 		if (balaAlien && game.alienVivos.length > 0) {

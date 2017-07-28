@@ -97,7 +97,7 @@ var playState = {
 		// Mostramos la animación de explosión en las coordenadas de nuestra nave
 		var explosion = game.explosiones.getFirstExists(false);
 		explosion.reset(nave.body.x, nave.body.y);
-		explosion.play('boom', 30, false, true);
+		explosion.play('boom', 20, false, true);
 		// Si no nos quedan vidas
 		if (game.vidas.countLiving() < 1) {
 			// Eliminamos la nave y removemos demás elementos de juego
@@ -173,13 +173,13 @@ var playState = {
 		game.physics.enable(game.nave, Phaser.Physics.ARCADE);
 		game.nave.body.collideWorldBounds = true;
 		game.naveVelocidad = 200;
-		game.naveBalasRatio = 300;
+		game.naveBalasRatio = 1000;
 		game.naveDisparoHora = 0;
 		// Variables referentes a las balas de nuestra nave
 		game.balas = game.add.group();
 		game.balas.enableBody = true;
 		game.balas.physicsBodyType = Phaser.Physics.ARCADE;
-		game.balas.createMultiple(30, 'bala');
+		game.balas.createMultiple(20, 'bala');
 		game.balas.setAll('anchor.x', 0.5);
 		game.balas.setAll('anchor.y', 1);
 		game.balas.setAll('outOfBoundsKill', true);

@@ -142,18 +142,12 @@ var playState = {
 			// Agregamos puntos a marcador
 			game.puntos += 1000;
 			game.puntosTexto.text = 'Puntos: ' + game.puntos;
-			// Eliminamos eventos de movimiento en aliends
+			// Eliminamos eventos de movimiento en aliens
 			game.tweens.remove(game.movimientoAlienX);
 			game.time.events.remove(game.movimientoAlienY);
 			game.balasAlien.callAll('kill', this);
-			// Mostramos mensaje
-			game.textoResultado.text = " ¡Has Ganado! \n Pulsa Intro para reiniciar";
-			game.textoResultado.visible = true;
-			//this.win();
-			// Definimos la variable que captura la pulsación de la tecla intro
-			var intro = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
-			// Y le asignamos un evento para que comience el juego al pulsarla
-			intro.onDown.addOnce(this.reiniciar, this);
+			// Llamamos a la función win para lanzar su estado
+			this.win();
 		}
 	},
 

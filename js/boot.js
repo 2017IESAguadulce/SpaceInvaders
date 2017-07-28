@@ -5,8 +5,7 @@ var bootState = {
 	 * @method create
 	 */
 	create: function() {
-		//Usamos Scale Manager para definir el modo de escalado 
-		//y que se muestre todo el Canvas en pantalla
+		//Usamos Scale Manager para definir el modo de escalado mostrando todo el Canvas en pantalla
 		this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 		//Para centrar el Canvas en la pantalla horizontal y verticalmente
 		this.scale.pageAlignHorizontally = true;

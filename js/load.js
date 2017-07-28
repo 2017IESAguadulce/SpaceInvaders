@@ -5,7 +5,7 @@ var loadState = {
 	 * @method preload
 	 */
 	preload: function() {
-		var etiquetaCargando = game.add.text(80, 50, 'Cargando...', { font: '34px Arial', fill: 'white' });
+		var cargando = game.add.text(80, 50, 'Cargando...', { font: '34px Arial', fill: 'white' });
 		game.load.image('bala', 'assets/games/invaders/bullet.png');
 		game.load.image('balaAlien', 'assets/games/invaders/enemy-bullet.png');
 		game.load.image('nave', 'assets/games/invaders/player.png');

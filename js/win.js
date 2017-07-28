@@ -1,7 +1,7 @@
-// Variable estado usada para cargar la pantalla de victoria
+// Variable estado usada para cargar la pantalla de juego ganado
 var winState = {
 	/**
-	 * Método usado para cargar el mensaje de victoria
+	 * Método usado para cargar el mensaje de juego ganado
 	 * @method create
 	 */
     create: function() {	

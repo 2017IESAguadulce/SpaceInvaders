@@ -37,7 +37,6 @@ var playState = {
 			if (game.time.now > game.alienDisparoHora) {
 				this.disparoEnemigo();
 			}
-			// Giramos la imagen de la nave y movemos estrellas para dar sensación de movimiento
 			this.girarNave();
 			// Controlamos colisiones de objetos en sus diferentes métodos
 			game.physics.arcade.overlap(game.nave, game.ayudas, this.manejadorColisionNaveAyuda, null, this);
@@ -87,18 +86,21 @@ var playState = {
 	 * @param {} bala
 	 */
 	manejadorDisparoEnemigo: function(nave, bala) {
+		// Eliminamos bala y reproducimos sonido
 		bala.kill();
 		game.sfxExplosion.play();
 		vida = game.vidas.getFirstAlive();
 		if (vida) {
+			// Si tenemos vidas quitamos una
 			vida.kill();
 		}
-		
+		// Mostramos la animación de explosión en las coordenadas de nuestra nave
 		var explosion = game.explosiones.getFirstExists(false);
 		explosion.reset(nave.body.x, nave.body.y);
 		explosion.play('boom', 30, false, true);
-		
+		// Si no nos quedan vidas
 		if (game.vidas.countLiving() < 1) {
+			// Eliminamos la nave y removemos demás elementos de juego
 			nave.kill();
 			game.balasAlien.callAll('kill');
 			game.tweens.remove(game.movimientoAlienX);
@@ -115,18 +117,26 @@ var playState = {
 	 * @param {} ayuda
 	 */
 	manejadorColisionNaveAyuda: function(nave, ayuda) {
+		// Eliminamos ayuda y reproducimos sonido
 		ayuda.kill();
 		game.sfxAyuda.play();
+		// Si la ayuda es una mejora de vida
 		if (ayuda.name == "mejoraVida") {
+			// Y tenemos menos de 3
 			if (game.vidas.countLiving() < 3) {
+				// Cargamos una nueva vida en pantalla
 				var naveImagen = game.vidas.create(game.world.width - 100 + ((game.vidas.countLiving() == 1) ? 30 : 0), 60, 'nave');
 				naveImagen.anchor.setTo(0.5, 0.5);
 				naveImagen.angle = 90;
 				naveImagen.alpha = 0.4;
 			}
+		// Si la ayuda es una mejora de arma
 		} else if (ayuda.name == "mejoraArma") {
+			// Reducimos el ratio de las balas para aumentar su velocidad
 			game.naveBalasRatio /= 1.5;
+		// Si la ayuda es una mejora de velocidad
 		} else if (ayuda.name == "mejoraVelocidad") {
+			// Aumentamos la velocidad de la nave para que sea más rápida
 			game.naveVelocidad *= 1.5;
 		}
 	},
@@ -193,7 +203,7 @@ var playState = {
 		game.alienDisparoHora = 0;
 		game.alienVelocidad = 2000;
 		game.alienVivos = [];
-		
+		// Cargamos en filas de 4 y columnas de 10 a los enemigos
 		for (var y = 0; y < 4; y++) {
 			for (var x = 0; x < 10; x++) {
 				var alien = game.aliens.create(x * 48, y * 50, 'alien');
@@ -203,9 +213,10 @@ var playState = {
 				alien.body.moves = false;
 			}
 		}
-		
+		// Asignamos coordenadas iniciales a grupo de enemigos de tipo alien
 		game.aliens.x = 100;
 		game.aliens.y = 50;	
+		// Agregamos los eventos de movimiento horizontal y vertical para los aliens
 		game.movimientoAlienX = game.add.tween(game.aliens).to( { x: 250 }, game.alienVelocidad, Phaser.Easing.Linear.None, true, 0, game.alienVelocidad, true);
 		game.movimientoAlienY = game.time.events.loop(game.alienVelocidad * 2, this.descender, this);
 		// Variables referentes a las balas de los aliens
@@ -275,15 +286,19 @@ var playState = {
 	 * @method disparoEnemigo
 	 */
 	disparoEnemigo: function() {
-		var balaAlien = game.balasAlien.getFirstExists(false);
+		// Cargamos todos los aliens que quedan vivos en el vector
 		game.alienVivos.length = 0;
 		game.aliens.forEachAlive(function(alien){
 			game.alienVivos.push(alien);
 		});
-
+		// Obtenemos la primera bala
+		var balaAlien = game.balasAlien.getFirstExists(false);
+		// Si no hay balas en pantalla y existen aliens vivos
 		if (balaAlien && game.alienVivos.length > 0) {
+			// Seleccionamos aleatoriamente un alien entre los que quedan vivos
 			var aleatorio = game.rnd.integerInRange(0, game.alienVivos.length-1);
 			var seleccion = game.alienVivos[aleatorio];
+			// Y lanzamos la bala desde su posición hacia nuestra nave
 			balaAlien.reset(seleccion.body.x, seleccion.body.y);
 			game.physics.arcade.moveToObject(balaAlien, game.nave, 120);
 			game.alienDisparoHora = game.time.now + 2000;
@@ -297,11 +312,16 @@ var playState = {
 	 * @param {} alien
 	 */
 	lanzarAyuda: function(alien) {
+		// Obtenemos un número aleatorio entre 0 y 1
 		var aleatorio = Math.random();
+		// Si es menor que 0.06 lanzamos una mejora
 		if (aleatorio < 0.06) {
+			// Inicialmente cargamos una mejora de vida
 			var mejora = "mejoraVida";
+			// Si el número es menor que 0.04 lanzamos una mejora de arma
 			if (aleatorio < 0.04) {
 				mejora = "mejoraArma";
+			// Si es menor que 0.02 lanzamos una mejora de velocidad
 			} else if (aleatorio < 0.02) {
 				mejora = "mejoraVelocidad";
 			}
@@ -317,9 +337,11 @@ var playState = {
 	 * @param {} locY
 	 */
 	cargarPowerUp: function(tipoMejora, locX, locY) {
+		// Creamos una mejora del tipo especificado desde la localización concretada
 		var objeto = game.ayudas.create(locX, locY, tipoMejora);
 		objeto.name = tipoMejora;
 		objeto.body.collideWorldBounds = false;
+		// Y la hacemos semitransparente además de añadirle gravedad
 		objeto.alpha = 0.4;
 		game.physics.arcade.gravity.y = 50;
 	},
@@ -329,10 +351,13 @@ var playState = {
 	 * @method dispararBala
 	 */
 	dispararBala: function() {
+		// Si ha pasado el tiempo suficiente
 		if (game.time.now > game.naveDisparoHora) {
+			// Obtenemos la primera bala
 			var bala = game.balas.getFirstExists(false);
 			if (bala) {
 				game.sfxDisparo.play();
+				// Y la lanzamos desde la ubicación de la nave
 				bala.reset(game.nave.x, game.nave.y + 8);
 				bala.body.velocity.y = -400;
 				game.naveDisparoHora = game.time.now + game.naveBalasRatio;
@@ -345,20 +370,11 @@ var playState = {
 	 * @method girarNave
 	 */
 	girarNave: function() {
+		// Dependiendo de la velocidad en el eje x de la nave
 		var giro = game.nave.body.velocity.x / 1000;
 		game.nave.scale.x = 1 - Math.abs(giro) / 2;
+		// La movemos angularmente para girarla mientras nos desplazamos
 		game.nave.angle = giro * 30;
-	},
-
-	/**
-	 * Función usada para reiniciar el juego una vez hayamos perdido o ganado la partida
-	 * @method reiniciar
-	 */
-	reiniciar: function() {
-		game.vidas.callAll('revive');
-		game.aliens.removeAll();
-		this.cargarAliens();
-		game.nave.revive();
 	},
 	
 	/**

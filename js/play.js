@@ -103,12 +103,8 @@ var playState = {
 			game.balasAlien.callAll('kill');
 			game.tweens.remove(game.movimientoAlienX);
 			game.time.events.remove(game.movimientoAlienY);
-			game.textoResultado.text = " Has Perdido. \n Intro para reiniciar";
-			game.textoResultado.visible = true;
-			// Definimos la variable que captura la pulsación de la tecla intro
-			var intro = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
-			// Y le asignamos un evento para que comience el juego al pulsarla
-			intro.onDown.addOnce(this.reiniciar, this);
+			// Llamamos a la función lose para lanzar su estado
+			this.lose();
 		}
 	},
 
@@ -147,9 +143,6 @@ var playState = {
 		game.puntosTexto = game.add.text(10, 10, 'Puntos: ' + game.puntos, { font: '34px Arial', fill: '#fff' });
 		game.vidas = game.add.group();
 		game.add.text(game.world.width - 115, 10, 'Vidas: ', { font: '34px Arial', fill: '#fff' });
-		game.textoResultado = game.add.text(game.world.centerX, game.world.centerY,' ', { font: '64px Arial', fill: '#fff' });
-		game.textoResultado.anchor.setTo(0.5, 0.5);
-		game.textoResultado.visible = false;
 		// Mostramos las vidas del jugador
 		for (var i = 0; i < 3; i++) {
 			var naveImagen = game.vidas.create(game.world.width - 100 + (30 * i), 60, 'nave');
@@ -366,7 +359,6 @@ var playState = {
 		game.aliens.removeAll();
 		this.cargarAliens();
 		game.nave.revive();
-		game.textoResultado.visible = false;
 	},
 	
 	/**
@@ -376,5 +368,14 @@ var playState = {
 	win: function() {
 		// Lanzamos el estado win
 		game.state.start('win');
+	},
+	
+	/**
+	 * Método usado para cargar el estado lose
+	 * @method lose
+	 */
+	lose: function() {
+		// Lanzamos el estado lose
+		game.state.start('lose');
 	}
 }

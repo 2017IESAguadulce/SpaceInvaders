@@ -6,19 +6,19 @@ var menuState = {
 	 */
 	create: function() {
 		// Mostramos el título y demás mensajes agregando instrucciones para iniciar el juego.
-        var titulo = game.add.text(80, 80, 'Space Invaders', { font: '54px Arial', fill: 'white' });
+        game.titulo = game.add.text(80, 80, 'Space Invaders', { font: '54px Arial', fill: 'white' });
 		// Asignamos velocidad inicial de logo mostrado y cargamos animaciones
 		game.velocidadLogo = 0.1;
 		game.sfxHover = game.add.audio('botonHover');
 		game.sfxStart = game.add.audio('botonStart');
 		// Agregamos botones para controlar las opciones de juego
-		btnJugar = game.add.button(game.world.centerX + 100, 250, 'botonJugar', this.manejadorClickBotonJugar, this, 0, 1, 0);
-		btnOpciones = game.add.button(game.world.centerX + 100, 350, 'botonOpciones', this.manejadorClickBotonOpciones, this, 0, 1, 0);
-		btnPuntuaciones = game.add.button(game.world.centerX + 100, 450, 'botonPuntuaciones', this.manejadorClickBotonPuntuaciones, this, 0, 1, 0);
+		game.btnJugar = game.add.button(game.world.centerX + 100, 250, 'botonJugar', this.manejadorClickBotonJugar, this, 0, 1, 0);
+		game.btnOpciones = game.add.button(game.world.centerX + 100, 350, 'botonOpciones', this.manejadorClickBotonOpciones, this, 0, 1, 0);
+		game.btnPuntuaciones = game.add.button(game.world.centerX + 100, 450, 'botonPuntuaciones', this.manejadorClickBotonPuntuaciones, this, 0, 1, 0);
 		// Controlamos los eventos over de los botones
-		btnJugar.onInputOver.add(this.manejadorOverBoton, this);
-		btnOpciones.onInputOver.add(this.manejadorOverBoton, this);
-		btnPuntuaciones.onInputOver.add(this.manejadorOverBoton, this);
+		game.btnJugar.onInputOver.add(this.manejadorOverBoton, this);
+		game.btnOpciones.onInputOver.add(this.manejadorOverBoton, this);
+		game.btnPuntuaciones.onInputOver.add(this.manejadorOverBoton, this);
 		// Iniciamos la carga de las estrellas en pantalla
 		this.cargarEstrellas();
 	},
@@ -30,6 +30,7 @@ var menuState = {
     update: function() {
 		// Actualizamos estrellas y logo mostrado en interfaz
 		this.actualizarEstrellas();
+		
 	},
 	
 	/**
@@ -128,5 +129,10 @@ var menuState = {
 			game.logo.scale.x += game.velocidadLogo;
 			game.logo.scale.y += game.velocidadLogo;
 		}
+		// Posicionamos por encima los botones y texto mostrado
+		game.world.bringToTop(game.titulo);
+		game.world.bringToTop(game.btnJugar);
+		game.world.bringToTop(game.btnOpciones);
+		game.world.bringToTop(game.btnPuntuaciones);
 	}
 };

@@ -55,8 +55,9 @@ var menuState = {
 	 * @method manejadorClickBotonOpciones
 	 */
 	manejadorClickBotonOpciones: function() {
+		// Reproducimos audio y llamamos al estado options para mostrar la pantalla de opciones
 		game.sfxStart.play();
-		// Pendiente de implementar
+		game.state.start('options');
 	},
 	
 	/**

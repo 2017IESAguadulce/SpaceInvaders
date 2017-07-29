@@ -22,8 +22,8 @@ var scoreState = {
 	},
 
 	/**
-	 * Función usada controlar el evento click en el botón jugar
-	 * @method manejadorClickBotonJugar
+	 * Función usada controlar el evento click en el botón volver
+	 * @method manejadorClickBotonVolver
 	 */
 	manejadorClickBotonVolver: function() {
 		// Reproducimos audio y llamamos al estado menu para volver al inicio

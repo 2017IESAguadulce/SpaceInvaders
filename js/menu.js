@@ -121,7 +121,7 @@ var menuState = {
 	 * @method start
 	 */
 	start: function() {
-		// Llamamos al estado play
-		game.state.start('play');
+		// Llamamos al estado nivel 1
+		game.state.start('level1');
 	},
 };

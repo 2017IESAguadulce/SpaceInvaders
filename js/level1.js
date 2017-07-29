@@ -1,5 +1,5 @@
-// Variable estado usada para cargar el juego en sí
-var playState = {
+// Variable estado usada para cargar el nivel 1 del juego
+var level1State = {
 	/**
 	 * Método usado para cargar el juego
 	 * @method create

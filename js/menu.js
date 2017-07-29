@@ -12,11 +12,13 @@ var menuState = {
 		game.sfxHover = game.add.audio('botonHover');
 		game.sfxStart = game.add.audio('botonStart');
 		// Agregamos botones para controlar las opciones de juego
-		btnJugar = game.add.button(game.world.centerX + 100, 300, 'botonJugar', this.manejadorClickBotonJugar, this, 0, 1, 0);
-		btnOpciones = game.add.button(game.world.centerX + 100, 400, 'botonOpciones', this.manejadorClickBotonOpciones, this, 0, 1, 0);
+		btnJugar = game.add.button(game.world.centerX + 100, 250, 'botonJugar', this.manejadorClickBotonJugar, this, 0, 1, 0);
+		btnOpciones = game.add.button(game.world.centerX + 100, 350, 'botonOpciones', this.manejadorClickBotonOpciones, this, 0, 1, 0);
+		btnPuntuaciones = game.add.button(game.world.centerX + 100, 450, 'botonPuntuaciones', this.manejadorClickBotonPuntuaciones, this, 0, 1, 0);
 		// Controlamos los eventos over de los botones
 		btnJugar.onInputOver.add(this.manejadorOverBoton, this);
 		btnOpciones.onInputOver.add(this.manejadorOverBoton, this);
+		btnPuntuaciones.onInputOver.add(this.manejadorOverBoton, this);
 		// Iniciamos la carga de las estrellas en pantalla
 		this.cargarEstrellas();
 	},
@@ -43,8 +45,9 @@ var menuState = {
 	 * @method manejadorClickBotonJugar
 	 */
 	manejadorClickBotonJugar: function() {
+		// Reproducimos audio y llamamos al estado nivel 1 y arrancamos juego
 		game.sfxStart.play();
-		this.start();
+		game.state.start('level1');
 	},
 	
 	/**
@@ -54,6 +57,16 @@ var menuState = {
 	manejadorClickBotonOpciones: function() {
 		game.sfxStart.play();
 		// Pendiente de implementar
+	},
+	
+	/**
+	 * Función usada controlar el evento click en el botón puntuaciones
+	 * @method manejadorClickBotonPuntuaciones
+	 */
+	manejadorClickBotonPuntuaciones: function() {
+		// Reproducimos audio y llamamos al estado score para mostrar la pantalla de puntuaciones
+		game.sfxStart.play();
+		game.state.start('score');
 	},
 	
 	/**
@@ -114,14 +127,5 @@ var menuState = {
 			game.logo.scale.x += game.velocidadLogo;
 			game.logo.scale.y += game.velocidadLogo;
 		}
-	},
-	
-	/**
-	 * Método usado para llamar al siguiente estado de juego
-	 * @method start
-	 */
-	start: function() {
-		// Llamamos al estado nivel 1
-		game.state.start('level1');
-	},
+	}
 };

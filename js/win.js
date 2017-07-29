@@ -21,5 +21,6 @@ var winState = {
     restart: function () {
 		// Lanzamos el estado menu
         game.state.start('menu');
+		// Queda pendiente implementar el resto de niveles, jefes, etc..
     }
 }

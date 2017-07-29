@@ -17,6 +17,8 @@ var loadState = {
 		game.load.spritesheet('boom', 'assets/games/invaders/explode.png', 128, 128);
 		game.load.spritesheet('botonJugar', 'assets/buttons/boton_jugar.png', 193, 71);
 		game.load.spritesheet('botonOpciones', 'assets/buttons/boton_opciones.png', 193, 71);
+		game.load.spritesheet('botonPuntuaciones', 'assets/buttons/boton_puntuaciones.png', 193, 71);
+		game.load.spritesheet('botonVolver', 'assets/buttons/boton_volver.png', 193, 71);
 		game.load.audio('ayuda', 'assets/audio/SoundEffects/key.wav');
 		game.load.audio('disparo', 'assets/audio/SoundEffects/blaster.mp3');
 		game.load.audio('explosion', 'assets/audio/SoundEffects/alien_death1.wav');

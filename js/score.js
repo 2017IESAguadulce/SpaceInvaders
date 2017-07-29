@@ -1,19 +1,18 @@
-// Variable estado usada para cargar la pantalla de partida perdida
-var loseState = {
+// Variable estado usada para cargar la pantalla de puntuaciones
+var scoreState = {
 	/**
-	 * Método usado para cargar el mensaje de partida perdida
+	 * Método usado para crear la interfaz de puntuaciones
 	 * @method create
 	 */
     create: function() {	
-		// Mostramos mensaje final agregando instrucciones para reiniciar el juego.
-        var titulo = game.add.text(80, 80, 'Has Perdido', { font: '54px Arial', fill: 'white' });
-        var inicio = game.add.text(80, 250, 'Pulse "Volver" para regresar al menú', {font: '30px Arial', fill: 'white' });
+		// Mostramos mensaje por pantalla
+        var titulo = game.add.text(80, 80, 'Puntuaciones', { font: '54px Arial', fill: 'white' });
 		// Agregamos el botón volver y su manejador
 		btnVolver = game.add.button(game.world.centerX + 100, 450, 'botonVolver', this.manejadorClickBotonVolver, this, 0, 1, 0);
 		// Y controlamos los eventos over del botón
 		btnVolver.onInputOver.add(this.manejadorOverBoton, this);
     },
-    
+
 	/**
 	 * Función usada controlar el evento hover en todos los botones a nivel general
 	 * @method manejadorOverBoton

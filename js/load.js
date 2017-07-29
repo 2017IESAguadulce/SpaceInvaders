@@ -15,9 +15,13 @@ var loadState = {
 		game.load.image('mejoraVelocidad', 'assets/sprites/pangball3.png');
 		game.load.spritesheet('alien', 'assets/games/invaders/invader32x32x4.png', 32, 32);
 		game.load.spritesheet('boom', 'assets/games/invaders/explode.png', 128, 128);
+		game.load.spritesheet('botonJugar', 'assets/buttons/boton_jugar.png', 193, 71);
+		game.load.spritesheet('botonOpciones', 'assets/buttons/boton_opciones.png', 193, 71);
 		game.load.audio('ayuda', 'assets/audio/SoundEffects/key.wav');
 		game.load.audio('disparo', 'assets/audio/SoundEffects/blaster.mp3');
 		game.load.audio('explosion', 'assets/audio/SoundEffects/alien_death1.wav');
+		game.load.audio('botonHover', 'assets/audio/SoundEffects/squit.ogg');
+		game.load.audio('botonStart', 'assets/audio/SoundEffects/p-ping.mp3');
 		game.load.image('star', 'assets/sprites/star2.png');
 		game.load.image('logo', 'assets/sprites/phaser.png');
 	},

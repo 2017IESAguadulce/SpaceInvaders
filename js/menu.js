@@ -7,13 +7,17 @@ var menuState = {
 	create: function() {
 		// Mostramos el título y demás mensajes agregando instrucciones para iniciar el juego.
         var titulo = game.add.text(80, 80, 'Space Invaders', { font: '54px Arial', fill: 'white' });
-        var inicio = game.add.text(80, game.world.height-100, 'Pulsa "Intro" para comenzar', {font: '30px Arial', fill: 'white' });
 		// Asignamos velocidad inicial de logo mostrado y cargamos animaciones
 		game.velocidadLogo = 0.1;
-        // Definimos la variable que captura la pulsación de la tecla intro
-        var intro = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
-        // Y le asignamos un evento para que comience el juego al pulsarla
-        intro.onDown.addOnce(this.start, this);
+		game.sfxHover = game.add.audio('botonHover');
+		game.sfxStart = game.add.audio('botonStart');
+		// Agregamos botones para controlar las opciones de juego
+		btnJugar = game.add.button(game.world.centerX + 100, 300, 'botonJugar', this.manejadorClickBotonJugar, this, 0, 1, 0);
+		btnOpciones = game.add.button(game.world.centerX + 100, 400, 'botonOpciones', this.manejadorClickBotonOpciones, this, 0, 1, 0);
+		// Controlamos los eventos over de los botones
+		btnJugar.onInputOver.add(this.manejadorOverBoton, this);
+		btnOpciones.onInputOver.add(this.manejadorOverBoton, this);
+		// Iniciamos la carga de las estrellas en pantalla
 		this.cargarEstrellas();
 	},
 	
@@ -24,6 +28,32 @@ var menuState = {
     update: function() {
 		// Actualizamos estrellas y logo mostrado en interfaz
 		this.actualizarEstrellas();
+	},
+	
+	/**
+	 * Función usada controlar el evento hover en todos los botones a nivel general
+	 * @method manejadorOverBoton
+	 */
+	manejadorOverBoton: function() {
+		game.sfxHover.play();
+	},
+
+	/**
+	 * Función usada controlar el evento click en el botón jugar
+	 * @method manejadorClickBotonJugar
+	 */
+	manejadorClickBotonJugar: function() {
+		game.sfxStart.play();
+		this.start();
+	},
+	
+	/**
+	 * Función usada controlar el evento click en el botón opciones
+	 * @method manejadorClickBotonOpciones
+	 */
+	manejadorClickBotonOpciones: function() {
+		game.sfxStart.play();
+		// Pendiente de implementar
 	},
 	
 	/**

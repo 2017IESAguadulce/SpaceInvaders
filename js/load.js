@@ -19,13 +19,25 @@ var loadState = {
 		game.load.spritesheet('botonOpciones', 'assets/buttons/boton_opciones.png', 193, 71);
 		game.load.spritesheet('botonPuntuaciones', 'assets/buttons/boton_puntuaciones.png', 193, 71);
 		game.load.spritesheet('botonVolver', 'assets/buttons/boton_volver.png', 193, 71);
-		game.load.audio('ayuda', 'assets/audio/SoundEffects/key.wav');
-		game.load.audio('disparo', 'assets/audio/SoundEffects/blaster.mp3');
-		game.load.audio('explosion', 'assets/audio/SoundEffects/alien_death1.wav');
 		game.load.audio('botonHover', 'assets/audio/SoundEffects/squit.ogg');
 		game.load.audio('botonStart', 'assets/audio/SoundEffects/p-ping.mp3');
 		game.load.image('star', 'assets/sprites/star2.png');
 		game.load.image('logo', 'assets/sprites/phaser.png');
+		game.load.audio('ayuda', 'assets/audio/SoundEffects/key.wav');
+		game.load.audio('disparo', 'assets/audio/SoundEffects/blaster.mp3');
+		game.load.audio('explosion', 'assets/audio/SoundEffects/alien_death1.wav');
+		game.load.audio('hiloMusical', 'assets/audio/SpaceArp1Kit.mp3');
+	},
+	
+	/**
+	 * Método usado para cargar el hilo musical de fondo para el juego
+	 * @method cargarHiloMusical
+	 */
+	cargarHiloMusical: function() {
+		// Creamos hilo de fondo musical, le activamos el modo bucle y lo reproducimos
+		game.hiloMusical = game.add.audio('hiloMusical');
+		game.hiloMusical.loopFull();
+		game.hiloMusical.play();
 	},
 	
 	/**
@@ -33,7 +45,8 @@ var loadState = {
 	 * @method create
 	 */
 	create: function() {
-		// Llamamos al estado menu
+		// Activamos el hilo musical y llamamos al estado menu
+		this.cargarHiloMusical();
 		game.state.start('menu');
 	}
 };

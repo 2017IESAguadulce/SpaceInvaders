@@ -133,6 +133,7 @@ var menuState = {
 				game.logo.scale.x += game.velocidadLogo;
 				game.logo.scale.y += game.velocidadLogo;
 			} else {
+				// Desactivamos la visualización del logo tras mostrarlo por primera vez
 				game.logoIntro = true;
 			}
 		}

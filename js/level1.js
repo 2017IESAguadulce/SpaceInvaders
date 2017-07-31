@@ -190,9 +190,9 @@ var level1State = {
 			naveImagen.alpha = 0.4;
 		}
 		// Agregamos botón volver y silenciar junto con sus manejadores para controlar sus eventos
-		btnVolver = game.add.button(game.world.right - 50, game.world.bottom - 50, 'botonVolverPeq', this.manejadorClickBotonVolver);
+		btnVolver = game.add.button(game.world.left + 10, game.world.bottom - 50, 'botonVolverPeq', this.manejadorClickBotonVolver);
 		btnVolver.onInputOver.add(this.manejadorOverBoton, this);
-		game.btnSilenciar = game.add.button(game.world.right - 50, game.world.bottom - 100, 'botonSilenciar', this.manejadorClickBotonSilenciar);
+		game.btnSilenciar = game.add.button(game.world.right - 50, game.world.bottom - 50, 'botonSilenciar', this.manejadorClickBotonSilenciar);
 		game.btnSilenciar.onInputOver.add(this.manejadorOverBoton, this);
 	},
 	

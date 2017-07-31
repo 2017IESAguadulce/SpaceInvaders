@@ -20,7 +20,7 @@ var menuState = {
 		game.btnOpciones.onInputOver.add(this.manejadorOverBoton, this);
 		game.btnPuntuaciones.onInputOver.add(this.manejadorOverBoton, this);
 		// Iniciamos la carga de las estrellas en pantalla
-		this.cargarEstrellas();
+		this.cargarIntro();
 	},
 	
 	/**
@@ -29,8 +29,7 @@ var menuState = {
 	 */
     update: function() {
 		// Actualizamos estrellas y logo mostrado en interfaz
-		this.actualizarEstrellas();
-		
+		this.actualizarIntro();
 	},
 	
 	/**
@@ -73,9 +72,9 @@ var menuState = {
 	
 	/**
 	 * Función usada para cargar un halo de estrellas creando así una sensación de velocidad
-	 * @method cargarEstrellas
+	 * @method cargarIntro
 	 */
-	cargarEstrellas: function() {
+	cargarIntro: function() {
 		// Variables vector que contienen las estrellas y sus coordenadas
 		game.estrellas = [];
 		game.estrellasX = [];
@@ -97,18 +96,21 @@ var menuState = {
 			// Y las añadimos al vector principal
 			game.estrellas.push(star);
 		}
-		// Cargamos logo inicial en el menú
-		game.logo = game.add.sprite(400, 300, 'logo');
-		game.logo.anchor.set(0.5);
-		game.logo.scale.x = 0.1;
-		game.logo.scale.y = 0.1;
+		// Si no hemos cargado previamente el logo
+		if (!game.logoIntro) {
+			// Lo cargamos en el menú inicial
+			game.logo = game.add.sprite(400, 300, 'logo');
+			game.logo.anchor.set(0.5);
+			game.logo.scale.x = 0.1;
+			game.logo.scale.y = 0.1;
+		}
 	},
 	
 	/**
 	 * Función usada para actualizar el halo de estrellas mostrado durante el juego
-	 * @method actualizarEstrellas
+	 * @method actualizarIntro
 	 */
-	actualizarEstrellas: function() {
+	actualizarIntro: function() {
 		// Recorremos vector de estrellas
 		for (var i = 0; i < game.maxEstrellas; i++) {
 			// Y las trasladamos para dar sensación de movimiento
@@ -123,11 +125,17 @@ var menuState = {
 			game.estrellas[i].scale.set(game.estrellas[i].perspective / 2);
 			game.estrellas[i].rotation += 0.1;
 		}
-		// Ampliamos logo cambiando su escalado
-		if (game.logo.scale.x < 500) {
-			game.velocidadLogo += 0.01;
-			game.logo.scale.x += game.velocidadLogo;
-			game.logo.scale.y += game.velocidadLogo;
+		// Si no hemos cargado previamente el logo
+		if (!game.logoIntro) {
+			// Lo ampliamos cambiando su escalado
+			if (game.logo.scale.x < 500) {
+				game.velocidadLogo += 0.01;
+				game.logo.scale.x += game.velocidadLogo;
+				game.logo.scale.y += game.velocidadLogo;
+			} else {
+				// Desactivamos la visualización del logo tras mostrarlo por primera vez
+				game.logoIntro = true;
+			}
 		}
 		// Posicionamos por encima los botones y texto mostrado
 		game.world.bringToTop(game.titulo);

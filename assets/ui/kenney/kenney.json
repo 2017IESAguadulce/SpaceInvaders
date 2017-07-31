@@ -1,0 +1,9 @@
+{
+  "name": "kenney",
+  "images": {
+    "slider_end": "images/grey_sliderEnd.png",
+    "slider_base": "images/grey_sliderHorizontal.png",
+    "slider_handle_off": "images/grey_sliderDown.png",
+    "slider_handle_on": "images/blue_sliderDown.png"
+  }
+}

@@ -125,10 +125,10 @@ var level1State = {
 			// Y tenemos menos de 3
 			if (game.vidas.countLiving() < 3) {
 				// Cargamos una nueva vida en pantalla
-				var naveImagen = game.vidas.create(game.world.width - 100 + ((game.vidas.countLiving() == 1) ? 30 : 0), 60, 'nave');
-				naveImagen.anchor.setTo(0.5, 0.5);
-				naveImagen.angle = 90;
-				naveImagen.alpha = 0.4;
+				var img = game.vidas.create(game.world.width - 100 + ((game.vidas.countLiving() == 1) ? 30 : 0), 60, 'nave');
+				img.anchor.setTo(0.5, 0.5);
+				img.angle = 90;
+				img.alpha = 0.4;
 			}
 		// Si la ayuda es una mejora de arma
 		} else if (ayuda.name == "mejoraArma") {
@@ -141,6 +141,35 @@ var level1State = {
 		}
 	},
 
+	/**
+	 * Función usada controlar el evento hover en todos los botones a nivel general
+	 * @method manejadorOverBoton
+	 */
+	manejadorOverBoton: function() {
+		game.sfxHover.play();
+	},
+
+	/**
+	 * Función usada controlar el evento click en el botón volver
+	 * @method manejadorClickBotonVolver
+	 */
+	manejadorClickBotonVolver: function() {
+		// Reproducimos audio y llamamos al estado menu para volver al inicio
+		game.sfxStart.play();
+		game.state.start('menu');
+	},
+	
+	/**
+	 * Función usada controlar el evento click en el botón silenciar
+	 * @method manejadorClickBotonSilenciar
+	 */
+	manejadorClickBotonSilenciar: function() {
+		game.sfxStart.play();
+		// Activamos o desactivamos el audio en nuestro juego y cambiamos la imagen mostrada
+		game.sound.mute = !game.sound.mute;
+		game.btnSilenciar.loadTexture((game.sound.mute) ? 'botonVolumen' : 'botonSilenciar');
+	},
+	
 	/**
 	 * Función usada para crear e inicializar las variables de la interfaz de juego
 	 * @method cargarInterfaz
@@ -160,6 +189,11 @@ var level1State = {
 			naveImagen.angle = 90;
 			naveImagen.alpha = 0.4;
 		}
+		// Agregamos botón volver y silenciar junto con sus manejadores para controlar sus eventos
+		btnVolver = game.add.button(game.world.right - 50, game.world.bottom - 50, 'botonVolverPeq', this.manejadorClickBotonVolver);
+		btnVolver.onInputOver.add(this.manejadorOverBoton, this);
+		game.btnSilenciar = game.add.button(game.world.right - 50, game.world.bottom - 100, 'botonSilenciar', this.manejadorClickBotonSilenciar);
+		game.btnSilenciar.onInputOver.add(this.manejadorOverBoton, this);
 	},
 	
 	/**

@@ -15,6 +15,8 @@ var bootState = {
 		game.physics.startSystem(Phaser.Physics.ARCADE);
 		// Creamos booleano para controlar si hemos visto el logo inicial
 		game.logoIntro = false;
+		// Cargamos librería usada para controlar elementos de la interfaz
+		game.slickUI = game.plugins.add(Phaser.Plugin.SlickUI);
 		// Llamamos al estado load
 		game.state.start('load');
 	}

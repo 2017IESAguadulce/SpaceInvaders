@@ -13,6 +13,9 @@ var loadState = {
 		game.load.image('mejoraVida', 'assets/games/invaders/player.png');
 		game.load.image('mejoraArma', 'assets/sprites/pangball2.png');
 		game.load.image('mejoraVelocidad', 'assets/sprites/pangball3.png');
+		game.load.image('botonVolverPeq', 'assets/buttons/boton_return.png');
+		game.load.image('botonSilenciar', 'assets/buttons/boton_volumen-mute.png');
+		game.load.image('botonVolumen', 'assets/buttons/boton_volumen-sound.png');
 		game.load.spritesheet('alien', 'assets/games/invaders/invader32x32x4.png', 32, 32);
 		game.load.spritesheet('boom', 'assets/games/invaders/explode.png', 128, 128);
 		game.load.spritesheet('botonJugar', 'assets/buttons/boton_jugar.png', 193, 71);

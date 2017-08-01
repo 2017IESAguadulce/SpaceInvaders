@@ -129,8 +129,8 @@ var menuState = {
 		// Si no hemos cargado previamente el logo
 		if (!game.logoIntro) {
 			// Lo ampliamos cambiando su escalado
-			if (game.logo.scale.x < 500) {
-				game.velocidadLogo += 0.01;
+			if (game.logo.scale.x < 400) {
+				game.velocidadLogo += 0.05;
 				game.logo.scale.x += game.velocidadLogo;
 				game.logo.scale.y += game.velocidadLogo;
 			} else {

@@ -16,9 +16,9 @@ var optionsState = {
 		// Cargamos fondo y mostramos mensajes por pantalla
 		game.fondo = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
         game.titulo = game.add.text(80, 80, 'Opciones', { font: '54px Arial', fill: 'white' });
-		game.volumen = game.add.text(game.world.centerX + 150, 270, 'Volúmen', { font: '24px Arial', fill: 'white' });
+		game.volumen = game.add.text(game.world.centerX + 150, 300, 'Volúmen', { font: '24px Arial', fill: 'white' });
 		// Creamos slider para manejar el volúmen del audio y le asignamos su manejador
-        game.sliderVolumen = new SlickUI.Element.Slider(game.world.centerX + 95, 250, 200);
+        game.sliderVolumen = new SlickUI.Element.Slider(game.world.centerX + 95, 280, 200);
 		game.slickUI.add(game.sliderVolumen);
 		game.sliderVolumen.onDrag.add(this.manejadorControlVolumen, this);
 		// Agregamos el botón volver y su manejador para controlar sus eventos
@@ -133,7 +133,6 @@ var optionsState = {
 		// Posicionamos por encima los botones y texto mostrado
 		game.world.bringToTop(game.titulo);
 		game.world.bringToTop(game.volumen);
-		game.world.bringToTop(game.sliderVolumen);
 		game.world.bringToTop(game.btnVolver);
 		game.world.bringToTop(game.btnSkin);
 	}

@@ -184,13 +184,13 @@ var level1State = {
 		game.puntos = 0;
 		game.puntosTexto = game.add.text(10, 10, 'Puntos: ' + game.puntos, { font: '34px Arial', fill: '#fff' });
 		game.vidas = game.add.group();
-		game.add.text(game.world.width - 115, 10, 'Vidas: ', { font: '34px Arial', fill: '#fff' });
+		game.vidasTexto = game.add.text(game.world.width - 115, 10, 'Vidas: ', { font: '34px Arial', fill: '#fff' });
 		// Mostramos las vidas del jugador
 		for (var i = 0; i < 3; i++) {
-			var naveImagen = game.vidas.create(game.world.width - 100 + (30 * i), 60, 'nave');
-			naveImagen.anchor.setTo(0.5, 0.5);
-			naveImagen.angle = 90;
-			naveImagen.alpha = 0.4;
+			var img = game.vidas.create(game.world.width - 100 + (30 * i), 60, 'nave');
+			img.anchor.setTo(0.5, 0.5);
+			img.angle = 90;
+			img.alpha = 0.4;
 		}
 		// Agregamos botón volver y silenciar junto con sus manejadores para controlar sus eventos
 		game.btnVolver = game.add.button(game.world.left + 10, game.world.bottom - 50, 'botonVolverPeq', this.manejadorClickBotonVolver, this, 0, 1, 0);
@@ -463,9 +463,9 @@ var level1State = {
 			game.estrellas[i].rotation += 0.1;
 		}
 		// Posicionamos por encima los botones y texto mostrados
-		/*game.world.bringToTop(game.titulo);
-		game.world.bringToTop(game.volumen);
+		game.world.bringToTop(game.puntosTexto);
+		game.world.bringToTop(game.vidasTexto);
 		game.world.bringToTop(game.btnVolver);
-		game.world.bringToTop(game.btnSkin);*/
+		game.world.bringToTop(game.btnSilenciar);
 	}
 }

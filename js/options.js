@@ -13,8 +13,8 @@ var optionsState = {
 	 * @method create
 	 */
     create: function() {	
-		// Cargamos fondo y mostramos mensajes por pantalla
-		game.fondo = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
+		// Cargamos skin y mostramos mensajes por pantalla
+		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
         game.titulo = game.add.text(80, 80, 'Opciones', { font: '54px Arial', fill: 'white' });
 		game.volumen = game.add.text(game.world.centerX + 150, 300, 'Volúmen', { font: '24px Arial', fill: 'white' });
 		// Creamos slider para manejar el volúmen del audio y le asignamos su manejador
@@ -61,7 +61,7 @@ var optionsState = {
 			game.skinSeleccionada = 1;
 		}
 		// Cargamos nueva skin por pantalla
-		game.fondo.loadTexture('skin' + game.skinSeleccionada);
+		game.skin.loadTexture('skin' + game.skinSeleccionada);
 	},
 
 	/**

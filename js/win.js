@@ -4,8 +4,9 @@ var winState = {
 	 * Método usado para cargar el mensaje de juego ganado
 	 * @method create
 	 */
-    create: function() {	
-		// Mostramos mensaje final agregando instrucciones para reiniciar el juego.
+    create: function() {
+		// Cargamos fondo y mostramos mensaje final agregando instrucciones para reiniciar el juego
+		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
         var titulo = game.add.text(80, 80, '¡Has Ganado!', { font: '54px Arial', fill: 'white' });
         var inicio = game.add.text(80, 250, 'Pulse "Volver" para regresar al menú', {font: '30px Arial', fill: 'white' });
 		// Agregamos el botón volver y su manejador

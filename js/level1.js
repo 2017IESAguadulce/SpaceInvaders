@@ -22,7 +22,7 @@ var level1State = {
 		// Si la nave esta viva
 		if (game.nave.alive) {
 			// Asignamos movimiento vertical de fondo y velocidad de nave
-			game.fondo.tilePosition.y += 2;
+			//game.fondo.tilePosition.y += 2;
 			game.nave.body.velocity.setTo(0, 0);
 			// Controlamos el movimiento de la nave
 			if (game.cursores.left.isDown) {
@@ -175,8 +175,9 @@ var level1State = {
 	 * @method cargarInterfaz
 	 */
 	cargarInterfaz: function() {
-		// Agregamos imagen de fondo a tablero
-		game.fondo = game.add.tileSprite(0, 0, 800, 600, 'fondo');
+		// Agregamos skin e imagen de fondo a tablero
+		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
+		//game.fondo = game.add.tileSprite(0, 0, 800, 600, 'fondo');
 		// Variables con textos y puntos mostrados por pantalla
 		game.puntos = 0;
 		game.puntosTexto = game.add.text(10, 10, 'Puntos: ' + game.puntos, { font: '34px Arial', fill: '#fff' });

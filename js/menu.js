@@ -6,7 +6,7 @@ var menuState = {
 	 */
 	create: function() {
 		// Cargamos fondo y mostramos título y demás mensajes agregando instrucciones para iniciar el juego
-		game.fondo = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
+		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
         game.titulo = game.add.text(80, 80, 'Space Invaders', { font: '54px Arial', fill: 'white' });
 		// Asignamos velocidad inicial de logo mostrado y cargamos animaciones
 		game.velocidadLogo = 0.1;

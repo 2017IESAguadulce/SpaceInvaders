@@ -4,8 +4,9 @@ var scoreState = {
 	 * Método usado para crear la interfaz de puntuaciones
 	 * @method create
 	 */
-    create: function() {	
-		// Mostramos mensaje por pantalla
+    create: function() {
+		// Cargamos fondo y mostramos mensaje por pantalla
+		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
         var titulo = game.add.text(80, 80, 'Puntuaciones', { font: '54px Arial', fill: 'white' });
 		// Agregamos el botón volver y su manejador
 		btnVolver = game.add.button(game.world.centerX + 100, 450, 'botonVolver', this.manejadorClickBotonVolver, this, 0, 1, 0);

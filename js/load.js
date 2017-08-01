@@ -13,9 +13,6 @@ var loadState = {
 		game.load.image('mejoraVida', 'assets/games/invaders/player.png');
 		game.load.image('mejoraArma', 'assets/sprites/pangball2.png');
 		game.load.image('mejoraVelocidad', 'assets/sprites/pangball3.png');
-		game.load.image('botonVolverPeq', 'assets/buttons/boton_return.png');
-		game.load.image('botonSilenciar', 'assets/buttons/boton_volumen-mute.png');
-		game.load.image('botonVolumen', 'assets/buttons/boton_volumen-sound.png');
 		game.load.image('skin1', 'assets/skins/skin1.jpg');
 		game.load.image('skin2', 'assets/skins/skin2.jpg');
 		game.load.image('skin3', 'assets/skins/skin3.jpg');
@@ -27,6 +24,9 @@ var loadState = {
 		game.load.spritesheet('botonPuntuaciones', 'assets/buttons/boton_puntuaciones.png', 193, 71);
 		game.load.spritesheet('botonVolver', 'assets/buttons/boton_volver.png', 193, 71);
 		game.load.spritesheet('botonSkin', 'assets/buttons/boton_skin.png', 193, 71);
+		game.load.spritesheet('botonVolverPeq', 'assets/buttons/boton_volver2.png', 34, 34);
+		game.load.spritesheet('botonSilenciar', 'assets/buttons/boton_volumen-mute.png', 34, 34);
+		game.load.spritesheet('botonVolumen', 'assets/buttons/boton_volumen-sound.png', 34, 34);
 		game.load.audio('botonHover', 'assets/audio/SoundEffects/squit.ogg');
 		game.load.audio('botonStart', 'assets/audio/SoundEffects/p-ping.mp3');
 		game.load.image('star', 'assets/sprites/star2.png');

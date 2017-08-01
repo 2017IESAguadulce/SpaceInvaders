@@ -12,7 +12,6 @@ var level1State = {
 		this.cargarAnimaciones();
 		this.cargarAudios();
 		this.cargarControles();
-		this.cargarEstrellas();
     },
 	
 	/**
@@ -194,10 +193,11 @@ var level1State = {
 			naveImagen.alpha = 0.4;
 		}
 		// Agregamos botón volver y silenciar junto con sus manejadores para controlar sus eventos
-		btnVolver = game.add.button(game.world.left + 10, game.world.bottom - 50, 'botonVolverPeq', this.manejadorClickBotonVolver);
-		btnVolver.onInputOver.add(this.manejadorOverBoton, this);
-		game.btnSilenciar = game.add.button(game.world.right - 50, game.world.bottom - 50, 'botonSilenciar', this.manejadorClickBotonSilenciar);
+		game.btnVolver = game.add.button(game.world.left + 10, game.world.bottom - 50, 'botonVolverPeq', this.manejadorClickBotonVolver, this, 0, 1, 0);
+		game.btnVolver.onInputOver.add(this.manejadorOverBoton, this);
+		game.btnSilenciar = game.add.button(game.world.right - 50, game.world.bottom - 50, 'botonSilenciar', this.manejadorClickBotonSilenciar, this, 0, 1, 0);
 		game.btnSilenciar.onInputOver.add(this.manejadorOverBoton, this);
+		this.cargarEstrellas();
 	},
 	
 	/**
@@ -463,9 +463,9 @@ var level1State = {
 			game.estrellas[i].rotation += 0.1;
 		}
 		// Posicionamos por encima los botones y texto mostrados
-		game.world.bringToTop(game.titulo);
+		/*game.world.bringToTop(game.titulo);
 		game.world.bringToTop(game.volumen);
 		game.world.bringToTop(game.btnVolver);
-		game.world.bringToTop(game.btnSkin);
+		game.world.bringToTop(game.btnSkin);*/
 	}
 }

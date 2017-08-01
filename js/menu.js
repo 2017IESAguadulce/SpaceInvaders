@@ -130,7 +130,7 @@ var menuState = {
 		if (!game.logoIntro) {
 			// Lo ampliamos cambiando su escalado
 			if (game.logo.scale.x < 400) {
-				game.velocidadLogo += 0.05;
+				game.velocidadLogo += 0.1;
 				game.logo.scale.x += game.velocidadLogo;
 				game.logo.scale.y += game.velocidadLogo;
 			} else {
@@ -138,7 +138,7 @@ var menuState = {
 				game.logoIntro = true;
 			}
 		}
-		// Posicionamos por encima los botones y texto mostrado
+		// Posicionamos por encima los botones y texto mostrados
 		game.world.bringToTop(game.titulo);
 		game.world.bringToTop(game.btnJugar);
 		game.world.bringToTop(game.btnOpciones);

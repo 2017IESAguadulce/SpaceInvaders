@@ -28,7 +28,7 @@ var optionsState = {
 		game.btnSkin = game.add.button(game.world.centerX + 100, 350, 'botonSkin', this.manejadorClickBotonSkin, this, 0, 1, 0);
 		game.btnSkin.onInputOver.add(this.manejadorOverBoton, this);
 		// Iniciamos la carga de las estrellas en pantalla
-		this.cargarIntro();
+		this.cargarEstrellas();
     },
 	
 	/**
@@ -37,7 +37,7 @@ var optionsState = {
 	 */
     update: function() {
 		// Actualizamos estrellas mostradas en interfaz
-		this.actualizarIntro();
+		this.actualizarEstrellas();
 	},
 	
 	/**
@@ -85,9 +85,9 @@ var optionsState = {
 	
 	/**
 	 * Función usada para cargar un halo de estrellas creando así una sensación de velocidad
-	 * @method cargarIntro
+	 * @method cargarEstrellas
 	 */
-	cargarIntro: function() {
+	cargarEstrellas: function() {
 		// Variables vector que contienen las estrellas y sus coordenadas
 		game.estrellas = [];
 		game.estrellasX = [];
@@ -113,9 +113,9 @@ var optionsState = {
 	
 	/**
 	 * Función usada para actualizar el halo de estrellas mostrado durante el juego
-	 * @method actualizarIntro
+	 * @method actualizarEstrellas
 	 */
-	actualizarIntro: function() {
+	actualizarEstrellas: function() {
 		// Recorremos vector de estrellas
 		for (var i = 0; i < game.maxEstrellas; i++) {
 			// Y las trasladamos para dar sensación de movimiento
@@ -130,7 +130,7 @@ var optionsState = {
 			game.estrellas[i].scale.set(game.estrellas[i].perspective / 2);
 			game.estrellas[i].rotation += 0.1;
 		}
-		// Posicionamos por encima los botones y texto mostrado
+		// Posicionamos por encima los botones y texto mostrados
 		game.world.bringToTop(game.titulo);
 		game.world.bringToTop(game.volumen);
 		game.world.bringToTop(game.btnVolver);

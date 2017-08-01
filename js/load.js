@@ -16,12 +16,17 @@ var loadState = {
 		game.load.image('botonVolverPeq', 'assets/buttons/boton_return.png');
 		game.load.image('botonSilenciar', 'assets/buttons/boton_volumen-mute.png');
 		game.load.image('botonVolumen', 'assets/buttons/boton_volumen-sound.png');
+		game.load.image('skin1', 'assets/skins/skin1.jpg');
+		game.load.image('skin2', 'assets/skins/skin2.jpg');
+		game.load.image('skin3', 'assets/skins/skin3.jpg');
+		game.load.image('skin4', 'assets/skins/skin4.jpg');
 		game.load.spritesheet('alien', 'assets/games/invaders/invader32x32x4.png', 32, 32);
 		game.load.spritesheet('boom', 'assets/games/invaders/explode.png', 128, 128);
 		game.load.spritesheet('botonJugar', 'assets/buttons/boton_jugar.png', 193, 71);
 		game.load.spritesheet('botonOpciones', 'assets/buttons/boton_opciones.png', 193, 71);
 		game.load.spritesheet('botonPuntuaciones', 'assets/buttons/boton_puntuaciones.png', 193, 71);
 		game.load.spritesheet('botonVolver', 'assets/buttons/boton_volver.png', 193, 71);
+		game.load.spritesheet('botonSkin', 'assets/buttons/boton_skin.png', 193, 71);
 		game.load.audio('botonHover', 'assets/audio/SoundEffects/squit.ogg');
 		game.load.audio('botonStart', 'assets/audio/SoundEffects/p-ping.mp3');
 		game.load.image('star', 'assets/sprites/star2.png');
@@ -48,6 +53,9 @@ var loadState = {
 	 * @method create
 	 */
 	create: function() {
+		// Creamos referencias a variables de skins de pantalla
+		game.skinsTotal = 4;
+		game.skinSeleccionada = 1;
 		// Activamos el hilo musical y llamamos al estado menu
 		this.cargarHiloMusical();
 		game.state.start('menu');

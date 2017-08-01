@@ -22,7 +22,7 @@ var level1State = {
 		// Si la nave esta viva
 		if (game.nave.alive) {
 			// Asignamos movimiento vertical de fondo y velocidad de nave
-			game.fondo.tilePosition.y += 2;
+			//game.fondo.tilePosition.y += 2;
 			game.nave.body.velocity.setTo(0, 0);
 			// Controlamos el movimiento de la nave
 			if (game.cursores.left.isDown) {
@@ -37,7 +37,9 @@ var level1State = {
 			if (game.time.now > game.alienDisparoHora) {
 				this.disparoEnemigo();
 			}
+			// Giramos nave y actualizamos estrellas mostradas en interfaz
 			this.girarNave();
+			this.actualizarEstrellas();
 			// Controlamos colisiones de objetos en sus diferentes métodos
 			game.physics.arcade.overlap(game.nave, game.ayudas, this.manejadorColisionNaveAyuda, null, this);
 			game.physics.arcade.overlap(game.balas, game.aliens, this.manejadorDisparoNave, null, this);
@@ -74,8 +76,8 @@ var level1State = {
 			game.tweens.remove(game.movimientoAlienX);
 			game.time.events.remove(game.movimientoAlienY);
 			game.balasAlien.callAll('kill', this);
-			// Llamamos a la función win para lanzar su estado
-			this.win();
+			// Lanzamos el estado win
+			game.state.start('win');
 		}
 	},
 
@@ -105,8 +107,8 @@ var level1State = {
 			game.balasAlien.callAll('kill');
 			game.tweens.remove(game.movimientoAlienX);
 			game.time.events.remove(game.movimientoAlienY);
-			// Llamamos a la función lose para lanzar su estado
-			this.lose();
+			// Lanzamos el estado lose
+			game.state.start('lose');
 		}
 	},
 
@@ -175,25 +177,27 @@ var level1State = {
 	 * @method cargarInterfaz
 	 */
 	cargarInterfaz: function() {
-		// Agregamos imagen de fondo a tablero
-		game.fondo = game.add.tileSprite(0, 0, 800, 600, 'fondo');
+		// Agregamos skin e imagen de fondo a tablero
+		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
+		//game.fondo = game.add.tileSprite(0, 0, 800, 600, 'fondo');
 		// Variables con textos y puntos mostrados por pantalla
 		game.puntos = 0;
 		game.puntosTexto = game.add.text(10, 10, 'Puntos: ' + game.puntos, { font: '34px Arial', fill: '#fff' });
 		game.vidas = game.add.group();
-		game.add.text(game.world.width - 115, 10, 'Vidas: ', { font: '34px Arial', fill: '#fff' });
+		game.vidasTexto = game.add.text(game.world.width - 115, 10, 'Vidas: ', { font: '34px Arial', fill: '#fff' });
 		// Mostramos las vidas del jugador
 		for (var i = 0; i < 3; i++) {
-			var naveImagen = game.vidas.create(game.world.width - 100 + (30 * i), 60, 'nave');
-			naveImagen.anchor.setTo(0.5, 0.5);
-			naveImagen.angle = 90;
-			naveImagen.alpha = 0.4;
+			var img = game.vidas.create(game.world.width - 100 + (30 * i), 60, 'nave');
+			img.anchor.setTo(0.5, 0.5);
+			img.angle = 90;
+			img.alpha = 0.4;
 		}
 		// Agregamos botón volver y silenciar junto con sus manejadores para controlar sus eventos
-		btnVolver = game.add.button(game.world.left + 10, game.world.bottom - 50, 'botonVolverPeq', this.manejadorClickBotonVolver);
-		btnVolver.onInputOver.add(this.manejadorOverBoton, this);
-		game.btnSilenciar = game.add.button(game.world.right - 50, game.world.bottom - 50, 'botonSilenciar', this.manejadorClickBotonSilenciar);
+		game.btnVolver = game.add.button(game.world.left + 10, game.world.bottom - 50, 'botonVolverPeq', this.manejadorClickBotonVolver, this, 0, 1, 0);
+		game.btnVolver.onInputOver.add(this.manejadorOverBoton, this);
+		game.btnSilenciar = game.add.button(game.world.right - 50, game.world.bottom - 50, 'botonSilenciar', this.manejadorClickBotonSilenciar, this, 0, 1, 0);
 		game.btnSilenciar.onInputOver.add(this.manejadorOverBoton, this);
+		this.cargarEstrellas();
 	},
 	
 	/**
@@ -412,20 +416,56 @@ var level1State = {
 	},
 	
 	/**
-	 * Método usado para cargar el estado win
-	 * @method Win
+	 * Función usada para cargar un halo de estrellas creando así una sensación de velocidad
+	 * @method cargarEstrellas
 	 */
-	win: function() {
-		// Lanzamos el estado win
-		game.state.start('win');
+	cargarEstrellas: function() {
+		// Variables vector que contienen las estrellas y sus coordenadas
+		game.estrellas = [];
+		game.estrellasX = [];
+		game.estrellasY = [];
+		game.estrellasZ = [];
+		// Variables usadas para almacenar parámetros de las estrellas 
+		game.distanciaEstrellas = 300;
+		game.velocidadEstrellas = 1;
+		game.maxEstrellas = 1000;
+		var sprites = game.add.spriteBatch();
+		for (var i = 0; i < game.maxEstrellas; i++) {
+			// Cargamos las coordenadas de las estrellas aleatoriamente
+			game.estrellasX[i] = Math.floor(Math.random() * 800) - 400;
+			game.estrellasY[i] = Math.floor(Math.random() * 600) - 300;
+			game.estrellasZ[i] = Math.floor(Math.random() * 1700) - 100;
+			var star = game.make.sprite(0, 0, 'star');
+			star.anchor.set(0.5);
+			sprites.addChild(star);
+			// Y las añadimos al vector principal
+			game.estrellas.push(star);
+		}
 	},
 	
 	/**
-	 * Método usado para cargar el estado lose
-	 * @method lose
+	 * Función usada para actualizar el halo de estrellas mostrado durante el juego
+	 * @method actualizarEstrellas
 	 */
-	lose: function() {
-		// Lanzamos el estado lose
-		game.state.start('lose');
+	actualizarEstrellas: function() {
+		// Recorremos vector de estrellas
+		for (var i = 0; i < game.maxEstrellas; i++) {
+			// Y las trasladamos para dar sensación de movimiento
+			game.estrellas[i].perspective = game.distanciaEstrellas / (game.distanciaEstrellas - game.estrellasZ[i]);
+			game.estrellas[i].x = game.world.centerX + game.estrellasX[i] * game.estrellas[i].perspective;
+			game.estrellas[i].y = game.world.centerY + game.estrellasY[i] * game.estrellas[i].perspective;
+			game.estrellasZ[i] += game.velocidadEstrellas;
+			if (game.estrellasZ[i] > 290) {
+				game.estrellasZ[i] -= 600;
+			}
+			game.estrellas[i].alpha = Math.min(game.estrellas[i].perspective / 2, 1);
+			game.estrellas[i].scale.set(game.estrellas[i].perspective / 2);
+			game.estrellas[i].rotation += 0.1;
+		}
+		// Posicionamos por encima los botones y texto mostrados
+		game.world.bringToTop(game.puntosTexto);
+		game.world.bringToTop(game.vidasTexto);
+		game.world.bringToTop(game.btnVolver);
+		game.world.bringToTop(game.btnSilenciar);
 	}
 }

@@ -5,7 +5,8 @@ var menuState = {
 	 * @method create
 	 */
 	create: function() {
-		// Mostramos el título y demás mensajes agregando instrucciones para iniciar el juego.
+		// Cargamos fondo y mostramos título y demás mensajes agregando instrucciones para iniciar el juego
+		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
         game.titulo = game.add.text(80, 80, 'Space Invaders', { font: '54px Arial', fill: 'white' });
 		// Asignamos velocidad inicial de logo mostrado y cargamos animaciones
 		game.velocidadLogo = 0.1;
@@ -128,8 +129,8 @@ var menuState = {
 		// Si no hemos cargado previamente el logo
 		if (!game.logoIntro) {
 			// Lo ampliamos cambiando su escalado
-			if (game.logo.scale.x < 500) {
-				game.velocidadLogo += 0.01;
+			if (game.logo.scale.x < 400) {
+				game.velocidadLogo += 0.1;
 				game.logo.scale.x += game.velocidadLogo;
 				game.logo.scale.y += game.velocidadLogo;
 			} else {
@@ -137,7 +138,7 @@ var menuState = {
 				game.logoIntro = true;
 			}
 		}
-		// Posicionamos por encima los botones y texto mostrado
+		// Posicionamos por encima los botones y texto mostrados
 		game.world.bringToTop(game.titulo);
 		game.world.bringToTop(game.btnJugar);
 		game.world.bringToTop(game.btnOpciones);

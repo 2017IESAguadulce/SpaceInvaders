@@ -13,11 +13,12 @@ var bootState = {
 		this.scale.refresh();
 		// Iniciamos el sistema de físicas del motor
 		game.physics.startSystem(Phaser.Physics.ARCADE);
-		// Creamos booleano para controlar si hemos visto el logo inicial
-		game.logoIntro = false;
 		// Cargamos librería usada para controlar elementos de la interfaz
 		game.slickUI = game.plugins.add(Phaser.Plugin.SlickUI);
-		// Llamamos al estado load
+		// Creamos booleano para controlar si hemos visto el logo inicial
+		game.logoIntro = false;
+		// Comprobamos si estamos sobre un entorno de escritorio y llamamos al estado load
+		game.escritorio = this.game.device.desktop;
 		game.state.start('load');
 	}
 };

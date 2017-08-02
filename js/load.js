@@ -35,6 +35,9 @@ var loadState = {
 		game.load.audio('disparo', 'assets/audio/SoundEffects/blaster.mp3');
 		game.load.audio('explosion', 'assets/audio/SoundEffects/alien_death1.wav');
 		game.load.audio('hiloMusical', 'assets/audio/SpaceArp1Kit.mp3');
+		if (!game.escritorio) {
+			game.load.spritesheet('gamepad', 'assets/buttons/gamepad_spritesheet.png', 100, 100);
+		}
 	},
 	
 	/**

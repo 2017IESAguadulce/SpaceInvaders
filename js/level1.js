@@ -26,7 +26,7 @@ var level1State = {
 			if (!game.escritorio) {
 				// Y si pulsamos el joystick
 				if (game.joystick.properties.inUse) {
-					// Controlamos el movimiento de la nave
+					// Controlamos el movimiento de la nave a partir del movimiento del pad
 					if (game.joystick.properties.x < 0) {
 						game.nave.body.velocity.x = -game.naveVelocidad;
 					} else {
@@ -38,7 +38,7 @@ var level1State = {
 					this.dispararBala();
 				}
 			} else {
-				// Controlamos el movimiento de la nave
+				// Controlamos movimiento de nave si estamos en entorno de escritorio
 				if (game.cursores.left.isDown) {
 					game.nave.body.velocity.x = -game.naveVelocidad;
 				} else if (game.cursores.right.isDown) {
@@ -49,7 +49,7 @@ var level1State = {
 					this.dispararBala();
 				}
 			}
-	
+			// Controlamos evento de disparo de enemigos
 			if (game.time.now > game.alienDisparoHora) {
 				this.disparoEnemigo();
 			}

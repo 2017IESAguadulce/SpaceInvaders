@@ -21,19 +21,35 @@ var level1State = {
     update: function() {
 		// Si la nave esta viva
 		if (game.nave.alive) {
-			// Asignamos movimiento vertical de fondo y velocidad de nave
-			//game.fondo.tilePosition.y += 2;
 			game.nave.body.velocity.setTo(0, 0);
-			// Controlamos el movimiento de la nave
-			if (game.cursores.left.isDown) {
-				game.nave.body.velocity.x = -game.naveVelocidad;
-			} else if (game.cursores.right.isDown) {
-				game.nave.body.velocity.x = game.naveVelocidad;
+			// Si estamos en el móvil
+			if (!game.escritorio) {
+				// Y si pulsamos el joystick
+				if (game.joystick.properties.inUse) {
+					// Controlamos el movimiento de la nave a partir del movimiento del pad
+					if (game.joystick.properties.x < 0) {
+						game.nave.body.velocity.x = -game.naveVelocidad;
+					} else {
+						game.nave.body.velocity.x = game.naveVelocidad;
+					}
+				}
+				// Controlamos evento de disparo
+				if (game.botonA.isDown) {
+					this.dispararBala();
+				}
+			} else {
+				// Controlamos movimiento de nave si estamos en entorno de escritorio
+				if (game.cursores.left.isDown) {
+					game.nave.body.velocity.x = -game.naveVelocidad;
+				} else if (game.cursores.right.isDown) {
+					game.nave.body.velocity.x = game.naveVelocidad;
+				}
+				// Controlamos evento de disparo
+				if (game.botonDisparo.isDown) {
+					this.dispararBala();
+				}
 			}
-			// Controlamos eventos de juego
-			if (game.botonDisparo.isDown) {
-				this.dispararBala();
-			}
+			// Controlamos evento de disparo de enemigos
 			if (game.time.now > game.alienDisparoHora) {
 				this.disparoEnemigo();
 			}
@@ -166,10 +182,10 @@ var level1State = {
 	 * @method manejadorClickBotonSilenciar
 	 */
 	manejadorClickBotonSilenciar: function() {
-		game.sfxStart.play();
 		// Activamos o desactivamos el audio en nuestro juego y cambiamos la imagen mostrada
 		game.sound.mute = !game.sound.mute;
 		game.btnSilenciar.loadTexture((game.sound.mute) ? 'botonVolumen' : 'botonSilenciar');
+		game.sfxStart.play();
 	},
 	
 	/**
@@ -177,9 +193,8 @@ var level1State = {
 	 * @method cargarInterfaz
 	 */
 	cargarInterfaz: function() {
-		// Agregamos skin e imagen de fondo a tablero
+		// Agregamos skin de fondo a tablero
 		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
-		//game.fondo = game.add.tileSprite(0, 0, 800, 600, 'fondo');
 		// Variables con textos y puntos mostrados por pantalla
 		game.puntos = 0;
 		game.puntosTexto = game.add.text(10, 10, 'Puntos: ' + game.puntos, { font: '34px Arial', fill: '#fff' });
@@ -298,8 +313,15 @@ var level1State = {
 		// Preparamos los cursores y controles de juego
 		game.cursores = game.input.keyboard.createCursorKeys();
 		game.botonDisparo = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-	},
-
+		// Si ejecutamos la aplicación desde el móvil
+		if (!game.escritorio) {
+			// Agregamos un pad virtual con su joystick y botón
+			game.gamepad = game.plugins.add(Phaser.Plugin.VirtualGamepad);
+			game.joystick = game.gamepad.addJoystick(150, 500, 1.2, 'gamepad');
+			game.botonA = game.gamepad.addButton(650, 500, 1.0, 'gamepad');
+		}
+	},	
+	
 	/**
 	 * Función usada para configurar objetos agregándoles una animación
 	 * @method configurarExplosion

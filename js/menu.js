@@ -127,16 +127,18 @@ var menuState = {
 			game.estrellas[i].rotation += 0.1;
 		}
 		// Si no hemos cargado previamente el logo
-		if (!game.logoIntro) {
-			// Lo ampliamos cambiando su escalado
-			if (game.logo.scale.x < 400) {
-				game.velocidadLogo += 0.1;
-				game.logo.scale.x += game.velocidadLogo;
-				game.logo.scale.y += game.velocidadLogo;
-			} else {
-				// Desactivamos la visualización del logo tras mostrarlo por primera vez
-				game.logoIntro = true;
-			}
+		if (game.logo.width < game.world.centerX*2) { //Logo se amplia hasta ocupar pantalla
+			game.velocidadLogo += 0.005;
+			game.logo.scale.x += game.velocidadLogo;
+			game.logo.scale.y += game.velocidadLogo;
+			game.logo.y -= 4;//Logo sube para colocarse encima de los botones
+			tiempo = this.game.time.totalElapsedSeconds();
+		}
+		if (this.game.time.totalElapsedSeconds() > tiempo+2 && game.logo.width < game.world.centerX*300){// Despues de 2 segundo quieto acelera y sale de la pantalla 
+			game.velocidadLogo += 1;
+			game.logo.scale.x += game.velocidadLogo;
+			game.logo.scale.y += game.velocidadLogo;
+			game.logo.y += 10;
 		}
 		// Posicionamos por encima los botones y texto mostrados
 		game.world.bringToTop(game.titulo);

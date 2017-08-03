@@ -363,7 +363,7 @@ var level1State = {
 			var seleccion = game.alienVivos[aleatorio];
 			// Y lanzamos la bala desde su posici¨®n hacia nuestra nave
 			balaAlien.reset(seleccion.body.x, seleccion.body.y);
-			game.physics.arcade.moveToObject(balaAlien, game.nave, 120);
+			game.physics.arcade.moveToObject(balaAlien, game.nave, 200);
 			game.alienDisparoHora = game.time.now + 2000;
 			game.sfxDisparo.play();
 		}

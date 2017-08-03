@@ -95,8 +95,8 @@ var level1State = {
 			game.tweens.remove(game.movimientoAlienX);
 			game.time.events.remove(game.movimientoAlienY);
 			game.balasAlien.callAll('kill', this);
-			// Lanzamos el estado win
-			game.state.start('win');
+			// Lanzamos el estado levelUp
+			game.state.start('levelUp');
 		}
 	},
 

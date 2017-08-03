@@ -11,6 +11,7 @@ game.state.add('menu', menuState);
 game.state.add('options', optionsState);
 game.state.add('score', scoreState);
 game.state.add('level1', level1State);
+game.state.add('levelUp', levelUp);
 game.state.add('win', winState);
 game.state.add('lose', loseState);
 

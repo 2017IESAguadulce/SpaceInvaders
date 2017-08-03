@@ -4,7 +4,7 @@
 //MAs comentarios
 var level1State = {
 	/**
-	 * M茅todo usado para cargar el juego
+	 * Método usado para cargar el juego
 	 * @method create
 	 */
     create: function() {				
@@ -18,14 +18,14 @@ var level1State = {
     },
 	
 	/**
-	 * M茅todo ejecutado cada frame para actualizar la l贸gica del juego
+	 * Método ejecutado cada frame para actualizar la lógica del juego
 	 * @method update
 	 */
     update: function() {
 		// Si la nave esta viva
 		if (game.nave.alive) {
 			game.nave.body.velocity.setTo(0, 0);
-			// Si estamos en el m贸vil
+			// Si estamos en el móvil
 			if (!game.escritorio) {
 				// Y si pulsamos el joystick
 				if (game.joystick.properties.inUse) {
@@ -59,7 +59,7 @@ var level1State = {
 			// Giramos nave y actualizamos estrellas mostradas en interfaz
 			this.girarNave();
 			this.actualizarEstrellas();
-			// Controlamos colisiones de objetos en sus diferentes m茅todos
+			// Controlamos colisiones de objetos en sus diferentes métodos
 			game.physics.arcade.overlap(game.nave, game.ayudas, this.manejadorColisionNaveAyuda, null, this);
 			game.physics.arcade.overlap(game.balas, game.aliens, this.manejadorDisparoNave, null, this);
 			game.physics.arcade.overlap(game.balasAlien, game.nave, this.manejadorDisparoEnemigo, null, this);
@@ -67,7 +67,7 @@ var level1State = {
 	},
 	
 	/**
-	 * Funci贸n usada para gestionar las colisiones producidas entre nuestras balas y los aliens
+	 * Función usada para gestionar las colisiones producidas entre nuestras balas y los aliens
 	 * @method manejadorDisparoNave
 	 * @param {} bala
 	 * @param {} alien
@@ -82,7 +82,7 @@ var level1State = {
 		game.puntos += 20;
 		game.puntosTexto.text = 'Puntos: ' + game.puntos;
 		game.sfxExplosion.play();
-		// Lanzamos animaci贸n de explosi贸n para ese alien concreto
+		// Lanzamos animación de explosión para ese alien concreto
 		var explosion = game.explosiones.getFirstExists(false);
 		explosion.reset(alien.body.x, alien.body.y);
 		explosion.play('boom', 30, false, true);
@@ -101,7 +101,7 @@ var level1State = {
 	},
 
 	/**
-	 * Funci贸n usada para gestionar las colisiones producidas entre las balas enemigas y nuestra nave
+	 * Función usada para gestionar las colisiones producidas entre las balas enemigas y nuestra nave
 	 * @method manejadorDisparoEnemigo
 	 * @param {} nave
 	 * @param {} bala
@@ -115,13 +115,13 @@ var level1State = {
 			// Si tenemos vidas quitamos una
 			vida.kill();
 		}
-		// Mostramos la animaci贸n de explosi贸n en las coordenadas de nuestra nave
+		// Mostramos la animación de explosión en las coordenadas de nuestra nave
 		var explosion = game.explosiones.getFirstExists(false);
 		explosion.reset(nave.body.x, nave.body.y);
 		explosion.play('boom', 20, false, true);
 		// Si no nos quedan vidas
 		if (game.vidas.countLiving() < 1) {
-			// Eliminamos la nave y removemos dem谩s elementos de juego
+			// Eliminamos la nave y removemos demás elementos de juego
 			nave.kill();
 			game.balasAlien.callAll('kill');
 			game.tweens.remove(game.movimientoAlienX);
@@ -132,7 +132,7 @@ var level1State = {
 	},
 
 	/**
-	 * Funci贸n usada para gestionar las colisiones producidas entre nuestra nave y las ayudas
+	 * Función usada para gestionar las colisiones producidas entre nuestra nave y las ayudas
 	 * @method manejadorColisionNaveAyuda
 	 * @param {} nave
 	 * @param {} ayuda
@@ -157,13 +157,13 @@ var level1State = {
 			game.naveBalasRatio /= 1.5;
 		// Si la ayuda es una mejora de velocidad
 		} else if (ayuda.name == "mejoraVelocidad") {
-			// Aumentamos la velocidad de la nave para que sea m谩s r谩pida
+			// Aumentamos la velocidad de la nave para que sea más rápida
 			game.naveVelocidad *= 1.5;
 		}
 	},
 
 	/**
-	 * Funci贸n usada controlar el evento hover en todos los botones a nivel general
+	 * Función usada controlar el evento hover en todos los botones a nivel general
 	 * @method manejadorOverBoton
 	 */
 	manejadorOverBoton: function() {
@@ -171,7 +171,7 @@ var level1State = {
 	},
 
 	/**
-	 * Funci贸n usada controlar el evento click en el bot贸n volver
+	 * Función usada controlar el evento click en el botón volver
 	 * @method manejadorClickBotonVolver
 	 */
 	manejadorClickBotonVolver: function() {
@@ -181,7 +181,7 @@ var level1State = {
 	},
 	
 	/**
-	 * Funci贸n usada controlar el evento click en el bot贸n silenciar
+	 * Función usada controlar el evento click en el botón silenciar
 	 * @method manejadorClickBotonSilenciar
 	 */
 	manejadorClickBotonSilenciar: function() {
@@ -192,7 +192,7 @@ var level1State = {
 	},
 	
 	/**
-	 * Funci贸n usada para crear e inicializar las variables de la interfaz de juego
+	 * Función usada para crear e inicializar las variables de la interfaz de juego
 	 * @method cargarInterfaz
 	 */
 	cargarInterfaz: function() {
@@ -210,7 +210,7 @@ var level1State = {
 			img.angle = 90;
 			img.alpha = 0.4;
 		}
-		// Agregamos bot贸n volver y silenciar junto con sus manejadores para controlar sus eventos
+		// Agregamos botón volver y silenciar junto con sus manejadores para controlar sus eventos
 		game.btnVolver = game.add.button(game.world.left + 10, game.world.bottom - 50, 'botonVolverPeq', this.manejadorClickBotonVolver, this, 0, 1, 0);
 		game.btnVolver.onInputOver.add(this.manejadorOverBoton, this);
 		game.btnSilenciar = game.add.button(game.world.right - 50, game.world.bottom - 50, 'botonSilenciar', this.manejadorClickBotonSilenciar, this, 0, 1, 0);
@@ -219,7 +219,7 @@ var level1State = {
 	},
 	
 	/**
-	 * Funci贸n usada para crear e inicializar las variables de nuestra nave
+	 * Función usada para crear e inicializar las variables de nuestra nave
 	 * @method cargarNave
 	 */
 	cargarNave: function() {
@@ -248,7 +248,7 @@ var level1State = {
 	},
 	
 	/**
-	 * Funci贸n usada para crear, inicializar y posicionar los enemigos en pantalla agreg谩ndoles movimiento
+	 * Función usada para crear, inicializar y posicionar los enemigos en pantalla agregándoles movimiento
 	 * @method cargarAliens
 	 */
 	cargarAliens: function() {
@@ -287,7 +287,7 @@ var level1State = {
 	},
 	
 	/**
-	 * Funci贸n usada para crear y cargar las animaciones usadas en el juego
+	 * Función usada para crear y cargar las animaciones usadas en el juego
 	 * @method cargarAnimaciones
 	 */
 	cargarAnimaciones: function() {
@@ -298,7 +298,7 @@ var level1State = {
 	},
 	
 	/**
-	 * Funci贸n usada para crear e cargar los audios usados en el juego
+	 * Función usada para crear e cargar los audios usados en el juego
 	 * @method cargarAudios
 	 */
 	cargarAudios: function() {
@@ -309,16 +309,16 @@ var level1State = {
 	},
 	
 	/**
-	 * Funci贸n usada para crear y cargar los controles de juego 
+	 * Función usada para crear y cargar los controles de juego 
 	 * @method cargarControles
 	 */
 	cargarControles: function() {
 		// Preparamos los cursores y controles de juego
 		game.cursores = game.input.keyboard.createCursorKeys();
 		game.botonDisparo = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-		// Si ejecutamos la aplicaci贸n desde el m贸vil
+		// Si ejecutamos la aplicación desde el móvil
 		if (!game.escritorio) {
-			// Agregamos un pad virtual con su joystick y bot贸n
+			// Agregamos un pad virtual con su joystick y botón
 			game.gamepad = game.plugins.add(Phaser.Plugin.VirtualGamepad);
 			game.joystick = game.gamepad.addJoystick(150, 500, 1.2, 'gamepad');
 			game.botonA = game.gamepad.addButton(650, 500, 1.0, 'gamepad');
@@ -326,7 +326,7 @@ var level1State = {
 	},	
 	
 	/**
-	 * Funci贸n usada para configurar objetos agreg谩ndoles una animaci贸n
+	 * Función usada para configurar objetos agregándoles una animación
 	 * @method configurarExplosion
 	 * @param {} objeto
 	 */
@@ -337,7 +337,7 @@ var level1State = {
 	},
 
 	/**
-	 * Funci贸n usada para controlar el descenso de los enemigos de tipo alien
+	 * Función usada para controlar el descenso de los enemigos de tipo alien
 	 * @method descender
 	 */
 	descender: function() {
@@ -345,7 +345,7 @@ var level1State = {
 	},
 
 	/**
-	 * Funci贸n usada para gestionar los disparos de los enemigos de tipo alien
+	 * Función usada para gestionar los disparos de los enemigos de tipo alien
 	 * @method disparoEnemigo
 	 */
 	disparoEnemigo: function() {
@@ -361,7 +361,7 @@ var level1State = {
 			// Seleccionamos aleatoriamente un alien entre los que quedan vivos
 			var aleatorio = game.rnd.integerInRange(0, game.alienVivos.length-1);
 			var seleccion = game.alienVivos[aleatorio];
-			// Y lanzamos la bala desde su posici贸n hacia nuestra nave
+			// Y lanzamos la bala desde su posición hacia nuestra nave
 			balaAlien.reset(seleccion.body.x, seleccion.body.y);
 			game.physics.arcade.moveToObject(balaAlien, game.nave, 120);
 			game.alienDisparoHora = game.time.now + 2000;
@@ -370,7 +370,7 @@ var level1State = {
 	},
 
 	/**
-	 * Funci贸n usada para controlar la aleatoriedad a la hora de lanzar los paquetes de ayuda
+	 * Función usada para controlar la aleatoriedad a la hora de lanzar los paquetes de ayuda
 	 * @method lanzarAyuda
 	 * @param {} alien
 	 */
@@ -393,24 +393,24 @@ var level1State = {
 	},
 
 	/**
-	 * Funci贸n usada para cargar la ayuda en pantalla a partir de su nombre y localizaci贸n
+	 * Función usada para cargar la ayuda en pantalla a partir de su nombre y localización
 	 * @method cargarPowerUp
 	 * @param {} tipoMejora
 	 * @param {} locX
 	 * @param {} locY
 	 */
 	cargarPowerUp: function(tipoMejora, locX, locY) {
-		// Creamos una mejora del tipo especificado desde la localizaci贸n concretada
+		// Creamos una mejora del tipo especificado desde la localización concretada
 		var objeto = game.ayudas.create(locX, locY, tipoMejora);
 		objeto.name = tipoMejora;
 		objeto.body.collideWorldBounds = false;
-		// Y la hacemos semitransparente adem谩s de a帽adirle gravedad
+		// Y la hacemos semitransparente además de a帽adirle gravedad
 		objeto.alpha = 0.4;
 		game.physics.arcade.gravity.y = 50;
 	},
 
 	/**
-	 * Funci贸n usada para disparar balas desde nuestra nave
+	 * Función usada para disparar balas desde nuestra nave
 	 * @method dispararBala
 	 */
 	dispararBala: function() {
@@ -420,7 +420,7 @@ var level1State = {
 			var bala = game.balas.getFirstExists(false);
 			if (bala) {
 				game.sfxDisparo.play();
-				// Y la lanzamos desde la ubicaci贸n de la nave
+				// Y la lanzamos desde la ubicación de la nave
 				bala.reset(game.nave.x, game.nave.y + 8);
 				bala.body.velocity.y = -400;
 				game.naveDisparoHora = game.time.now + game.naveBalasRatio;
@@ -429,7 +429,7 @@ var level1State = {
 	},
 
 	/**
-	 * Funci贸n usada para girar la nave y dar la sensaci贸n de movilidad
+	 * Función usada para girar la nave y dar la sensación de movilidad
 	 * @method girarNave
 	 */
 	girarNave: function() {
@@ -441,7 +441,7 @@ var level1State = {
 	},
 	
 	/**
-	 * Funci贸n usada para cargar un halo de estrellas creando as铆 una sensaci贸n de velocidad
+	 * Función usada para cargar un halo de estrellas creando as铆 una sensación de velocidad
 	 * @method cargarEstrellas
 	 */
 	cargarEstrellas: function() {
@@ -450,7 +450,7 @@ var level1State = {
 		game.estrellasX = [];
 		game.estrellasY = [];
 		game.estrellasZ = [];
-		// Variables usadas para almacenar par谩metros de las estrellas 
+		// Variables usadas para almacenar parámetros de las estrellas 
 		game.distanciaEstrellas = 300;
 		game.velocidadEstrellas = 1;
 		game.maxEstrellas = 1000;
@@ -469,13 +469,13 @@ var level1State = {
 	},
 	
 	/**
-	 * Funci贸n usada para actualizar el halo de estrellas mostrado durante el juego
+	 * Función usada para actualizar el halo de estrellas mostrado durante el juego
 	 * @method actualizarEstrellas
 	 */
 	actualizarEstrellas: function() {
 		// Recorremos vector de estrellas
 		for (var i = 0; i < game.maxEstrellas; i++) {
-			// Y las trasladamos para dar sensaci贸n de movimiento
+			// Y las trasladamos para dar sensación de movimiento
 			game.estrellas[i].perspective = game.distanciaEstrellas / (game.distanciaEstrellas - game.estrellasZ[i]);
 			game.estrellas[i].x = game.world.centerX + game.estrellasX[i] * game.estrellas[i].perspective;
 			game.estrellas[i].y = game.world.centerY + game.estrellasY[i] * game.estrellas[i].perspective;

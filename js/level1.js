@@ -1,5 +1,6 @@
 // Variable estado usada para cargar el nivel 1 del juego
 //Pequeño comentario: Juan Antonio
+//Otro Comentario
 var level1State = {
 	/**
 	 * MÃ©todo usado para cargar el juego

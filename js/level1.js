@@ -1,10 +1,10 @@
 // Variable estado usada para cargar el nivel 1 del juego
-//Peque�o comentario: Juan Antonio
+//Pequeno comentario: Juan Antonio
 //Otro Comentario
 //MAs comentarios
 var level1State = {
 	/**
-	 * Método usado para cargar el juego
+	 * Metodo usado para cargar el juego
 	 * @method create
 	 */
     create: function() {				
@@ -18,14 +18,14 @@ var level1State = {
     },
 	
 	/**
-	 * Método ejecutado cada frame para actualizar la lógica del juego
+	 * Metodo ejecutado cada frame para actualizar la logica del juego
 	 * @method update
 	 */
     update: function() {
 		// Si la nave esta viva
 		if (game.nave.alive) {
 			game.nave.body.velocity.setTo(0, 0);
-			// Si estamos en el móvil
+			// Si estamos en el movil
 			if (!game.escritorio) {
 				// Y si pulsamos el joystick
 				if (game.joystick.properties.inUse) {
@@ -59,7 +59,7 @@ var level1State = {
 			// Giramos nave y actualizamos estrellas mostradas en interfaz
 			this.girarNave();
 			this.actualizarEstrellas();
-			// Controlamos colisiones de objetos en sus diferentes métodos
+			// Controlamos colisiones de objetos en sus diferentes metodos
 			game.physics.arcade.overlap(game.nave, game.ayudas, this.manejadorColisionNaveAyuda, null, this);
 			game.physics.arcade.overlap(game.balas, game.aliens, this.manejadorDisparoNave, null, this);
 			game.physics.arcade.overlap(game.balasAlien, game.nave, this.manejadorDisparoEnemigo, null, this);
@@ -82,21 +82,21 @@ var level1State = {
 		game.puntos += 20;
 		game.puntosTexto.text = 'Puntos: ' + game.puntos;
 		game.sfxExplosion.play();
-		// Lanzamos animación de explosión para ese alien concreto
+		// Lanzamos animacion de explosion para ese alien concreto
 		var explosion = game.explosiones.getFirstExists(false);
 		explosion.reset(alien.body.x, alien.body.y);
 		explosion.play('boom', 30, false, true);
 		// Si no quedan aliens
 		if (game.aliens.countLiving() == 0) {
 			// Agregamos puntos a marcador
-			game.puntos += 1000;
+			game.puntos += 500;
 			game.puntosTexto.text = 'Puntos: ' + game.puntos;
 			// Eliminamos eventos de movimiento en aliens
 			game.tweens.remove(game.movimientoAlienX);
 			game.time.events.remove(game.movimientoAlienY);
 			game.balasAlien.callAll('kill', this);
-			// Lanzamos el estado win
-			game.state.start('win');
+			// Lanzamos el estado levelUp
+			game.state.start('levelUp');
 		}
 	},
 
@@ -115,13 +115,13 @@ var level1State = {
 			// Si tenemos vidas quitamos una
 			vida.kill();
 		}
-		// Mostramos la animación de explosión en las coordenadas de nuestra nave
+		// Mostramos la animacion de explosion en las coordenadas de nuestra nave
 		var explosion = game.explosiones.getFirstExists(false);
 		explosion.reset(nave.body.x, nave.body.y);
 		explosion.play('boom', 20, false, true);
 		// Si no nos quedan vidas
 		if (game.vidas.countLiving() < 1) {
-			// Eliminamos la nave y removemos demás elementos de juego
+			// Eliminamos la nave y removemos demas elementos de juego
 			nave.kill();
 			game.balasAlien.callAll('kill');
 			game.tweens.remove(game.movimientoAlienX);
@@ -135,35 +135,19 @@ var level1State = {
 	 * Función usada para gestionar las colisiones producidas entre nuestra nave y las ayudas
 	 * @method manejadorColisionNaveAyuda
 	 * @param {} nave
-	 * @param {} ayuda
+	 * @param {} ayudaPuntos
 	 */
-	manejadorColisionNaveAyuda: function(nave, ayuda) {
+	manejadorColisionNaveAyuda: function(nave, ayudaPuntos) {
 		// Eliminamos ayuda y reproducimos sonido
-		ayuda.kill();
+		ayudaPuntos.kill();
 		game.sfxAyuda.play();
-		// Si la ayuda es una mejora de vida
-		if (ayuda.name == "mejoraVida") {
-			// Y tenemos menos de 3
-			if (game.vidas.countLiving() < 3) {
-				// Cargamos una nueva vida en pantalla
-				var img = game.vidas.create(game.world.width - 100 + ((game.vidas.countLiving() == 1) ? 30 : 0), 60, 'nave');
-				img.anchor.setTo(0.5, 0.5);
-				img.angle = 90;
-				img.alpha = 0.4;
-			}
-		// Si la ayuda es una mejora de arma
-		} else if (ayuda.name == "mejoraArma") {
-			// Reducimos el ratio de las balas para aumentar su velocidad
-			game.naveBalasRatio /= 1.5;
-		// Si la ayuda es una mejora de velocidad
-		} else if (ayuda.name == "mejoraVelocidad") {
-			// Aumentamos la velocidad de la nave para que sea más rápida
-			game.naveVelocidad *= 1.5;
-		}
+		// Agregamos puntos a marcador y reproducimos audio
+		game.puntos += parseInt(ayudaPuntos.name);
+		game.puntosTexto.text = 'Puntos: ' + game.puntos;
 	},
 
 	/**
-	 * Función usada controlar el evento hover en todos los botones a nivel general
+	 * Función usada para controlar el evento hover en todos los botones a nivel general
 	 * @method manejadorOverBoton
 	 */
 	manejadorOverBoton: function() {
@@ -171,7 +155,7 @@ var level1State = {
 	},
 
 	/**
-	 * Función usada controlar el evento click en el botón volver
+	 * Función usada para controlar el evento click en el boton volver
 	 * @method manejadorClickBotonVolver
 	 */
 	manejadorClickBotonVolver: function() {
@@ -181,7 +165,7 @@ var level1State = {
 	},
 	
 	/**
-	 * Función usada controlar el evento click en el botón silenciar
+	 * Función usada para controlar el evento click en el boton silenciar
 	 * @method manejadorClickBotonSilenciar
 	 */
 	manejadorClickBotonSilenciar: function() {
@@ -199,18 +183,17 @@ var level1State = {
 		// Agregamos skin de fondo a tablero
 		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
 		// Variables con textos y puntos mostrados por pantalla
-		game.puntos = 0;
 		game.puntosTexto = game.add.text(10, 10, 'Puntos: ' + game.puntos, { font: '34px Arial', fill: '#fff' });
 		game.vidas = game.add.group();
-		game.vidasTexto = game.add.text(game.world.width - 115, 10, 'Vidas: ', { font: '34px Arial', fill: '#fff' });
+		game.vidasTexto = game.add.text(game.world.width - 125, 10, 'Escudos: ', { font: '30px Arial', fill: '#fff' });
 		// Mostramos las vidas del jugador
-		for (var i = 0; i < 3; i++) {
-			var img = game.vidas.create(game.world.width - 100 + (30 * i), 60, 'nave');
+		for (var i = 0; i < game.nivelNaveEscudo; i++) {
+			var img = game.vidas.create(game.world.width - 125 + (30 * i), 60, 'nave');
 			img.anchor.setTo(0.5, 0.5);
 			img.angle = 90;
 			img.alpha = 0.4;
 		}
-		// Agregamos botón volver y silenciar junto con sus manejadores para controlar sus eventos
+		// Agregamos boton volver y silenciar junto con sus manejadores para controlar sus eventos
 		game.btnVolver = game.add.button(game.world.left + 10, game.world.bottom - 50, 'botonVolverPeq', this.manejadorClickBotonVolver, this, 0, 1, 0);
 		game.btnVolver.onInputOver.add(this.manejadorOverBoton, this);
 		game.btnSilenciar = game.add.button(game.world.right - 50, game.world.bottom - 50, 'botonSilenciar', this.manejadorClickBotonSilenciar, this, 0, 1, 0);
@@ -228,8 +211,6 @@ var level1State = {
 		game.nave.anchor.setTo(0.5, 0.5);
 		game.physics.enable(game.nave, Phaser.Physics.ARCADE);
 		game.nave.body.collideWorldBounds = true;
-		game.naveVelocidad = 200;
-		game.naveBalasRatio = 1000;
 		game.naveDisparoHora = 0;
 		// Variables referentes a las balas de nuestra nave
 		game.balas = game.add.group();
@@ -248,7 +229,7 @@ var level1State = {
 	},
 	
 	/**
-	 * Función usada para crear, inicializar y posicionar los enemigos en pantalla agregándoles movimiento
+	 * Función usada para crear, inicializar y posicionar los enemigos en pantalla agregandoles movimiento
 	 * @method cargarAliens
 	 */
 	cargarAliens: function() {
@@ -316,9 +297,9 @@ var level1State = {
 		// Preparamos los cursores y controles de juego
 		game.cursores = game.input.keyboard.createCursorKeys();
 		game.botonDisparo = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-		// Si ejecutamos la aplicación desde el móvil
+		// Si ejecutamos la aplicacion desde el movil
 		if (!game.escritorio) {
-			// Agregamos un pad virtual con su joystick y botón
+			// Agregamos un pad virtual con su joystick y boton
 			game.gamepad = game.plugins.add(Phaser.Plugin.VirtualGamepad);
 			game.joystick = game.gamepad.addJoystick(150, 500, 1.2, 'gamepad');
 			game.botonA = game.gamepad.addButton(650, 500, 1.0, 'gamepad');
@@ -326,7 +307,7 @@ var level1State = {
 	},	
 	
 	/**
-	 * Función usada para configurar objetos agregándoles una animación
+	 * Función usada para configurar objetos agregandoles una animacion
 	 * @method configurarExplosion
 	 * @param {} objeto
 	 */
@@ -361,9 +342,9 @@ var level1State = {
 			// Seleccionamos aleatoriamente un alien entre los que quedan vivos
 			var aleatorio = game.rnd.integerInRange(0, game.alienVivos.length-1);
 			var seleccion = game.alienVivos[aleatorio];
-			// Y lanzamos la bala desde su posición hacia nuestra nave
+			// Y lanzamos la bala desde su posicion hacia nuestra nave
 			balaAlien.reset(seleccion.body.x, seleccion.body.y);
-			game.physics.arcade.moveToObject(balaAlien, game.nave, 120);
+			game.physics.arcade.moveToObject(balaAlien, game.nave, 200);
 			game.alienDisparoHora = game.time.now + 2000;
 			game.sfxDisparo.play();
 		}
@@ -375,36 +356,35 @@ var level1State = {
 	 * @param {} alien
 	 */
 	lanzarAyuda: function(alien) {
-		// Obtenemos un número aleatorio entre 0 y 1
+		// Obtenemos un número aleatorio entre 0 y 1 y si es menor que 0.1 lanzamos una mejora
 		var aleatorio = Math.random();
-		// Si es menor que 0.06 lanzamos una mejora
-		if (aleatorio < 0.06) {
-			// Inicialmente cargamos una mejora de vida
-			var mejora = "mejoraVida";
-			// Si el número es menor que 0.04 lanzamos una mejora de arma
-			if (aleatorio < 0.04) {
-				mejora = "mejoraArma";
-			// Si es menor que 0.02 lanzamos una mejora de velocidad
-			} else if (aleatorio < 0.02) {
-				mejora = "mejoraVelocidad";
+		if (aleatorio < 0.1) {
+			// Inicialmente cargamos una mejora con 100 puntos
+			var mejora = "100";
+			// Si el número es menor de 0.05 lanzamos cargamos una mejora de 200 puntos
+			if (aleatorio < 0.05) {
+				mejora = "200";
+			// Si es menor que 0.025 cargamos una mejora de 300 puntos
+			} else if (aleatorio < 0.025) {
+				mejora = "300";
 			}
 			this.cargarPowerUp(mejora, alien.body.x, alien.body.y);
 		}
 	},
 
 	/**
-	 * Función usada para cargar la ayuda en pantalla a partir de su nombre y localización
+	 * Función usada para cargar la ayuda en pantalla a partir de su nombre y localizacion
 	 * @method cargarPowerUp
 	 * @param {} tipoMejora
 	 * @param {} locX
 	 * @param {} locY
 	 */
 	cargarPowerUp: function(tipoMejora, locX, locY) {
-		// Creamos una mejora del tipo especificado desde la localización concretada
+		// Creamos una mejora del tipo especificado desde la localizacion concretada
 		var objeto = game.ayudas.create(locX, locY, tipoMejora);
 		objeto.name = tipoMejora;
 		objeto.body.collideWorldBounds = false;
-		// Y la hacemos semitransparente además de añadirle gravedad
+		// Y la hacemos semitransparente ademas de anadirle gravedad
 		objeto.alpha = 0.4;
 		game.physics.arcade.gravity.y = 50;
 	},
@@ -420,7 +400,7 @@ var level1State = {
 			var bala = game.balas.getFirstExists(false);
 			if (bala) {
 				game.sfxDisparo.play();
-				// Y la lanzamos desde la ubicación de la nave
+				// Y la lanzamos desde la ubicacion de la nave
 				bala.reset(game.nave.x, game.nave.y + 8);
 				bala.body.velocity.y = -400;
 				game.naveDisparoHora = game.time.now + game.naveBalasRatio;
@@ -429,7 +409,7 @@ var level1State = {
 	},
 
 	/**
-	 * Función usada para girar la nave y dar la sensación de movilidad
+	 * Función usada para girar la nave y dar la sensacion de movilidad
 	 * @method girarNave
 	 */
 	girarNave: function() {
@@ -441,7 +421,7 @@ var level1State = {
 	},
 	
 	/**
-	 * Función usada para cargar un halo de estrellas creando así una sensación de velocidad
+	 * Función usada para cargar un halo de estrellas creando asi una sensacion de velocidad
 	 * @method cargarEstrellas
 	 */
 	cargarEstrellas: function() {
@@ -450,7 +430,7 @@ var level1State = {
 		game.estrellasX = [];
 		game.estrellasY = [];
 		game.estrellasZ = [];
-		// Variables usadas para almacenar parámetros de las estrellas 
+		// Variables usadas para almacenar parametros de las estrellas 
 		game.distanciaEstrellas = 300;
 		game.velocidadEstrellas = 1;
 		game.maxEstrellas = 1000;
@@ -463,7 +443,7 @@ var level1State = {
 			var star = game.make.sprite(0, 0, 'star');
 			star.anchor.set(0.5);
 			sprites.addChild(star);
-			// Y las añadimos al vector principal
+			// Y las anadimos al vector principal
 			game.estrellas.push(star);
 		}
 	},
@@ -475,7 +455,7 @@ var level1State = {
 	actualizarEstrellas: function() {
 		// Recorremos vector de estrellas
 		for (var i = 0; i < game.maxEstrellas; i++) {
-			// Y las trasladamos para dar sensación de movimiento
+			// Y las trasladamos para dar sensacion de movimiento
 			game.estrellas[i].perspective = game.distanciaEstrellas / (game.distanciaEstrellas - game.estrellasZ[i]);
 			game.estrellas[i].x = game.world.centerX + game.estrellasX[i] * game.estrellas[i].perspective;
 			game.estrellas[i].y = game.world.centerY + game.estrellasY[i] * game.estrellas[i].perspective;

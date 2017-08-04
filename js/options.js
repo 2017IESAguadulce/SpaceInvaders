@@ -41,7 +41,7 @@ var optionsState = {
 	},
 	
 	/**
-	 * Función usada controlar el evento hover en todos los botones a nivel general
+	 * Función usada para controlar el evento hover en todos los botones a nivel general
 	 * @method manejadorOverBoton
 	 */
 	manejadorOverBoton: function() {
@@ -49,7 +49,7 @@ var optionsState = {
 	},
 
 	/**
-	 * Función usada controlar el evento click en el botón cambiar skin
+	 * Función usada para controlar el evento click en el botón cambiar skin
 	 * @method manejadorClickBotonSkin
 	 */
 	manejadorClickBotonSkin: function() {
@@ -65,7 +65,7 @@ var optionsState = {
 	},
 
 	/**
-	 * Función usada controlar el evento click en el botón volver
+	 * Función usada para controlar el evento click en el botón volver
 	 * @method manejadorClickBotonVolver
 	 */
 	manejadorClickBotonVolver: function() {
@@ -75,7 +75,7 @@ var optionsState = {
 	},
 
 	/**
-	 * Función usada controlar el evento de arrastrado del slider
+	 * Función usada para controlar el evento de arrastrado del slider
 	 * @method manejadorControlVolumen
 	 */
 	manejadorControlVolumen: function() {

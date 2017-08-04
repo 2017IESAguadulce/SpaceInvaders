@@ -12,6 +12,7 @@ var menuState = {
 		game.velocidadLogo = 0.1;
 		game.sfxHover = game.add.audio('botonHover');
 		game.sfxStart = game.add.audio('botonStart');
+		game.sfxCancel = game.add.audio('botonCancel');
 		// Agregamos botones para controlar las opciones de juego
 		game.btnJugar = game.add.button(game.world.centerX + 100, 250, 'botonJugar', this.manejadorClickBotonJugar, this, 0, 1, 0);
 		game.btnOpciones = game.add.button(game.world.centerX + 100, 350, 'botonOpciones', this.manejadorClickBotonOpciones, this, 0, 1, 0);
@@ -20,7 +21,8 @@ var menuState = {
 		game.btnJugar.onInputOver.add(this.manejadorOverBoton, this);
 		game.btnOpciones.onInputOver.add(this.manejadorOverBoton, this);
 		game.btnPuntuaciones.onInputOver.add(this.manejadorOverBoton, this);
-		// Iniciamos la carga de las estrellas en pantalla
+		// Inicializamos valores e iniciamos la carga de las estrellas en pantalla
+		this.inicializarParametros();
 		this.cargarIntro();
 	},
 	
@@ -34,7 +36,7 @@ var menuState = {
 	},
 	
 	/**
-	 * Función usada controlar el evento hover en todos los botones a nivel general
+	 * Función usada para controlar el evento hover en todos los botones a nivel general
 	 * @method manejadorOverBoton
 	 */
 	manejadorOverBoton: function() {
@@ -42,7 +44,7 @@ var menuState = {
 	},
 
 	/**
-	 * Función usada controlar el evento click en el botón jugar
+	 * Función usada para controlar el evento click en el botón jugar
 	 * @method manejadorClickBotonJugar
 	 */
 	manejadorClickBotonJugar: function() {
@@ -52,7 +54,7 @@ var menuState = {
 	},
 	
 	/**
-	 * Función usada controlar el evento click en el botón opciones
+	 * Función usada para controlar el evento click en el botón opciones
 	 * @method manejadorClickBotonOpciones
 	 */
 	manejadorClickBotonOpciones: function() {
@@ -62,13 +64,27 @@ var menuState = {
 	},
 	
 	/**
-	 * Función usada controlar el evento click en el botón puntuaciones
+	 * Función usada para controlar el evento click en el botón puntuaciones
 	 * @method manejadorClickBotonPuntuaciones
 	 */
 	manejadorClickBotonPuntuaciones: function() {
 		// Reproducimos audio y llamamos al estado score para mostrar la pantalla de puntuaciones
 		game.sfxStart.play();
 		game.state.start('score');
+	},
+	
+	/**
+	 * Función usada para controlar el evento click en el botón puntuaciones
+	 * @method inicializarParametros
+	 */
+	inicializarParametros: function() {
+		// Cargamos parámetros iniciales de juego
+		game.puntos = 0;
+		game.nivelNaveEscudo = 1;
+		game.nivelNaveDisparo = 1;
+		game.nivelNaveVelocidad = 1;
+		game.naveBalasRatio = 1000;
+		game.naveVelocidad = 200;
 	},
 	
 	/**

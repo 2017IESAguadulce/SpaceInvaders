@@ -75,27 +75,29 @@ var levelUp = {
 			case "escudo":
 				if (game.puntos >= game.nivelNaveEscudo * 1000) {
 					game.puntos -= game.nivelNaveEscudo * 1000;
-					game.costeEscudo.loadTexture('botonMejora2');
-					game.escudoNave.text = "Escudo Nv. " + ++game.nivelNaveEscudo;
-					// Mejorar escudo
+					game.nivelNaveEscudo++;
+					game.costeEscudo.loadTexture('botonMejora' + game.nivelNaveEscudo);
+					game.escudoNave.text = "Escudo Nv. " + game.nivelNaveEscudo;
 					sw = true;
 				}
 			break;
 			case "disparo":
 				if (game.puntos >= game.nivelNaveDisparo * 1000) {
 					game.puntos -= game.nivelNaveDisparo * 1000;
-					game.costeDisparo.loadTexture('botonMejora2');
-					game.velocidadDisparo.text= "Disparo Nv. " + ++game.nivelNaveDisparo;
-					// Mejorar disparo
+					game.nivelNaveDisparo++;
+					game.costeDisparo.loadTexture('botonMejora' + game.nivelNaveDisparo);
+					game.velocidadDisparo.text= "Disparo Nv. " + game.nivelNaveDisparo;
+					game.naveBalasRatio /= 1.25;
 					sw = true;
 				}
 			break;
 			case "velocidad":
 				if (game.puntos >= game.nivelNaveVelocidad * 1000) {
 					game.puntos -= game.nivelNaveVelocidad * 1000;
-					game.costeVelocidad.loadTexture('botonMejora2');
-					game.velocidadNave.text= "Disparo Nv. " + ++game.nivelNaveVelocidad;
-					// Mejorar velocidad
+					game.nivelNaveVelocidad++;
+					game.costeVelocidad.loadTexture('botonMejora' + game.nivelNaveVelocidad);
+					game.velocidadNave.text= "Disparo Nv. " + game.nivelNaveVelocidad;
+					game.naveVelocidad *= 1.25;
 					sw = true;
 				}
 			break;

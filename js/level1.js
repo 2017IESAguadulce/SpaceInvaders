@@ -154,11 +154,11 @@ var level1State = {
 		// Si la ayuda es una mejora de arma
 		} else if (ayuda.name == "mejoraArma") {
 			// Reducimos el ratio de las balas para aumentar su velocidad
-			game.naveBalasRatio /= 1.5;
+			game.naveBalasRatio /= 1.25;
 		// Si la ayuda es una mejora de velocidad
 		} else if (ayuda.name == "mejoraVelocidad") {
 			// Aumentamos la velocidad de la nave para que sea mas rapida
-			game.naveVelocidad *= 1.5;
+			game.naveVelocidad *= 1.25;
 		}
 	},
 
@@ -199,7 +199,6 @@ var level1State = {
 		// Agregamos skin de fondo a tablero
 		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
 		// Variables con textos y puntos mostrados por pantalla
-		game.puntos = 0;
 		game.puntosTexto = game.add.text(10, 10, 'Puntos: ' + game.puntos, { font: '34px Arial', fill: '#fff' });
 		game.vidas = game.add.group();
 		game.vidasTexto = game.add.text(game.world.width - 115, 10, 'Vidas: ', { font: '34px Arial', fill: '#fff' });
@@ -228,8 +227,6 @@ var level1State = {
 		game.nave.anchor.setTo(0.5, 0.5);
 		game.physics.enable(game.nave, Phaser.Physics.ARCADE);
 		game.nave.body.collideWorldBounds = true;
-		game.naveVelocidad = 200;
-		game.naveBalasRatio = 1000;
 		game.naveDisparoHora = 0;
 		// Variables referentes a las balas de nuestra nave
 		game.balas = game.add.group();

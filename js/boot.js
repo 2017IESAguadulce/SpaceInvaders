@@ -19,6 +19,10 @@ var bootState = {
 		game.logoIntro = false;
 		// Comprobamos si estamos sobre un entorno de escritorio y llamamos al estado load
 		game.escritorio = this.game.device.desktop;
+		// Cargamos parámetros iniciales de nave
+		game.nivelNaveEscudo = 1;
+		game.nivelNaveDisparo = 1;
+		game.nivelNaveVelocidad = 1;
 		game.state.start('load');
 	}
 };

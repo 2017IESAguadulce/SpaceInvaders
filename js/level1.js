@@ -204,7 +204,7 @@ var level1State = {
 		game.vidas = game.add.group();
 		game.vidasTexto = game.add.text(game.world.width - 115, 10, 'Vidas: ', { font: '34px Arial', fill: '#fff' });
 		// Mostramos las vidas del jugador
-		for (var i = 0; i < 3; i++) {
+		for (var i = 0; i < game.nivelNaveEscudo; i++) {
 			var img = game.vidas.create(game.world.width - 100 + (30 * i), 60, 'nave');
 			img.anchor.setTo(0.5, 0.5);
 			img.angle = 90;

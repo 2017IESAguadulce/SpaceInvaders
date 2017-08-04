@@ -34,6 +34,7 @@ var loadState = {
 		game.load.spritesheet('botonSilenciar', 'assets/buttons/boton_volumen-mute.png', 34, 34);
 		game.load.spritesheet('botonVolumen', 'assets/buttons/boton_volumen-sound.png', 34, 34);
 		game.load.audio('botonHover', 'assets/audio/SoundEffects/squit.ogg');
+		game.load.audio('botonCancel', 'assets/audio/SoundEffects/cancel.ogg');
 		game.load.audio('botonStart', 'assets/audio/SoundEffects/p-ping.mp3');
 		game.load.image('star', 'assets/sprites/star2.png');
 		game.load.image('logo', 'assets/sprites/phaser.png');

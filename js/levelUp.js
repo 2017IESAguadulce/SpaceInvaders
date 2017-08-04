@@ -14,11 +14,8 @@ var levelUp = {
 		game.velocidadNave = game.add.text(170, 475, 'Velocidad Nv. ' + game.nivelNaveVelocidad, {font: '24px Arial', fill: 'white' });
 		// Agregamos botones y manejadores para controlar sus eventos
 		game.costeEscudo = this.prepararBotonMejora("escudo", game.nivelNaveEscudo, 315);
-		game.costeEscudo.onInputOver.add(this.manejadorOverBoton, this);
 		game.costeDisparo = this.prepararBotonMejora("disparo", game.nivelNaveDisparo, 390);
-		game.costeDisparo.onInputOver.add(this.manejadorOverBoton, this);
 		game.costeVelocidad = this.prepararBotonMejora("velocidad", game.nivelNaveVelocidad, 465);
-		game.costeVelocidad.onInputOver.add(this.manejadorOverBoton, this);
 		game.btnContinuar = game.add.button(game.world.centerX + 100, 350, 'botonContinuar', this.manejadorClickBotonContinuar, this, 0, 1, 0);
 		game.btnContinuar.onInputOver.add(this.manejadorOverBoton, this);
 		game.btnVolver = game.add.button(game.world.centerX + 100, 450, 'botonVolver', this.manejadorClickBotonVolver, this, 0, 1, 0);
@@ -37,15 +34,15 @@ var levelUp = {
 	},
 	
 	/**
-	 * Función usada controlar el evento hover en todos los botones a nivel general
+	 * Función usada para controlar el evento hover en todos los botones a nivel general
 	 * @method manejadorOverBoton
 	 */
 	manejadorOverBoton: function() {
 		game.sfxHover.play();
 	},
-
+	
 	/**
-	 * Función usada controlar el evento click en el botón continuar
+	 * Función usada para controlar el evento click en el botón continuar
 	 * @method manejadorClickBotonContinuar
 	 */
 	manejadorClickBotonContinuar: function() {
@@ -55,7 +52,7 @@ var levelUp = {
 	},
 	
 	/**
-	 * Función usada controlar el evento click en el botón volver
+	 * Función usada para controlar el evento click en el botón volver
 	 * @method manejadorClickBotonVolver
 	 */
 	manejadorClickBotonVolver: function() {
@@ -65,53 +62,58 @@ var levelUp = {
 	},
 	
 	/**
-	 * Función usada controlar el evento click en los botones de mejora
+	 * Función usada para controlar el evento click en los botones de mejora
 	 * @method manejadorClickBotonMejora
 	 * @param {} tipo
 	 */
 	manejadorClickBotonMejora: function(tipo) {
 		sw = false;
 		switch(tipo) {
+			// En caso de tratarse de una mejora de tipo escudo
 			case "escudo":
-				if (game.puntos >= game.nivelNaveEscudo * 1000) {
+				// Comprobamos que tengamos los suficientes puntos y que el nivel de mejora sea menor de 6
+				if (game.puntos >= game.nivelNaveEscudo * 1000 && game.nivelNaveEscudo <= 5) {
+					// Restamos los puntos usados y aumentamos nivel de mejora
 					game.puntos -= game.nivelNaveEscudo * 1000;
 					game.nivelNaveEscudo++;
+					// Cambiando los textos mostrados por pantalla
 					game.costeEscudo.loadTexture('botonMejora' + game.nivelNaveEscudo);
 					game.escudoNave.text = "Escudo Nv. " + game.nivelNaveEscudo;
 					sw = true;
 				}
 			break;
+			// En caso de tratarse de una mejora de tipo disparo
 			case "disparo":
-				if (game.puntos >= game.nivelNaveDisparo * 1000) {
+				if (game.puntos >= game.nivelNaveDisparo * 1000 && game.nivelNaveDisparo <= 5) {
+					// Realizamos el mismo proceso que en el caso anterior
 					game.puntos -= game.nivelNaveDisparo * 1000;
 					game.nivelNaveDisparo++;
 					game.costeDisparo.loadTexture('botonMejora' + game.nivelNaveDisparo);
 					game.velocidadDisparo.text= "Disparo Nv. " + game.nivelNaveDisparo;
-					game.naveBalasRatio /= 1.25;
+					game.naveBalasRatio /= 1.30;
 					sw = true;
 				}
 			break;
+			// En caso de tratarse de una mejora de tipo velocidad
 			case "velocidad":
-				if (game.puntos >= game.nivelNaveVelocidad * 1000) {
+				if (game.puntos >= game.nivelNaveVelocidad * 1000 && game.nivelNaveVelocidad <= 5) {
 					game.puntos -= game.nivelNaveVelocidad * 1000;
 					game.nivelNaveVelocidad++;
 					game.costeVelocidad.loadTexture('botonMejora' + game.nivelNaveVelocidad);
 					game.velocidadNave.text= "Disparo Nv. " + game.nivelNaveVelocidad;
-					game.naveVelocidad *= 1.25;
+					game.naveVelocidad *= 1.30;
 					sw = true;
 				}
 			break;
 		}
-		if (sw) {
-			game.sfxStart.play();
-		} else {
-			game.sfxExplosion.play();
-		}
+		// Reproducimos un sonido u otro dependiendo de si hemos mejorado alguna habilidad o no
+		(sw) ? game.sfxStart.play() : game.sfxCancel.play();
+		// Actualizamos puntos en pantalla
 		game.puntosTexto.text = "Puntos: " + game.puntos;
 	},
 	
 	/**
-	 * Función usada controlar el evento click en el botón volver
+	 * Función usada para controlar el evento click en el botón volver
 	 * @method prepararBotonMejora
 	 * @param {} tipo
 	 * @param {} nivel
@@ -119,9 +121,15 @@ var levelUp = {
 	 * @return {} button
 	 */
 	prepararBotonMejora: function(tipo, nivel, coorY) {
-		// Almacenamos manejador en variable y lo asignamos al botón para devolverlo
-		var manejadorEvento = function() { this.manejadorClickBotonMejora(tipo); }.bind(this);
-		return game.add.button(80, coorY, 'botonMejora' + nivel, manejadorEvento, this, 0, 1, 0);
+		var boton = null;
+		// Si el nivel de la mejora es inferior o igual al tope de 5
+		if (nivel <= 5) {
+			// Almacenamos manejador en variable y lo asignamos al botón para devolverlo
+			var manejadorEvento = function() { this.manejadorClickBotonMejora(tipo); }.bind(this);
+			boton = game.add.button(80, coorY, 'botonMejora' + nivel, manejadorEvento, this, 0, 1, 0)
+			boton.onInputOver.add(this.manejadorOverBoton, this);
+		}
+		return boton;
 	},
 	
 	/**

@@ -26,7 +26,7 @@ var winState = {
 	},
 	
 	/**
-	 * Función usada controlar el evento hover en todos los botones a nivel general
+	 * Función usada para controlar el evento hover en todos los botones a nivel general
 	 * @method manejadorOverBoton
 	 */
 	manejadorOverBoton: function() {
@@ -34,7 +34,7 @@ var winState = {
 	},
 
 	/**
-	 * Función usada controlar el evento click en el botón volver
+	 * Función usada para controlar el evento click en el botón volver
 	 * @method manejadorClickBotonVolver
 	 */
 	manejadorClickBotonVolver: function() {

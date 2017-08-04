@@ -89,7 +89,7 @@ var level1State = {
 		// Si no quedan aliens
 		if (game.aliens.countLiving() == 0) {
 			// Agregamos puntos a marcador
-			game.puntos += 1000;
+			game.puntos += 500;
 			game.puntosTexto.text = 'Puntos: ' + game.puntos;
 			// Eliminamos eventos de movimiento en aliens
 			game.tweens.remove(game.movimientoAlienX);
@@ -154,16 +154,16 @@ var level1State = {
 		// Si la ayuda es una mejora de arma
 		} else if (ayuda.name == "mejoraArma") {
 			// Reducimos el ratio de las balas para aumentar su velocidad
-			game.naveBalasRatio /= 1.25;
+			game.naveBalasRatio /= 1.30;
 		// Si la ayuda es una mejora de velocidad
 		} else if (ayuda.name == "mejoraVelocidad") {
 			// Aumentamos la velocidad de la nave para que sea mas rapida
-			game.naveVelocidad *= 1.25;
+			game.naveVelocidad *= 1.30;
 		}
 	},
 
 	/**
-	 * Funcion usada controlar el evento hover en todos los botones a nivel general
+	 * Funcion usada para controlar el evento hover en todos los botones a nivel general
 	 * @method manejadorOverBoton
 	 */
 	manejadorOverBoton: function() {
@@ -171,7 +171,7 @@ var level1State = {
 	},
 
 	/**
-	 * Funcion usada controlar el evento click en el boton volver
+	 * Funcion usada para controlar el evento click en el boton volver
 	 * @method manejadorClickBotonVolver
 	 */
 	manejadorClickBotonVolver: function() {
@@ -181,7 +181,7 @@ var level1State = {
 	},
 	
 	/**
-	 * Funcion usada controlar el evento click en el boton silenciar
+	 * Funcion usada para controlar el evento click en el boton silenciar
 	 * @method manejadorClickBotonSilenciar
 	 */
 	manejadorClickBotonSilenciar: function() {
@@ -201,10 +201,10 @@ var level1State = {
 		// Variables con textos y puntos mostrados por pantalla
 		game.puntosTexto = game.add.text(10, 10, 'Puntos: ' + game.puntos, { font: '34px Arial', fill: '#fff' });
 		game.vidas = game.add.group();
-		game.vidasTexto = game.add.text(game.world.width - 115, 10, 'Vidas: ', { font: '34px Arial', fill: '#fff' });
+		game.vidasTexto = game.add.text(game.world.width - 125, 10, 'Escudos: ', { font: '30px Arial', fill: '#fff' });
 		// Mostramos las vidas del jugador
 		for (var i = 0; i < game.nivelNaveEscudo; i++) {
-			var img = game.vidas.create(game.world.width - 100 + (30 * i), 60, 'nave');
+			var img = game.vidas.create(game.world.width - 125 + (30 * i), 60, 'nave');
 			img.anchor.setTo(0.5, 0.5);
 			img.angle = 90;
 			img.alpha = 0.4;

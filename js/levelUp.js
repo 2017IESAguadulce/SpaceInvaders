@@ -78,7 +78,7 @@ var levelUp = {
 					game.nivelNaveEscudo++;
 					// Cambiando los textos mostrados por pantalla
 					game.costeEscudo.loadTexture('botonMejora' + game.nivelNaveEscudo);
-					game.escudoNave.text = "Escudo Nv. " + game.nivelNaveEscudo;
+					game.escudoNave.text = "Escudo Nv. " + ((game.nivelNaveEscudo <= 5) ? game.nivelNaveEscudo : "Máximo");
 					sw = true;
 				}
 			break;
@@ -89,7 +89,7 @@ var levelUp = {
 					game.puntos -= game.nivelNaveDisparo * 1000;
 					game.nivelNaveDisparo++;
 					game.costeDisparo.loadTexture('botonMejora' + game.nivelNaveDisparo);
-					game.velocidadDisparo.text= "Disparo Nv. " + game.nivelNaveDisparo;
+					game.velocidadDisparo.text= "Disparo Nv. " + ((game.nivelNaveDisparo <= 5) ? game.nivelNaveDisparo : "Máximo");
 					game.naveBalasRatio /= 1.4;
 					sw = true;
 				}
@@ -100,8 +100,8 @@ var levelUp = {
 					game.puntos -= game.nivelNaveVelocidad * 1000;
 					game.nivelNaveVelocidad++;
 					game.costeVelocidad.loadTexture('botonMejora' + game.nivelNaveVelocidad);
-					game.velocidadNave.text= "Disparo Nv. " + game.nivelNaveVelocidad;
-					game.naveVelocidad *= 1.3;
+					game.velocidadNave.text= "Disparo Nv. " + ((game.nivelNaveVelocidad <= 5) ? game.nivelNaveVelocidad : "Máximo");
+					game.naveVelocidad *= 1.2;
 					sw = true;
 				}
 			break;

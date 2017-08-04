@@ -356,16 +356,16 @@ var level1State = {
 	 * @param {} alien
 	 */
 	lanzarAyuda: function(alien) {
-		// Obtenemos un número aleatorio entre 0 y 1 y si es menor que 0.1 lanzamos una mejora
+		// Obtenemos un número aleatorio entre 0 y 1 y si es menor que 0.15 lanzamos una mejora
 		var aleatorio = Math.random();
-		if (aleatorio < 0.1) {
+		if (aleatorio < 0.15) {
 			// Inicialmente cargamos una mejora con 100 puntos
 			var mejora = "100";
-			// Si el número es menor de 0.05 lanzamos cargamos una mejora de 200 puntos
-			if (aleatorio < 0.05) {
+			// Si el número está entre 0.05 y 0.1 cargamos una mejora de 200 puntos
+			if (aleatorio > 0.05 && aleatorio < 0.1) {
 				mejora = "200";
-			// Si es menor que 0.025 cargamos una mejora de 300 puntos
-			} else if (aleatorio < 0.025) {
+			// Si es menor de 0.05 cargamos una mejora de 300 puntos
+			} else if (aleatorio <= 0.05) {
 				mejora = "300";
 			}
 			this.cargarPowerUp(mejora, alien.body.x, alien.body.y);

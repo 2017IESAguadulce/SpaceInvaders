@@ -10,9 +10,9 @@ var loadState = {
 		game.load.image('balaAlien', 'assets/games/invaders/enemy-bullet.png');
 		game.load.image('nave', 'assets/games/invaders/player.png');
 		game.load.image('fondo', 'assets/games/invaders/starfield.png');
-		game.load.image('mejoraVida', 'assets/games/invaders/player.png');
-		game.load.image('mejoraArma', 'assets/sprites/pangball2.png');
-		game.load.image('mejoraVelocidad', 'assets/sprites/pangball3.png');
+		game.load.image('100', 'assets/sprites/100.png');
+		game.load.image('200', 'assets/sprites/200.png');
+		game.load.image('300', 'assets/sprites/300.png');
 		game.load.image('skin1', 'assets/skins/skin1.jpg');
 		game.load.image('skin2', 'assets/skins/skin2.jpg');
 		game.load.image('skin3', 'assets/skins/skin3.jpg');

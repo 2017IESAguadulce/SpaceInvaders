@@ -67,7 +67,7 @@ var level1State = {
 	},
 	
 	/**
-	 * Funcion usada para gestionar las colisiones producidas entre nuestras balas y los aliens
+	 * Función usada para gestionar las colisiones producidas entre nuestras balas y los aliens
 	 * @method manejadorDisparoNave
 	 * @param {} bala
 	 * @param {} alien
@@ -101,7 +101,7 @@ var level1State = {
 	},
 
 	/**
-	 * Funcion usada para gestionar las colisiones producidas entre las balas enemigas y nuestra nave
+	 * Función usada para gestionar las colisiones producidas entre las balas enemigas y nuestra nave
 	 * @method manejadorDisparoEnemigo
 	 * @param {} nave
 	 * @param {} bala
@@ -132,38 +132,22 @@ var level1State = {
 	},
 
 	/**
-	 * Funcion usada para gestionar las colisiones producidas entre nuestra nave y las ayudas
+	 * Función usada para gestionar las colisiones producidas entre nuestra nave y las ayudas
 	 * @method manejadorColisionNaveAyuda
 	 * @param {} nave
-	 * @param {} ayuda
+	 * @param {} ayudaPuntos
 	 */
-	manejadorColisionNaveAyuda: function(nave, ayuda) {
+	manejadorColisionNaveAyuda: function(nave, ayudaPuntos) {
 		// Eliminamos ayuda y reproducimos sonido
-		ayuda.kill();
+		ayudaPuntos.kill();
 		game.sfxAyuda.play();
-		// Si la ayuda es una mejora de vida
-		if (ayuda.name == "mejoraVida") {
-			// Y tenemos menos de 3
-			if (game.vidas.countLiving() < 3) {
-				// Cargamos una nueva vida en pantalla
-				var img = game.vidas.create(game.world.width - 100 + ((game.vidas.countLiving() == 1) ? 30 : 0), 60, 'nave');
-				img.anchor.setTo(0.5, 0.5);
-				img.angle = 90;
-				img.alpha = 0.4;
-			}
-		// Si la ayuda es una mejora de arma
-		} else if (ayuda.name == "mejoraArma") {
-			// Reducimos el ratio de las balas para aumentar su velocidad
-			game.naveBalasRatio /= 1.30;
-		// Si la ayuda es una mejora de velocidad
-		} else if (ayuda.name == "mejoraVelocidad") {
-			// Aumentamos la velocidad de la nave para que sea mas rapida
-			game.naveVelocidad *= 1.30;
-		}
+		// Agregamos puntos a marcador y reproducimos audio
+		game.puntos += parseInt(ayudaPuntos.name);
+		game.puntosTexto.text = 'Puntos: ' + game.puntos;
 	},
 
 	/**
-	 * Funcion usada para controlar el evento hover en todos los botones a nivel general
+	 * Función usada para controlar el evento hover en todos los botones a nivel general
 	 * @method manejadorOverBoton
 	 */
 	manejadorOverBoton: function() {
@@ -171,7 +155,7 @@ var level1State = {
 	},
 
 	/**
-	 * Funcion usada para controlar el evento click en el boton volver
+	 * Función usada para controlar el evento click en el boton volver
 	 * @method manejadorClickBotonVolver
 	 */
 	manejadorClickBotonVolver: function() {
@@ -181,7 +165,7 @@ var level1State = {
 	},
 	
 	/**
-	 * Funcion usada para controlar el evento click en el boton silenciar
+	 * Función usada para controlar el evento click en el boton silenciar
 	 * @method manejadorClickBotonSilenciar
 	 */
 	manejadorClickBotonSilenciar: function() {
@@ -192,7 +176,7 @@ var level1State = {
 	},
 	
 	/**
-	 * Funcion usada para crear e inicializar las variables de la interfaz de juego
+	 * Función usada para crear e inicializar las variables de la interfaz de juego
 	 * @method cargarInterfaz
 	 */
 	cargarInterfaz: function() {
@@ -218,7 +202,7 @@ var level1State = {
 	},
 	
 	/**
-	 * Funcion usada para crear e inicializar las variables de nuestra nave
+	 * Función usada para crear e inicializar las variables de nuestra nave
 	 * @method cargarNave
 	 */
 	cargarNave: function() {
@@ -245,7 +229,7 @@ var level1State = {
 	},
 	
 	/**
-	 * Funcion usada para crear, inicializar y posicionar los enemigos en pantalla agregandoles movimiento
+	 * Función usada para crear, inicializar y posicionar los enemigos en pantalla agregandoles movimiento
 	 * @method cargarAliens
 	 */
 	cargarAliens: function() {
@@ -284,7 +268,7 @@ var level1State = {
 	},
 	
 	/**
-	 * Funcion usada para crear y cargar las animaciones usadas en el juego
+	 * Función usada para crear y cargar las animaciones usadas en el juego
 	 * @method cargarAnimaciones
 	 */
 	cargarAnimaciones: function() {
@@ -295,7 +279,7 @@ var level1State = {
 	},
 	
 	/**
-	 * Funcion usada para crear e cargar los audios usados en el juego
+	 * Función usada para crear e cargar los audios usados en el juego
 	 * @method cargarAudios
 	 */
 	cargarAudios: function() {
@@ -306,7 +290,7 @@ var level1State = {
 	},
 	
 	/**
-	 * Funcion usada para crear y cargar los controles de juego 
+	 * Función usada para crear y cargar los controles de juego 
 	 * @method cargarControles
 	 */
 	cargarControles: function() {
@@ -323,7 +307,7 @@ var level1State = {
 	},	
 	
 	/**
-	 * Funcion usada para configurar objetos agregandoles una animacion
+	 * Función usada para configurar objetos agregandoles una animacion
 	 * @method configurarExplosion
 	 * @param {} objeto
 	 */
@@ -334,7 +318,7 @@ var level1State = {
 	},
 
 	/**
-	 * Funcion usada para controlar el descenso de los enemigos de tipo alien
+	 * Función usada para controlar el descenso de los enemigos de tipo alien
 	 * @method descender
 	 */
 	descender: function() {
@@ -342,7 +326,7 @@ var level1State = {
 	},
 
 	/**
-	 * Funcion usada para gestionar los disparos de los enemigos de tipo alien
+	 * Función usada para gestionar los disparos de los enemigos de tipo alien
 	 * @method disparoEnemigo
 	 */
 	disparoEnemigo: function() {
@@ -367,30 +351,29 @@ var level1State = {
 	},
 
 	/**
-	 * Funcion usada para controlar la aleatoriedad a la hora de lanzar los paquetes de ayuda
+	 * Función usada para controlar la aleatoriedad a la hora de lanzar los paquetes de ayuda
 	 * @method lanzarAyuda
 	 * @param {} alien
 	 */
 	lanzarAyuda: function(alien) {
-		// Obtenemos un numero aleatorio entre 0 y 1
+		// Obtenemos un número aleatorio entre 0 y 1 y si es menor que 0.1 lanzamos una mejora
 		var aleatorio = Math.random();
-		// Si es menor que 0.06 lanzamos una mejora
-		if (aleatorio < 0.06) {
-			// Inicialmente cargamos una mejora de vida
-			var mejora = "mejoraVida";
-			// Si el numero es menor que 0.04 lanzamos una mejora de arma
-			if (aleatorio < 0.04) {
-				mejora = "mejoraArma";
-			// Si es menor que 0.02 lanzamos una mejora de velocidad
-			} else if (aleatorio < 0.02) {
-				mejora = "mejoraVelocidad";
+		if (aleatorio < 0.1) {
+			// Inicialmente cargamos una mejora con 100 puntos
+			var mejora = "100";
+			// Si el número es menor de 0.05 lanzamos cargamos una mejora de 200 puntos
+			if (aleatorio < 0.05) {
+				mejora = "200";
+			// Si es menor que 0.025 cargamos una mejora de 300 puntos
+			} else if (aleatorio < 0.025) {
+				mejora = "300";
 			}
 			this.cargarPowerUp(mejora, alien.body.x, alien.body.y);
 		}
 	},
 
 	/**
-	 * Funcion usada para cargar la ayuda en pantalla a partir de su nombre y localizacion
+	 * Función usada para cargar la ayuda en pantalla a partir de su nombre y localizacion
 	 * @method cargarPowerUp
 	 * @param {} tipoMejora
 	 * @param {} locX
@@ -407,7 +390,7 @@ var level1State = {
 	},
 
 	/**
-	 * Funcion usada para disparar balas desde nuestra nave
+	 * Función usada para disparar balas desde nuestra nave
 	 * @method dispararBala
 	 */
 	dispararBala: function() {
@@ -426,7 +409,7 @@ var level1State = {
 	},
 
 	/**
-	 * Funcion usada para girar la nave y dar la sensacion de movilidad
+	 * Función usada para girar la nave y dar la sensacion de movilidad
 	 * @method girarNave
 	 */
 	girarNave: function() {
@@ -438,7 +421,7 @@ var level1State = {
 	},
 	
 	/**
-	 * Funcion usada para cargar un halo de estrellas creando asi una sensacion de velocidad
+	 * Función usada para cargar un halo de estrellas creando asi una sensacion de velocidad
 	 * @method cargarEstrellas
 	 */
 	cargarEstrellas: function() {
@@ -466,7 +449,7 @@ var level1State = {
 	},
 	
 	/**
-	 * Funcion usada para actualizar el halo de estrellas mostrado durante el juego
+	 * Función usada para actualizar el halo de estrellas mostrado durante el juego
 	 * @method actualizarEstrellas
 	 */
 	actualizarEstrellas: function() {

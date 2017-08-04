@@ -90,7 +90,7 @@ var levelUp = {
 					game.nivelNaveDisparo++;
 					game.costeDisparo.loadTexture('botonMejora' + game.nivelNaveDisparo);
 					game.velocidadDisparo.text= "Disparo Nv. " + game.nivelNaveDisparo;
-					game.naveBalasRatio /= 1.30;
+					game.naveBalasRatio /= 1.4;
 					sw = true;
 				}
 			break;
@@ -101,7 +101,7 @@ var levelUp = {
 					game.nivelNaveVelocidad++;
 					game.costeVelocidad.loadTexture('botonMejora' + game.nivelNaveVelocidad);
 					game.velocidadNave.text= "Disparo Nv. " + game.nivelNaveVelocidad;
-					game.naveVelocidad *= 1.30;
+					game.naveVelocidad *= 1.3;
 					sw = true;
 				}
 			break;

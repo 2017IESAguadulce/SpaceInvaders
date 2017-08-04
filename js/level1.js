@@ -185,10 +185,10 @@ var level1State = {
 		// Variables con textos y puntos mostrados por pantalla
 		game.puntosTexto = game.add.text(10, 10, 'Puntos: ' + game.puntos, { font: '34px Arial', fill: '#fff' });
 		game.vidas = game.add.group();
-		game.vidasTexto = game.add.text(game.world.width - 125, 10, 'Escudos: ', { font: '30px Arial', fill: '#fff' });
+		game.vidasTexto = game.add.text(game.world.width - 140, 10, 'Escudos: ', { font: '30px Arial', fill: '#fff' });
 		// Mostramos las vidas del jugador
 		for (var i = 0; i < game.nivelNaveEscudo; i++) {
-			var img = game.vidas.create(game.world.width - 125 + (30 * i), 60, 'nave');
+			var img = game.vidas.create(game.world.width - 135 + (23 * i), 60, 'nave');
 			img.anchor.setTo(0.5, 0.5);
 			img.angle = 90;
 			img.alpha = 0.4;

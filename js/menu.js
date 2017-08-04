@@ -8,11 +8,6 @@ var menuState = {
 		// Cargamos fondo y mostramos título y demás mensajes agregando instrucciones para iniciar el juego
 		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
         game.titulo = game.add.text(80, 80, 'Space Invaders', { font: '54px Arial', fill: 'white' });
-		// Asignamos velocidad inicial de logo mostrado y cargamos animaciones
-		game.velocidadLogo = 0.1;
-		game.sfxHover = game.add.audio('botonHover');
-		game.sfxStart = game.add.audio('botonStart');
-		game.sfxCancel = game.add.audio('botonCancel');
 		// Agregamos botones para controlar las opciones de juego
 		game.btnJugar = game.add.button(game.world.centerX + 100, 250, 'botonJugar', this.manejadorClickBotonJugar, this, 0, 1, 0);
 		game.btnOpciones = game.add.button(game.world.centerX + 100, 350, 'botonOpciones', this.manejadorClickBotonOpciones, this, 0, 1, 0);
@@ -85,6 +80,11 @@ var menuState = {
 		game.nivelNaveVelocidad = 1;
 		game.naveBalasRatio = 1000;
 		game.naveVelocidad = 200;
+		game.velocidadLogo = 0.1;
+		// Cargamos audios iniciales
+		game.sfxHover = game.add.audio('botonHover');
+		game.sfxStart = game.add.audio('botonStart');
+		game.sfxCancel = game.add.audio('botonCancel');
 	},
 	
 	/**

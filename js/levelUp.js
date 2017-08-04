@@ -9,9 +9,9 @@ var levelUp = {
 		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
         game.titulo = game.add.text(80, 80, 'Mejoras de Nave', { font: '54px Arial', fill: 'white' });
         game.puntosTexto = game.add.text(80, 200, 'Puntos: ' + game.puntos, {font: '34px Arial', fill: 'white' });
-		game.escudoNave = game.add.text(170, 325, 'Escudo Nv. ' + game.nivelNaveEscudo, {font: '24px Arial', fill: 'white' });
-		game.velocidadDisparo = game.add.text(170, 400, 'Disparo Nv. ' + game.nivelNaveDisparo, {font: '24px Arial', fill: 'white' });
-		game.velocidadNave = game.add.text(170, 475, 'Velocidad Nv. ' + game.nivelNaveVelocidad, {font: '24px Arial', fill: 'white' });
+		game.escudoNave = game.add.text(170, 325, 'Escudo Nv. ' + ((game.nivelNaveEscudo <= 5) ? game.nivelNaveEscudo : "Máximo"), {font: '24px Arial', fill: 'white' });
+		game.velocidadDisparo = game.add.text(170, 400, 'Disparo Nv. ' + ((game.nivelNaveDisparo <= 5) ? game.nivelNaveDisparo : "Máximo"), {font: '24px Arial', fill: 'white' });
+		game.velocidadNave = game.add.text(170, 475, 'Velocidad Nv. ' + ((game.nivelNaveVelocidad <= 5) ? game.nivelNaveVelocidad : "Máximo"), {font: '24px Arial', fill: 'white' });
 		// Agregamos botones y manejadores para controlar sus eventos
 		game.costeEscudo = this.prepararBotonMejora("escudo", game.nivelNaveEscudo, 315);
 		game.costeDisparo = this.prepararBotonMejora("disparo", game.nivelNaveDisparo, 390);

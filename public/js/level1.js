@@ -63,6 +63,7 @@ var level1State = {
 			game.physics.arcade.overlap(game.nave, game.ayudas, this.manejadorColisionNaveAyuda, null, this);
 			game.physics.arcade.overlap(game.balas, game.aliens, this.manejadorDisparoNave, null, this);
 			game.physics.arcade.overlap(game.balasAlien, game.nave, this.manejadorDisparoEnemigo, null, this);
+			game.physics.arcade.overlap(game.nave, game.aliens, this.manejadorColisionNaveAlien, null, this);
 		}
 	},
 	
@@ -147,6 +148,50 @@ var level1State = {
 	},
 
 	/**
+	 * Función usada para gestionar las colisiones producidas entre nuestra nave y los aliens
+	 * @method manejadorColisionNaveAlien
+	 * @param {} nave
+	 * @param {} alien
+	 */
+	manejadorColisionNaveAlien: function(nave, alien) {
+		// Eliminamos alien, reproducimos sonido y agregamos puntos a marcador
+		alien.kill();
+		game.sfxExplosion.play();
+		game.puntos += 20;
+		game.puntosTexto.text = 'Puntos: ' + game.puntos;
+		vida = game.vidas.getFirstAlive();
+		if (vida) {
+			// Si tenemos vidas quitamos una
+			vida.kill();
+		}
+		// Mostramos la animacion de explosión en las coordenadas de nuestra nave
+		var explosion = game.explosiones.getFirstExists(false);
+		explosion.reset(nave.body.x, nave.body.y);
+		explosion.play('boom', 20, false, true);
+		// Si no nos quedan vidas
+		if (game.vidas.countLiving() < 1) {
+			// Eliminamos la nave y removemos demás elementos de juego
+			nave.kill();
+			game.balasAlien.callAll('kill');
+			game.tweens.remove(game.movimientoAlienX);
+			game.time.events.remove(game.movimientoAlienY);
+			// Lanzamos el estado lose
+			game.state.start('lose');
+		// Si era el último alien
+		} else if (game.aliens.countLiving() == 0) {
+			// Agregamos puntos a marcador
+			game.puntos += 500;
+			game.puntosTexto.text = 'Puntos: ' + game.puntos;
+			// Eliminamos eventos de movimiento en aliens
+			game.tweens.remove(game.movimientoAlienX);
+			game.time.events.remove(game.movimientoAlienY);
+			game.balasAlien.callAll('kill', this);
+			// Lanzamos el estado levelUp
+			game.state.start('levelUp');
+		}
+	},
+	
+	/**
 	 * Función usada para controlar el evento hover en todos los botones a nivel general
 	 * @method manejadorOverBoton
 	 */
@@ -187,7 +232,7 @@ var level1State = {
 		game.vidas = game.add.group();
 		game.vidasTexto = game.add.text(game.world.width - 140, 10, 'Escudos: ', { font: '30px Arial', fill: '#fff' });
 		// Mostramos las vidas del jugador
-		for (var i = game.nivelNaveEscudo; i < game.nivelNaveEscudo; i++) {
+		for (var i = 0; i < game.nivelNaveEscudo; i++) {
 			var img = game.vidas.create(game.world.width - 135 + (23 * i), 60, 'nave');
 			img.anchor.setTo(0.5, 0.5);
 			img.angle = 90;

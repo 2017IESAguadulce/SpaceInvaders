@@ -13,6 +13,7 @@ var loadState = {
 		game.load.image('100', 'assets/sprites/100.png');
 		game.load.image('200', 'assets/sprites/200.png');
 		game.load.image('300', 'assets/sprites/300.png');
+		game.load.image('muro', 'assets/sprites/muro.png');
 		game.load.image('skin1', 'assets/skins/skin1.jpg');
 		game.load.image('skin2', 'assets/skins/skin2.jpg');
 		game.load.image('skin3', 'assets/skins/skin3.jpg');
@@ -42,6 +43,7 @@ var loadState = {
 		game.load.audio('disparo', 'assets/audio/SoundEffects/blaster.mp3');
 		game.load.audio('explosion', 'assets/audio/SoundEffects/alien_death1.wav');
 		game.load.audio('hiloMusical', 'assets/audio/SpaceArp1Kit.mp3');
+		game.load.audio('muro', 'assets/audio/SoundEffects/battery.wav');
 		// Si ejecutamos el juego desde el móvil cargamos el pad virtual
 		if (!game.escritorio) {
 			game.load.spritesheet('gamepad', 'assets/buttons/gamepad_spritesheet.png', 100, 100);

@@ -17,7 +17,7 @@ Para cualquier referencia relacionada con el juego, podemos ver el proyecto desp
 ...
 
 [Phaser]: https://phaser.io/
-[SpaceInvaders]: https://github.com/2017IESAguadulce/SpaceInvaders/public
+[SpaceInvaders]: https://2017iesaguadulce.github.io/SpaceInvaders/public
 [Chrome]: https://www.google.es/chrome/browser/desktop/index.html
 [Firefox]: https://www.mozilla.org/es-ES/firefox/new/
 [Opera]: http://www.opera.com/es

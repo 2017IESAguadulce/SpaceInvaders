@@ -5,8 +5,11 @@ var optionsState = {
 	 * @method preload
 	 */
 	preload: function() {
-		// Cargamos el skin primero para minimizar el efecto de delay por la carga
+		// Cargamos skin y mensajes primero para minimizar el delay de la carga del controlador de volúmen
 		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
+		// Cargamos y mostramos mensajes por pantalla
+        game.titulo = game.add.text(80, 80, 'Opciones', { font: '54px Arial', fill: 'white' });
+		game.volumen = game.add.text(game.world.centerX + 150, 300, 'Volúmen', { font: '24px Arial', fill: 'white' });
 		game.slickUI.load('assets/ui/kenney/kenney.json');
 	},
 	
@@ -15,9 +18,6 @@ var optionsState = {
 	 * @method create
 	 */
     create: function() {	
-		// Cargamos y mostramos mensajes por pantalla
-        game.titulo = game.add.text(80, 80, 'Opciones', { font: '54px Arial', fill: 'white' });
-		game.volumen = game.add.text(game.world.centerX + 150, 300, 'Volúmen', { font: '24px Arial', fill: 'white' });
 		// Creamos slider para manejar el volúmen del audio y le asignamos su manejador
         game.sliderVolumen = new SlickUI.Element.Slider(game.world.centerX + 95, 280, 200);
 		game.slickUI.add(game.sliderVolumen);

@@ -87,17 +87,9 @@ var level1State = {
 		var explosion = game.explosiones.getFirstExists(false);
 		explosion.reset(alien.body.x, alien.body.y);
 		explosion.play('boom', 30, false, true);
-		// Si no quedan aliens
+		// Si no quedan aliens llamamos al método ganarPartida
 		if (game.aliens.countLiving() == 0) {
-			// Agregamos puntos a marcador
-			game.puntos += 500;
-			game.puntosTexto.text = 'Puntos: ' + game.puntos;
-			// Eliminamos eventos de movimiento en aliens
-			game.tweens.remove(game.movimientoAlienX);
-			game.time.events.remove(game.movimientoAlienY);
-			game.balasAlien.callAll('kill', this);
-			// Lanzamos el estado levelUp
-			game.state.start('levelUp');
+			this.ganarPartida();
 		}
 	},
 
@@ -120,15 +112,9 @@ var level1State = {
 		var explosion = game.explosiones.getFirstExists(false);
 		explosion.reset(nave.body.x, nave.body.y);
 		explosion.play('boom', 20, false, true);
-		// Si no nos quedan vidas
+		// Si no nos quedan vidas llamamos al método perderPartida
 		if (game.vidas.countLiving() < 1) {
-			// Eliminamos la nave y removemos demas elementos de juego
-			nave.kill();
-			game.balasAlien.callAll('kill');
-			game.tweens.remove(game.movimientoAlienX);
-			game.time.events.remove(game.movimientoAlienY);
-			// Lanzamos el estado lose
-			game.state.start('lose');
+			this.perderPartida(nave);
 		}
 	},
 
@@ -168,26 +154,12 @@ var level1State = {
 		var explosion = game.explosiones.getFirstExists(false);
 		explosion.reset(nave.body.x, nave.body.y);
 		explosion.play('boom', 20, false, true);
-		// Si no nos quedan vidas
+		// Si no nos quedan vidas llamamos al método perderPartida
 		if (game.vidas.countLiving() < 1) {
-			// Eliminamos la nave y removemos demás elementos de juego
-			nave.kill();
-			game.balasAlien.callAll('kill');
-			game.tweens.remove(game.movimientoAlienX);
-			game.time.events.remove(game.movimientoAlienY);
-			// Lanzamos el estado lose
-			game.state.start('lose');
-		// Si era el último alien
+			this.perderPartida(nave);
+		// Si no quedan aliens llamamos al método ganarPartida
 		} else if (game.aliens.countLiving() == 0) {
-			// Agregamos puntos a marcador
-			game.puntos += 500;
-			game.puntosTexto.text = 'Puntos: ' + game.puntos;
-			// Eliminamos eventos de movimiento en aliens
-			game.tweens.remove(game.movimientoAlienX);
-			game.time.events.remove(game.movimientoAlienY);
-			game.balasAlien.callAll('kill', this);
-			// Lanzamos el estado levelUp
-			game.state.start('levelUp');
+			this.ganarPartida();
 		}
 	},
 	
@@ -517,5 +489,36 @@ var level1State = {
 		game.world.bringToTop(game.vidasTexto);
 		game.world.bringToTop(game.btnVolver);
 		game.world.bringToTop(game.btnSilenciar);
-	}
+	},
+	
+	/**
+	 * Función usada para gestionar la partida perdida
+	 * @method perderPartida
+	 * @param {} nave
+	 */
+	perderPartida: function(nave) {
+		// Eliminamos la nave y removemos demas elementos de juego
+		nave.kill();
+		game.balasAlien.callAll('kill');
+		game.tweens.remove(game.movimientoAlienX);
+		game.time.events.remove(game.movimientoAlienY);
+		// Lanzamos el estado lose
+		game.state.start('lose');
+	},
+	
+	/**
+	 * Función usada para gestionar la partida ganada
+	 * @method ganarPartida
+	 */
+	ganarPartida: function() {
+		// Agregamos puntos a marcador
+		game.puntos += 500;
+		game.puntosTexto.text = 'Puntos: ' + game.puntos;
+		// Eliminamos eventos de movimiento en aliens
+		game.tweens.remove(game.movimientoAlienX);
+		game.time.events.remove(game.movimientoAlienY);
+		game.balasAlien.callAll('kill', this);
+		// Lanzamos el estado levelUp
+		game.state.start('levelUp');
+	},
 }

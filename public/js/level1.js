@@ -1,7 +1,5 @@
 // Variable estado usada para cargar el nivel 1 del juego
 //Pequeno comentario: Juan Antonio
-//Otro Comentario
-//MAs comentarios
 var level1State = {
 	/**
 	 * Metodo usado para cargar el juego
@@ -65,8 +63,8 @@ var level1State = {
 			game.physics.arcade.overlap(game.balas, game.aliens, this.manejadorDisparoNave, null, this);
 			game.physics.arcade.overlap(game.balasAlien, game.nave, this.manejadorDisparoEnemigo, null, this);
 			game.physics.arcade.overlap(game.nave, game.aliens, this.manejadorColisionNaveAlien, null, this);
-			game.physics.arcade.overlap(game.balasAlien, game.bases, this.manejadorColisionMuro, null, this);
-			game.physics.arcade.overlap(game.balas, game.bases, this.manejadorColisionMuro, null, this);
+			game.physics.arcade.overlap(game.balasAlien, game.muros, this.manejadorColisionMuro, null, this);
+			game.physics.arcade.overlap(game.balas, game.muros, this.manejadorColisionMuro, null, this);
 			game.world.bringToTop(game.balas);
 			game.world.bringToTop(game.balasAlien);
 			game.world.bringToTop(game.ayudas);
@@ -170,7 +168,7 @@ var level1State = {
 	},
 	
 	/**
-	 * Función usada para gestionar las colisiones producidas entre las balas y las bases
+	 * Función usada para gestionar las colisiones producidas entre las balas y los muros
 	 * @method manejadorColisionMuro
 	 * @param {} bala
 	 * @param {} muro
@@ -178,19 +176,19 @@ var level1State = {
 	manejadorColisionMuro: function(bala, muro) {
 		var factorRedondeo = 3;
 		// Obtenemos elemento colisionado, referencia de puntos de colisión y colores alrededor de ese punto
- 		var baseMapa = game.baseMapas[game.bases.getChildIndex(muro)];
-		var puntoX = Math.round(bala.x - baseMapa.worldX);
-		var puntoY = Math.round(bala.y - baseMapa.worldY);
-		var colorMapaCen = baseMapa.bmp.getPixelRGB(puntoX, puntoY);
-		var colorMapaIzq = baseMapa.bmp.getPixelRGB(puntoX - factorRedondeo, puntoY);
-		var colorMapaDer = baseMapa.bmp.getPixelRGB(puntoX + factorRedondeo, puntoY);
-		var colorMapaArr = baseMapa.bmp.getPixelRGB(puntoX, puntoY + factorRedondeo);
-		var colorMapaAba = baseMapa.bmp.getPixelRGB(puntoX, puntoY - factorRedondeo);
+ 		var muroMapa = game.muroMapas[game.muros.getChildIndex(muro)];
+		var puntoX = Math.round(bala.x - muroMapa.worldX);
+		var puntoY = Math.round(bala.y - muroMapa.worldY);
+		var colorMapaCen = muroMapa.bmp.getPixelRGB(puntoX, puntoY);
+		var colorMapaIzq = muroMapa.bmp.getPixelRGB(puntoX - factorRedondeo, puntoY);
+		var colorMapaDer = muroMapa.bmp.getPixelRGB(puntoX + factorRedondeo, puntoY);
+		var colorMapaArr = muroMapa.bmp.getPixelRGB(puntoX, puntoY + factorRedondeo);
+		var colorMapaAba = muroMapa.bmp.getPixelRGB(puntoX, puntoY - factorRedondeo);
 		// Si el canal rojo indica que no hemos destruído esa zona del mapa de bits
 		if (colorMapaCen.r > 0 || colorMapaIzq.r > 0 || colorMapaDer.r > 0 || colorMapaArr.r > 0 || colorMapaAba.r > 0) {
 			// Pintamos la colisión, reproducimos audio y destruímos la bala
-			baseMapa.bmp.draw(game.baseDanio, puntoX - 8, puntoY - 8);
-			baseMapa.bmp.update();
+			muroMapa.bmp.draw(game.muroDanio, puntoX - 8, puntoY - 8);
+			muroMapa.bmp.update();
 			game.sfxMuro.play();
 			bala.kill();
 		}
@@ -318,33 +316,33 @@ var level1State = {
 	},
 	
 	/**
-	 * Función usada para cargar las bases usadas para proteger al jugador
+	 * Función usada para cargar los muros utilizados para proteger a la nave
 	 * @method cargarMuros
 	 */
 	cargarMuros: function() {
 		// Cargamos valores iniciales
 		var totalBases = 4;
-		var baseY = 450;
+		var muroY = 450;
 		var ancho = 48;
 		var alto = 32;
-		// Creamos grupo de bases y mapas de bits para almacenar las imagénes a pixelar
-        game.bases = game.add.group();
-        game.bases.enableBody = true;
-        game.baseDanio = game.make.bitmapData(ancho, alto);
-        game.baseDanio.circle(8, 8, 8, 'rgba(0, 27, 7, 1)');  // rgba(255,0,255,0.2)
-        game.baseMapas = [];
-		// Creamos tantas bases en pantalla como hayamos descrito
+		// Creamos grupo de muros y mapas de bits para almacenar las imagénes a mostrar
+        game.muros = game.add.group();
+        game.muros.enableBody = true;
+        game.muroDanio = game.make.bitmapData(ancho, alto);
+        game.muroDanio.circle(8, 8, 8, 'rgba(0, 27, 7, 1)');  // rgba(255,0,255,0.2)
+        game.muroMapas = [];
+		// Creamos tantos muros en pantalla como hayamos descrito
         for (var x = 1; x <= totalBases; x++) {
-            var baseMapa = game.make.bitmapData(ancho, alto);
-            baseMapa.draw('muro', 0, 0, ancho, alto);
-            baseMapa.update();
-			// Posicionamos las bases y les agregamos y configuramos el sistema de físicas
-            var baseX = (x * game.width / (totalBases + 1)) - (ancho / 2);
-            var muro = game.add.sprite(baseX, baseY, baseMapa);
+            var muroMapa = game.make.bitmapData(ancho, alto);
+            muroMapa.draw('muro', 0, 0, ancho, alto);
+            muroMapa.update();
+			// Posicionamos los muros y les agregamos y configuramos el sistema de físicas
+            var muroX = (x * game.width / (totalBases + 1)) - (ancho / 2);
+            var muro = game.add.sprite(muroX, muroY, muroMapa);
 			game.physics.arcade.enable(muro);
 			muro.body.allowGravity = false;
-            game.bases.add(muro);
-            game.baseMapas.push( { bmp: baseMapa, worldX: baseX, worldY: baseY });
+            game.muros.add(muro);
+            game.muroMapas.push( { bmp: muroMapa, worldX: muroX, worldY: muroY });
         }
     },
 	

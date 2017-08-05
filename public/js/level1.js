@@ -7,11 +7,12 @@ var level1State = {
 	 * Metodo usado para cargar el juego
 	 * @method create
 	 */
-    create: function() {				
+    create: function() {
 		// Cargamos e iniciamos las diferentes variables usadas por el juego
 		this.cargarInterfaz();
 		this.cargarNave();
 		this.cargarAliens();
+		this.cargarMuros();
 		this.cargarAnimaciones();
 		this.cargarAudios();
 		this.cargarControles();
@@ -63,6 +64,12 @@ var level1State = {
 			game.physics.arcade.overlap(game.nave, game.ayudas, this.manejadorColisionNaveAyuda, null, this);
 			game.physics.arcade.overlap(game.balas, game.aliens, this.manejadorDisparoNave, null, this);
 			game.physics.arcade.overlap(game.balasAlien, game.nave, this.manejadorDisparoEnemigo, null, this);
+			game.physics.arcade.overlap(game.nave, game.aliens, this.manejadorColisionNaveAlien, null, this);
+			game.physics.arcade.overlap(game.balasAlien, game.bases, this.manejadorColisionMuro, null, this);
+			game.physics.arcade.overlap(game.balas, game.bases, this.manejadorColisionMuro, null, this);
+			game.world.bringToTop(game.balas);
+			game.world.bringToTop(game.balasAlien);
+			game.world.bringToTop(game.ayudas);
 		}
 	},
 	
@@ -86,17 +93,9 @@ var level1State = {
 		var explosion = game.explosiones.getFirstExists(false);
 		explosion.reset(alien.body.x, alien.body.y);
 		explosion.play('boom', 30, false, true);
-		// Si no quedan aliens
+		// Si no quedan aliens llamamos al método ganarPartida
 		if (game.aliens.countLiving() == 0) {
-			// Agregamos puntos a marcador
-			game.puntos += 500;
-			game.puntosTexto.text = 'Puntos: ' + game.puntos;
-			// Eliminamos eventos de movimiento en aliens
-			game.tweens.remove(game.movimientoAlienX);
-			game.time.events.remove(game.movimientoAlienY);
-			game.balasAlien.callAll('kill', this);
-			// Lanzamos el estado levelUp
-			game.state.start('levelUp');
+			this.ganarPartida();
 		}
 	},
 
@@ -119,15 +118,9 @@ var level1State = {
 		var explosion = game.explosiones.getFirstExists(false);
 		explosion.reset(nave.body.x, nave.body.y);
 		explosion.play('boom', 20, false, true);
-		// Si no nos quedan vidas
+		// Si no nos quedan vidas llamamos al método perderPartida
 		if (game.vidas.countLiving() < 1) {
-			// Eliminamos la nave y removemos demas elementos de juego
-			nave.kill();
-			game.balasAlien.callAll('kill');
-			game.tweens.remove(game.movimientoAlienX);
-			game.time.events.remove(game.movimientoAlienY);
-			// Lanzamos el estado lose
-			game.state.start('lose');
+			this.perderPartida(nave);
 		}
 	},
 
@@ -147,6 +140,63 @@ var level1State = {
 	},
 
 	/**
+	 * Función usada para gestionar las colisiones producidas entre nuestra nave y los aliens
+	 * @method manejadorColisionNaveAlien
+	 * @param {} nave
+	 * @param {} alien
+	 */
+	manejadorColisionNaveAlien: function(nave, alien) {
+		// Eliminamos alien, reproducimos sonido y agregamos puntos a marcador
+		alien.kill();
+		game.sfxExplosion.play();
+		game.puntos += 20;
+		game.puntosTexto.text = 'Puntos: ' + game.puntos;
+		vida = game.vidas.getFirstAlive();
+		if (vida) {
+			// Si tenemos vidas quitamos una
+			vida.kill();
+		}
+		// Mostramos la animacion de explosión en las coordenadas de nuestra nave
+		var explosion = game.explosiones.getFirstExists(false);
+		explosion.reset(nave.body.x, nave.body.y);
+		explosion.play('boom', 20, false, true);
+		// Si no nos quedan vidas llamamos al método perderPartida
+		if (game.vidas.countLiving() < 1) {
+			this.perderPartida(nave);
+		// Si no quedan aliens llamamos al método ganarPartida
+		} else if (game.aliens.countLiving() == 0) {
+			this.ganarPartida();
+		}
+	},
+	
+	/**
+	 * Función usada para gestionar las colisiones producidas entre las balas y las bases
+	 * @method manejadorColisionMuro
+	 * @param {} bala
+	 * @param {} muro
+	 */
+	manejadorColisionMuro: function(bala, muro) {
+		var factorRedondeo = 3;
+		// Obtenemos elemento colisionado, referencia de puntos de colisión y colores alrededor de ese punto
+ 		var baseMapa = game.baseMapas[game.bases.getChildIndex(muro)];
+		var puntoX = Math.round(bala.x - baseMapa.worldX);
+		var puntoY = Math.round(bala.y - baseMapa.worldY);
+		var colorMapaCen = baseMapa.bmp.getPixelRGB(puntoX, puntoY);
+		var colorMapaIzq = baseMapa.bmp.getPixelRGB(puntoX - factorRedondeo, puntoY);
+		var colorMapaDer = baseMapa.bmp.getPixelRGB(puntoX + factorRedondeo, puntoY);
+		var colorMapaArr = baseMapa.bmp.getPixelRGB(puntoX, puntoY + factorRedondeo);
+		var colorMapaAba = baseMapa.bmp.getPixelRGB(puntoX, puntoY - factorRedondeo);
+		// Si el canal rojo indica que no hemos destruído esa zona del mapa de bits
+		if (colorMapaCen.r > 0 || colorMapaIzq.r > 0 || colorMapaDer.r > 0 || colorMapaArr.r > 0 || colorMapaAba.r > 0) {
+			// Pintamos la colisión, reproducimos audio y destruímos la bala
+			baseMapa.bmp.draw(game.baseDanio, puntoX - 8, puntoY - 8);
+			baseMapa.bmp.update();
+			game.sfxMuro.play();
+			bala.kill();
+		}
+	},
+	
+	/**
 	 * Función usada para controlar el evento hover en todos los botones a nivel general
 	 * @method manejadorOverBoton
 	 */
@@ -155,7 +205,7 @@ var level1State = {
 	},
 
 	/**
-	 * Función usada para controlar el evento click en el boton volver
+	 * Función usada para controlar el evento click en el botón volver
 	 * @method manejadorClickBotonVolver
 	 */
 	manejadorClickBotonVolver: function() {
@@ -165,7 +215,7 @@ var level1State = {
 	},
 	
 	/**
-	 * Función usada para controlar el evento click en el boton silenciar
+	 * Función usada para controlar el evento click en el botón silenciar
 	 * @method manejadorClickBotonSilenciar
 	 */
 	manejadorClickBotonSilenciar: function() {
@@ -187,13 +237,13 @@ var level1State = {
 		game.vidas = game.add.group();
 		game.vidasTexto = game.add.text(game.world.width - 140, 10, 'Escudos: ', { font: '30px Arial', fill: '#fff' });
 		// Mostramos las vidas del jugador
-		for (var i = game.nivelNaveEscudo; i < game.nivelNaveEscudo; i++) {
+		for (var i = 0; i < game.nivelNaveEscudo; i++) {
 			var img = game.vidas.create(game.world.width - 135 + (23 * i), 60, 'nave');
 			img.anchor.setTo(0.5, 0.5);
 			img.angle = 90;
 			img.alpha = 0.4;
 		}
-		// Agregamos boton volver y silenciar junto con sus manejadores para controlar sus eventos
+		// Agregamos botón volver y silenciar junto con sus manejadores para controlar sus eventos
 		game.btnVolver = game.add.button(game.world.left + 10, game.world.bottom - 50, 'botonVolverPeq', this.manejadorClickBotonVolver, this, 0, 1, 0);
 		game.btnVolver.onInputOver.add(this.manejadorOverBoton, this);
 		game.btnSilenciar = game.add.button(game.world.right - 50, game.world.bottom - 50, 'botonSilenciar', this.manejadorClickBotonSilenciar, this, 0, 1, 0);
@@ -252,7 +302,7 @@ var level1State = {
 		}
 		// Asignamos coordenadas iniciales a grupo de enemigos de tipo alien
 		game.aliens.x = 100;
-		game.aliens.y = 50;	
+		game.aliens.y = 50;
 		// Agregamos los eventos de movimiento horizontal y vertical para los aliens
 		game.movimientoAlienX = game.add.tween(game.aliens).to( { x: 250 }, game.alienVelocidad, Phaser.Easing.Linear.None, true, 0, game.alienVelocidad, true);
 		game.movimientoAlienY = game.time.events.loop(game.alienVelocidad * 2, this.descender, this);
@@ -266,6 +316,37 @@ var level1State = {
 		game.balasAlien.setAll('outOfBoundsKill', true);
 		game.balasAlien.setAll('checkWorldBounds', true);
 	},
+	
+	/**
+	 * Función usada para cargar las bases usadas para proteger al jugador
+	 * @method cargarMuros
+	 */
+	cargarMuros: function() {
+		// Cargamos valores iniciales
+		var totalBases = 4;
+		var baseY = 450;
+		var ancho = 48;
+		var alto = 32;
+		// Creamos grupo de bases y mapas de bits para almacenar las imagénes a pixelar
+        game.bases = game.add.group();
+        game.bases.enableBody = true;
+        game.baseDanio = game.make.bitmapData(ancho, alto);
+        game.baseDanio.circle(8, 8, 8, 'rgba(0, 27, 7, 1)');  // rgba(255,0,255,0.2)
+        game.baseMapas = [];
+		// Creamos tantas bases en pantalla como hayamos descrito
+        for (var x = 1; x <= totalBases; x++) {
+            var baseMapa = game.make.bitmapData(ancho, alto);
+            baseMapa.draw('muro', 0, 0, ancho, alto);
+            baseMapa.update();
+			// Posicionamos las bases y les agregamos y configuramos el sistema de físicas
+            var baseX = (x * game.width / (totalBases + 1)) - (ancho / 2);
+            var muro = game.add.sprite(baseX, baseY, baseMapa);
+			game.physics.arcade.enable(muro);
+			muro.body.allowGravity = false;
+            game.bases.add(muro);
+            game.baseMapas.push( { bmp: baseMapa, worldX: baseX, worldY: baseY });
+        }
+    },
 	
 	/**
 	 * Función usada para crear y cargar las animaciones usadas en el juego
@@ -287,6 +368,7 @@ var level1State = {
 		game.sfxAyuda = game.add.audio('ayuda');
 		game.sfxDisparo = game.add.audio('disparo');
 		game.sfxExplosion = game.add.audio('explosion');
+		game.sfxMuro = game.add.audio('muro');
 	},
 	
 	/**
@@ -299,7 +381,7 @@ var level1State = {
 		game.botonDisparo = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 		// Si ejecutamos la aplicacion desde el movil
 		if (!game.escritorio) {
-			// Agregamos un pad virtual con su joystick y boton
+			// Agregamos un pad virtual con su joystick y botón
 			game.gamepad = game.plugins.add(Phaser.Plugin.VirtualGamepad);
 			game.joystick = game.gamepad.addJoystick(150, 500, 1.2, 'gamepad');
 			game.botonA = game.gamepad.addButton(650, 500, 1.0, 'gamepad');
@@ -472,5 +554,36 @@ var level1State = {
 		game.world.bringToTop(game.vidasTexto);
 		game.world.bringToTop(game.btnVolver);
 		game.world.bringToTop(game.btnSilenciar);
-	}
+	},
+	
+	/**
+	 * Función usada para gestionar la partida perdida
+	 * @method perderPartida
+	 * @param {} nave
+	 */
+	perderPartida: function(nave) {
+		// Eliminamos la nave y removemos demas elementos de juego
+		nave.kill();
+		game.balasAlien.callAll('kill');
+		game.tweens.remove(game.movimientoAlienX);
+		game.time.events.remove(game.movimientoAlienY);
+		// Lanzamos el estado lose
+		game.state.start('lose');
+	},
+	
+	/**
+	 * Función usada para gestionar la partida ganada
+	 * @method ganarPartida
+	 */
+	ganarPartida: function() {
+		// Agregamos puntos a marcador
+		game.puntos += 500;
+		game.puntosTexto.text = 'Puntos: ' + game.puntos;
+		// Eliminamos eventos de movimiento en aliens
+		game.tweens.remove(game.movimientoAlienX);
+		game.time.events.remove(game.movimientoAlienY);
+		game.balasAlien.callAll('kill', this);
+		// Lanzamos el estado levelUp
+		game.state.start('levelUp');
+	},
 }

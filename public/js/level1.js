@@ -69,6 +69,7 @@ var level1State = {
 			game.world.bringToTop(game.balas);
 			game.world.bringToTop(game.balasAlien);
 			game.world.bringToTop(game.ayudas);
+			game.world.bringToTop(game.aliens);
 		}
 	},
 	
@@ -211,6 +212,7 @@ var level1State = {
 		explosion.play('boom', 20, false, true);
 		// Lanzamos paquete de puntos y eliminamos al insavor
 		this.cargarPowerUp('500', invasor.body.x, invasor.body.y);
+		game.sfxInvasor.stop();
 		invasor.kill();
 	},
 	
@@ -333,9 +335,9 @@ var level1State = {
 		game.balasAlien.setAll('anchor.y', 1);
 		game.balasAlien.setAll('outOfBoundsKill', true);
 		game.balasAlien.setAll('checkWorldBounds', true);
-		// Generamos disparador de evento de forma aleatoria entre los segundos 10 y 40 de juego
+		// Generamos disparador de evento de forma aleatoria entre los segundos 10 y 30 de juego
 		var tMin = 10;
-		var tMax = 40;
+		var tMax = 30;
 		var tiempo = Math.floor(Math.random() * (tMax - tMin + 1) + tMin);
 		game.time.events.add(Phaser.Timer.SECOND * tiempo, this.cargarAlienTop, this);
 	},
@@ -356,6 +358,7 @@ var level1State = {
 		// Le asignamos los eventos de movimiento para que sólo se produzca un bucle de transición hasta que desaparezca
 		movimientoAlienTop = game.add.tween(game.invasor).to( { x: game.width - game.invasor.width }, game.alienVelocidad * 5, Phaser.Easing.Linear.None, true, 0, game.alienVelocidad, true);
 		movimientoAlienTop.onRepeat.add( function() { if (bucle == 0) { game.tweens.remove(movimientoAlienTop); game.invasor.kill(); } bucle--; }, this);
+		game.sfxInvasor.play();
 	},
 	
 	
@@ -411,6 +414,7 @@ var level1State = {
 		game.sfxDisparo = game.add.audio('disparo');
 		game.sfxExplosion = game.add.audio('explosion');
 		game.sfxMuro = game.add.audio('muro');
+		game.sfxInvasor = game.add.audio('invasor');
 	},
 	
 	/**
@@ -606,6 +610,7 @@ var level1State = {
 	perderPartida: function(nave) {
 		// Eliminamos la nave y removemos demas elementos de juego
 		nave.kill();
+		game.sfxInvasor.stop();
 		game.balasAlien.callAll('kill');
 		game.tweens.remove(game.movimientoAlienX);
 		game.time.events.remove(game.movimientoAlienY);
@@ -625,6 +630,7 @@ var level1State = {
 		game.tweens.remove(game.movimientoAlienX);
 		game.time.events.remove(game.movimientoAlienY);
 		game.balasAlien.callAll('kill', this);
+		game.sfxInvasor.stop();
 		// Lanzamos el estado levelUp
 		game.state.start('levelUp');
 	},

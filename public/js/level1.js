@@ -1,7 +1,5 @@
 // Variable estado usada para cargar el nivel 1 del juego
 //Pequeno comentario: Juan Antonio
-//Otro Comentario
-//MAs comentarios
 var level1State = {
 	/**
 	 * Metodo usado para cargar el juego
@@ -65,11 +63,13 @@ var level1State = {
 			game.physics.arcade.overlap(game.balas, game.aliens, this.manejadorDisparoNave, null, this);
 			game.physics.arcade.overlap(game.balasAlien, game.nave, this.manejadorDisparoEnemigo, null, this);
 			game.physics.arcade.overlap(game.nave, game.aliens, this.manejadorColisionNaveAlien, null, this);
-			game.physics.arcade.overlap(game.balasAlien, game.bases, this.manejadorColisionMuro, null, this);
-			game.physics.arcade.overlap(game.balas, game.bases, this.manejadorColisionMuro, null, this);
+			game.physics.arcade.overlap(game.balasAlien, game.muros, this.manejadorColisionMuro, null, this);
+			game.physics.arcade.overlap(game.balas, game.muros, this.manejadorColisionMuro, null, this);
+			game.physics.arcade.overlap(game.balas, game.invasor, this.manejadorColisionInvasor, null, this);
 			game.world.bringToTop(game.balas);
 			game.world.bringToTop(game.balasAlien);
 			game.world.bringToTop(game.ayudas);
+			game.world.bringToTop(game.aliens);
 		}
 	},
 	
@@ -89,7 +89,7 @@ var level1State = {
 		game.puntos += 20;
 		game.puntosTexto.text = 'Puntos: ' + game.puntos;
 		game.sfxExplosion.play();
-		// Lanzamos animacion de explosion para ese alien concreto
+		// Lanzamos animación de explosion para ese alien concreto
 		var explosion = game.explosiones.getFirstExists(false);
 		explosion.reset(alien.body.x, alien.body.y);
 		explosion.play('boom', 30, false, true);
@@ -114,7 +114,7 @@ var level1State = {
 			// Si tenemos vidas quitamos una
 			vida.kill();
 		}
-		// Mostramos la animacion de explosion en las coordenadas de nuestra nave
+		// Mostramos la animación de explosion en las coordenadas de nuestra nave
 		var explosion = game.explosiones.getFirstExists(false);
 		explosion.reset(nave.body.x, nave.body.y);
 		explosion.play('boom', 20, false, true);
@@ -156,7 +156,7 @@ var level1State = {
 			// Si tenemos vidas quitamos una
 			vida.kill();
 		}
-		// Mostramos la animacion de explosión en las coordenadas de nuestra nave
+		// Mostramos la animación de explosión en las coordenadas de nuestra nave
 		var explosion = game.explosiones.getFirstExists(false);
 		explosion.reset(nave.body.x, nave.body.y);
 		explosion.play('boom', 20, false, true);
@@ -170,7 +170,7 @@ var level1State = {
 	},
 	
 	/**
-	 * Función usada para gestionar las colisiones producidas entre las balas y las bases
+	 * Función usada para gestionar las colisiones producidas entre las balas y los muros
 	 * @method manejadorColisionMuro
 	 * @param {} bala
 	 * @param {} muro
@@ -178,22 +178,42 @@ var level1State = {
 	manejadorColisionMuro: function(bala, muro) {
 		var factorRedondeo = 3;
 		// Obtenemos elemento colisionado, referencia de puntos de colisión y colores alrededor de ese punto
- 		var baseMapa = game.baseMapas[game.bases.getChildIndex(muro)];
-		var puntoX = Math.round(bala.x - baseMapa.worldX);
-		var puntoY = Math.round(bala.y - baseMapa.worldY);
-		var colorMapaCen = baseMapa.bmp.getPixelRGB(puntoX, puntoY);
-		var colorMapaIzq = baseMapa.bmp.getPixelRGB(puntoX - factorRedondeo, puntoY);
-		var colorMapaDer = baseMapa.bmp.getPixelRGB(puntoX + factorRedondeo, puntoY);
-		var colorMapaArr = baseMapa.bmp.getPixelRGB(puntoX, puntoY + factorRedondeo);
-		var colorMapaAba = baseMapa.bmp.getPixelRGB(puntoX, puntoY - factorRedondeo);
+ 		var muroMapa = game.muroMapas[game.muros.getChildIndex(muro)];
+		var puntoX = Math.round(bala.x - muroMapa.worldX);
+		var puntoY = Math.round(bala.y - muroMapa.worldY);
+		var colorMapaCen = muroMapa.bmp.getPixelRGB(puntoX, puntoY);
+		var colorMapaIzq = muroMapa.bmp.getPixelRGB(puntoX - factorRedondeo, puntoY);
+		var colorMapaDer = muroMapa.bmp.getPixelRGB(puntoX + factorRedondeo, puntoY);
+		var colorMapaArr = muroMapa.bmp.getPixelRGB(puntoX, puntoY + factorRedondeo);
+		var colorMapaAba = muroMapa.bmp.getPixelRGB(puntoX, puntoY - factorRedondeo);
 		// Si el canal rojo indica que no hemos destruído esa zona del mapa de bits
 		if (colorMapaCen.r > 0 || colorMapaIzq.r > 0 || colorMapaDer.r > 0 || colorMapaArr.r > 0 || colorMapaAba.r > 0) {
 			// Pintamos la colisión, reproducimos audio y destruímos la bala
-			baseMapa.bmp.draw(game.baseDanio, puntoX - 8, puntoY - 8);
-			baseMapa.bmp.update();
+			muroMapa.bmp.draw(game.muroDanio, puntoX - 8, puntoY - 8);
+			muroMapa.bmp.update();
 			game.sfxMuro.play();
 			bala.kill();
 		}
+	},
+	
+	/**
+	 * Función usada para gestionar las colisiones producidas entre las balas y el invasor superior
+	 * @method manejadorColisionInvasor
+	 * @param {} bala
+	 * @param {} invasor
+	 */
+	manejadorColisionInvasor: function(bala, invasor) {
+		// Eliminamos bala y reproducimos sonido
+		bala.kill();
+		game.sfxExplosion.play();
+		// Mostramos la animación de explosión en las coordenadas del invasor
+		var explosion = game.explosiones.getFirstExists(false);
+		explosion.reset(invasor.body.x, invasor.body.y);
+		explosion.play('boom', 20, false, true);
+		// Lanzamos paquete de puntos y eliminamos al insavor
+		this.cargarPowerUp('500', invasor.body.x, invasor.body.y);
+		game.sfxInvasor.stop();
+		invasor.kill();
 	},
 	
 	/**
@@ -279,7 +299,7 @@ var level1State = {
 	},
 	
 	/**
-	 * Función usada para crear, inicializar y posicionar los enemigos en pantalla agregandoles movimiento
+	 * Función usada para crear, inicializar y posicionar los enemigos en pantalla agregándoles movimiento
 	 * @method cargarAliens
 	 */
 	cargarAliens: function() {
@@ -315,36 +335,61 @@ var level1State = {
 		game.balasAlien.setAll('anchor.y', 1);
 		game.balasAlien.setAll('outOfBoundsKill', true);
 		game.balasAlien.setAll('checkWorldBounds', true);
+		// Generamos disparador de evento de forma aleatoria entre los segundos 10 y 30 de juego
+		var tMin = 10;
+		var tMax = 30;
+		var tiempo = Math.floor(Math.random() * (tMax - tMin + 1) + tMin);
+		game.time.events.add(Phaser.Timer.SECOND * tiempo, this.cargarAlienTop, this);
 	},
 	
 	/**
-	 * Función usada para cargar las bases usadas para proteger al jugador
+	 * Función usada para crear y configurar el alien que aparece en la parte superior de la pantalla
+	 * @method cargarAliens
+	 */
+	cargarAlienTop: function() {
+		// Configuramos los parámetros iniciales del invasor
+		game.invasor = game.add.sprite(0, 50, 'invasor');
+		game.invasor.anchor.setTo(0.5, 0.5);
+		game.physics.enable(game.invasor, Phaser.Physics.ARCADE);
+		game.invasor.body.collideWorldBounds = false;
+		game.physics.arcade.enable(game.invasor);
+		game.invasor.body.allowGravity = false;
+		var bucle = 1;
+		// Le asignamos los eventos de movimiento para que sólo se produzca un bucle de transición hasta que desaparezca
+		movimientoAlienTop = game.add.tween(game.invasor).to( { x: game.width - game.invasor.width }, game.alienVelocidad * 5, Phaser.Easing.Linear.None, true, 0, game.alienVelocidad, true);
+		movimientoAlienTop.onRepeat.add( function() { if (bucle == 0) { game.tweens.remove(movimientoAlienTop); game.invasor.kill(); } bucle--; }, this);
+		game.sfxInvasor.play();
+	},
+	
+	
+	/**
+	 * Función usada para cargar los muros utilizados para proteger a la nave
 	 * @method cargarMuros
 	 */
 	cargarMuros: function() {
 		// Cargamos valores iniciales
 		var totalBases = 4;
-		var baseY = 450;
+		var muroY = 450;
 		var ancho = 48;
 		var alto = 32;
-		// Creamos grupo de bases y mapas de bits para almacenar las imagénes a pixelar
-        game.bases = game.add.group();
-        game.bases.enableBody = true;
-        game.baseDanio = game.make.bitmapData(ancho, alto);
-        game.baseDanio.circle(8, 8, 8, 'rgba(0, 27, 7, 1)');  // rgba(255,0,255,0.2)
-        game.baseMapas = [];
-		// Creamos tantas bases en pantalla como hayamos descrito
+		// Creamos grupo de muros y mapas de bits para almacenar las imagénes a mostrar
+        game.muros = game.add.group();
+        game.muros.enableBody = true;
+        game.muroDanio = game.make.bitmapData(ancho, alto);
+        game.muroDanio.circle(8, 8, 8, 'rgba(0, 27, 7, 1)');  // rgba(255,0,255,0.2)
+        game.muroMapas = [];
+		// Creamos tantos muros en pantalla como hayamos descrito
         for (var x = 1; x <= totalBases; x++) {
-            var baseMapa = game.make.bitmapData(ancho, alto);
-            baseMapa.draw('muro', 0, 0, ancho, alto);
-            baseMapa.update();
-			// Posicionamos las bases y les agregamos y configuramos el sistema de físicas
-            var baseX = (x * game.width / (totalBases + 1)) - (ancho / 2);
-            var muro = game.add.sprite(baseX, baseY, baseMapa);
+            var muroMapa = game.make.bitmapData(ancho, alto);
+            muroMapa.draw('muro', 0, 0, ancho, alto);
+            muroMapa.update();
+			// Posicionamos los muros y les agregamos y configuramos el sistema de físicas
+            var muroX = (x * game.width / (totalBases + 1)) - (ancho / 2);
+            var muro = game.add.sprite(muroX, muroY, muroMapa);
 			game.physics.arcade.enable(muro);
 			muro.body.allowGravity = false;
-            game.bases.add(muro);
-            game.baseMapas.push( { bmp: baseMapa, worldX: baseX, worldY: baseY });
+            game.muros.add(muro);
+            game.muroMapas.push( { bmp: muroMapa, worldX: muroX, worldY: muroY });
         }
     },
 	
@@ -369,6 +414,7 @@ var level1State = {
 		game.sfxDisparo = game.add.audio('disparo');
 		game.sfxExplosion = game.add.audio('explosion');
 		game.sfxMuro = game.add.audio('muro');
+		game.sfxInvasor = game.add.audio('invasor');
 	},
 	
 	/**
@@ -389,7 +435,7 @@ var level1State = {
 	},	
 	
 	/**
-	 * Función usada para configurar objetos agregandoles una animacion
+	 * Función usada para configurar objetos agregándoles una animación
 	 * @method configurarExplosion
 	 * @param {} objeto
 	 */
@@ -564,6 +610,7 @@ var level1State = {
 	perderPartida: function(nave) {
 		// Eliminamos la nave y removemos demas elementos de juego
 		nave.kill();
+		game.sfxInvasor.stop();
 		game.balasAlien.callAll('kill');
 		game.tweens.remove(game.movimientoAlienX);
 		game.time.events.remove(game.movimientoAlienY);
@@ -583,6 +630,7 @@ var level1State = {
 		game.tweens.remove(game.movimientoAlienX);
 		game.time.events.remove(game.movimientoAlienY);
 		game.balasAlien.callAll('kill', this);
+		game.sfxInvasor.stop();
 		// Lanzamos el estado levelUp
 		game.state.start('levelUp');
 	},

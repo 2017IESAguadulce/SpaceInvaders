@@ -9,10 +9,12 @@ var loadState = {
 		game.load.image('bala', 'assets/games/invaders/bullet.png');
 		game.load.image('balaAlien', 'assets/games/invaders/enemy-bullet.png');
 		game.load.image('nave', 'assets/games/invaders/player.png');
+		game.load.image('invasor', 'assets/games/invaders/invader.png');
 		game.load.image('fondo', 'assets/games/invaders/starfield.png');
 		game.load.image('100', 'assets/sprites/100.png');
 		game.load.image('200', 'assets/sprites/200.png');
 		game.load.image('300', 'assets/sprites/300.png');
+		game.load.image('500', 'assets/sprites/500.png');
 		game.load.image('muro', 'assets/sprites/muro.png');
 		game.load.image('skin1', 'assets/skins/skin1.jpg');
 		game.load.image('skin2', 'assets/skins/skin2.jpg');
@@ -44,6 +46,7 @@ var loadState = {
 		game.load.audio('explosion', 'assets/audio/SoundEffects/alien_death1.wav');
 		game.load.audio('hiloMusical', 'assets/audio/SpaceArp1Kit.mp3');
 		game.load.audio('muro', 'assets/audio/SoundEffects/battery.wav');
+		game.load.audio('invasor', 'assets/audio/SoundEffects/invasor.mp3');
 		// Si ejecutamos el juego desde el móvil cargamos el pad virtual
 		if (!game.escritorio) {
 			game.load.spritesheet('gamepad', 'assets/buttons/gamepad_spritesheet.png', 100, 100);

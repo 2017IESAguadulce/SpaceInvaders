@@ -81,6 +81,7 @@ var menuState = {
 		game.naveBalasRatio = 1000;
 		game.naveVelocidad = 200;
 		game.velocidadLogo = 0.1;
+		game.siguienteNivel = 'level1';
 		// Cargamos audios iniciales
 		game.sfxHover = game.add.audio('botonHover');
 		game.sfxStart = game.add.audio('botonStart');

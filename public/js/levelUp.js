@@ -48,7 +48,7 @@ var levelUp = {
 	manejadorClickBotonContinuar: function() {
 		// Reproducimos audio y llamamos al estado nivel 2 para seguir jugando
 		game.sfxStart.play();
-		game.state.start('level1');
+		game.state.start(game.siguienteNivel);
 	},
 	
 	/**

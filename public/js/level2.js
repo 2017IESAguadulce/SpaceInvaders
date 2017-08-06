@@ -1,6 +1,6 @@
-// Variable estado usada para cargar el nivel 1 del juego
+// Variable estado usada para cargar el nivel 2 del juego
 //Pequeno comentario: Juan Antonio
-var level1State = {
+var level2State = {
 	/**
 	 * Metodo usado para cargar el juego
 	 * @method create
@@ -324,8 +324,8 @@ var level1State = {
 		game.aliens.x = 100;
 		game.aliens.y = 50;
 		// Agregamos los eventos de movimiento horizontal y vertical para los aliens
-		game.movimientoAlienX = game.add.tween(game.aliens).to( { x: 250 }, game.alienVelocidad, Phaser.Easing.Linear.None, true, 0, game.alienVelocidad, true);
-		game.movimientoAlienY = game.time.events.loop(game.alienVelocidad * 2, this.descender, this);
+		game.movimientoAlienX = game.add.tween(game.aliens).to( { x: 250 }, game.alienVelocidad / 1.25, Phaser.Easing.Linear.None, true, 0, game.alienVelocidad, true);
+		game.movimientoAlienY = game.time.events.loop(game.alienVelocidad / 1.25 * 2, this.descender, this);
 		// Variables referentes a las balas de los aliens
 		game.balasAlien = game.add.group();
 		game.balasAlien.enableBody = true;
@@ -472,7 +472,7 @@ var level1State = {
 			// Y lanzamos la bala desde su posicion hacia nuestra nave
 			balaAlien.reset(seleccion.body.x, seleccion.body.y);
 			game.physics.arcade.moveToObject(balaAlien, game.nave, 200);
-			game.alienDisparoHora = game.time.now + 2000;
+			game.alienDisparoHora = game.time.now + 1000;
 			game.sfxDisparo.play();
 		}
 	},
@@ -623,7 +623,7 @@ var level1State = {
 	 */
 	ganarPartida: function() {
 		// Agregamos puntos a marcador
-		game.puntos += 500;
+		game.puntos += 1000;
 		game.puntosTexto.text = 'Puntos: ' + game.puntos;
 		// Eliminamos eventos de movimiento en aliens
 		game.tweens.remove(game.movimientoAlienX);

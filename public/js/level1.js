@@ -65,6 +65,7 @@ var level1State = {
 			game.physics.arcade.overlap(game.nave, game.aliens, this.manejadorColisionNaveAlien, null, this);
 			game.physics.arcade.overlap(game.balasAlien, game.muros, this.manejadorColisionMuro, null, this);
 			game.physics.arcade.overlap(game.balas, game.muros, this.manejadorColisionMuro, null, this);
+			game.physics.arcade.overlap(game.balas, game.invasor, this.manejadorColisionInvasor, null, this);
 			game.world.bringToTop(game.balas);
 			game.world.bringToTop(game.balasAlien);
 			game.world.bringToTop(game.ayudas);
@@ -87,7 +88,7 @@ var level1State = {
 		game.puntos += 20;
 		game.puntosTexto.text = 'Puntos: ' + game.puntos;
 		game.sfxExplosion.play();
-		// Lanzamos animacion de explosion para ese alien concreto
+		// Lanzamos animación de explosion para ese alien concreto
 		var explosion = game.explosiones.getFirstExists(false);
 		explosion.reset(alien.body.x, alien.body.y);
 		explosion.play('boom', 30, false, true);
@@ -112,7 +113,7 @@ var level1State = {
 			// Si tenemos vidas quitamos una
 			vida.kill();
 		}
-		// Mostramos la animacion de explosion en las coordenadas de nuestra nave
+		// Mostramos la animación de explosion en las coordenadas de nuestra nave
 		var explosion = game.explosiones.getFirstExists(false);
 		explosion.reset(nave.body.x, nave.body.y);
 		explosion.play('boom', 20, false, true);
@@ -154,7 +155,7 @@ var level1State = {
 			// Si tenemos vidas quitamos una
 			vida.kill();
 		}
-		// Mostramos la animacion de explosión en las coordenadas de nuestra nave
+		// Mostramos la animación de explosión en las coordenadas de nuestra nave
 		var explosion = game.explosiones.getFirstExists(false);
 		explosion.reset(nave.body.x, nave.body.y);
 		explosion.play('boom', 20, false, true);
@@ -192,6 +193,25 @@ var level1State = {
 			game.sfxMuro.play();
 			bala.kill();
 		}
+	},
+	
+	/**
+	 * Función usada para gestionar las colisiones producidas entre las balas y el invasor superior
+	 * @method manejadorColisionInvasor
+	 * @param {} bala
+	 * @param {} invasor
+	 */
+	manejadorColisionInvasor: function(bala, invasor) {
+		// Eliminamos bala y reproducimos sonido
+		bala.kill();
+		game.sfxExplosion.play();
+		// Mostramos la animación de explosión en las coordenadas del invasor
+		var explosion = game.explosiones.getFirstExists(false);
+		explosion.reset(invasor.body.x, invasor.body.y);
+		explosion.play('boom', 20, false, true);
+		// Lanzamos paquete de puntos y eliminamos al insavor
+		this.cargarPowerUp('500', invasor.body.x, invasor.body.y);
+		invasor.kill();
 	},
 	
 	/**
@@ -277,7 +297,7 @@ var level1State = {
 	},
 	
 	/**
-	 * Función usada para crear, inicializar y posicionar los enemigos en pantalla agregandoles movimiento
+	 * Función usada para crear, inicializar y posicionar los enemigos en pantalla agregándoles movimiento
 	 * @method cargarAliens
 	 */
 	cargarAliens: function() {
@@ -313,7 +333,31 @@ var level1State = {
 		game.balasAlien.setAll('anchor.y', 1);
 		game.balasAlien.setAll('outOfBoundsKill', true);
 		game.balasAlien.setAll('checkWorldBounds', true);
+		// Generamos disparador de evento de forma aleatoria entre los segundos 10 y 40 de juego
+		var tMin = 10;
+		var tMax = 40;
+		var tiempo = Math.floor(Math.random() * (tMax - tMin + 1) + tMin);
+		game.time.events.add(Phaser.Timer.SECOND * tiempo, this.cargarAlienTop, this);
 	},
+	
+	/**
+	 * Función usada para crear y configurar el alien que aparece en la parte superior de la pantalla
+	 * @method cargarAliens
+	 */
+	cargarAlienTop: function() {
+		// Configuramos los parámetros iniciales del invasor
+		game.invasor = game.add.sprite(0, 50, 'invasor');
+		game.invasor.anchor.setTo(0.5, 0.5);
+		game.physics.enable(game.invasor, Phaser.Physics.ARCADE);
+		game.invasor.body.collideWorldBounds = false;
+		game.physics.arcade.enable(game.invasor);
+		game.invasor.body.allowGravity = false;
+		var bucle = 1;
+		// Le asignamos los eventos de movimiento para que sólo se produzca un bucle de transición hasta que desaparezca
+		movimientoAlienTop = game.add.tween(game.invasor).to( { x: game.width - game.invasor.width }, game.alienVelocidad * 5, Phaser.Easing.Linear.None, true, 0, game.alienVelocidad, true);
+		movimientoAlienTop.onRepeat.add( function() { if (bucle == 0) { game.tweens.remove(movimientoAlienTop); game.invasor.kill(); } bucle--; }, this);
+	},
+	
 	
 	/**
 	 * Función usada para cargar los muros utilizados para proteger a la nave
@@ -387,7 +431,7 @@ var level1State = {
 	},	
 	
 	/**
-	 * Función usada para configurar objetos agregandoles una animacion
+	 * Función usada para configurar objetos agregándoles una animación
 	 * @method configurarExplosion
 	 * @param {} objeto
 	 */

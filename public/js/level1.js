@@ -318,14 +318,16 @@ var level1State = {
 				alien.animations.add('fly', [ 0, 1, 2, 3 ], 20, true);
 				alien.play('fly');
 				alien.body.moves = false;
+				// Agregamos movimiendo de vaivén en aliens
+				game.add.tween(alien).to( { y: alien.body.y + 5 }, 500, Phaser.Easing.Sinusoidal.InOut, true, game.rnd.integerInRange(0, 500), 1000, true);
 			}
 		}
 		// Asignamos coordenadas iniciales a grupo de enemigos de tipo alien
 		game.aliens.x = 100;
 		game.aliens.y = 50;
 		// Agregamos los eventos de movimiento horizontal y vertical para los aliens
-		game.movimientoAlienX = game.add.tween(game.aliens).to( { x: 250 }, game.alienVelocidad, Phaser.Easing.Linear.None, true, 0, game.alienVelocidad, true);
-		game.movimientoAlienY = game.time.events.loop(game.alienVelocidad * 2, this.descender, this);
+		game.movimientoAlienX = game.add.tween(game.aliens).to( { x: 250 }, game.alienVelocidad, Phaser.Easing.Sinusoidal.InOut, true, 0, game.alienVelocidad, true);
+		game.movimientoAlienY = game.time.events.loop(game.alienVelocidad * 2, function() { this.descender(30); }, this);
 		// Variables referentes a las balas de los aliens
 		game.balasAlien = game.add.group();
 		game.balasAlien.enableBody = true;
@@ -447,9 +449,10 @@ var level1State = {
 	/**
 	 * Función usada para controlar el descenso de los enemigos de tipo alien
 	 * @method descender
+	 * @param {} descensoY
 	 */
-	descender: function() {
-		game.aliens.y += 30;
+	descender: function(descensoY) {
+		game.add.tween(game.aliens).to( { y: game.aliens.y + descensoY }, 2500, Phaser.Easing.Linear.None, true, 0, 0, false);
 	},
 
 	/**

@@ -6,12 +6,13 @@ var menuState = {
 	 */
 	create: function() {
 		// Cargamos fondo y mostramos título y demás mensajes agregando instrucciones para iniciar el juego
+		game.tituloPrincipal = 'Space Invaders';
 		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
-        game.titulo = game.add.text(80, 80, 'Space Invaders', { font: '54px Arial', fill: 'white' });
+		game.mapaTitulo = game.add.bitmapText(50, 35, 'gem', '', 54);
 		// Agregamos botones para controlar las opciones de juego
-		game.btnJugar = game.add.button(game.world.centerX + 100, 250, 'botonJugar', this.manejadorClickBotonJugar, this, 0, 1, 0);
-		game.btnOpciones = game.add.button(game.world.centerX + 100, 350, 'botonOpciones', this.manejadorClickBotonOpciones, this, 0, 1, 0);
-		game.btnPuntuaciones = game.add.button(game.world.centerX + 100, 450, 'botonPuntuaciones', this.manejadorClickBotonPuntuaciones, this, 0, 1, 0);
+		game.btnJugar = game.add.button(game.world.centerX + 100, 275, 'botonJugar', this.manejadorClickBotonJugar, this, 0, 1, 0);
+		game.btnOpciones = game.add.button(game.world.centerX + 100, 375, 'botonOpciones', this.manejadorClickBotonOpciones, this, 0, 1, 0);
+		game.btnPuntuaciones = game.add.button(game.world.centerX + 100, 475, 'botonPuntuaciones', this.manejadorClickBotonPuntuaciones, this, 0, 1, 0);
 		// Controlamos los eventos over de los botones
 		game.btnJugar.onInputOver.add(this.manejadorOverBoton, this);
 		game.btnOpciones.onInputOver.add(this.manejadorOverBoton, this);
@@ -20,7 +21,8 @@ var menuState = {
 		this.inicializarParametros();
 		this.cargarIntro();
 	},
-	
+
+
 	/**
 	 * Método ejecutado cada frame para actualizar la lógica del juego
 	 * @method update
@@ -45,7 +47,7 @@ var menuState = {
 	manejadorClickBotonJugar: function() {
 		// Reproducimos audio y llamamos al estado nivel 1 y arrancamos juego
 		game.sfxStart.play();
-		game.state.start('levelUp');
+		game.state.start('levell');
 	},
 	
 	/**
@@ -69,12 +71,29 @@ var menuState = {
 	},
 	
 	/**
+	 * Función usada para mostrar animación de texto cargando un mensaje letra a letra
+	 * @method mostrarLetraPorLetra
+	 */
+	mostrarLetraPorLetra: function(mapaTexto, mensaje) {
+		game.time.events.repeat(150, mensaje.length, this.mostrarLetraSiguiente, { mapaTexto: mapaTexto, mensaje: mensaje, contador: 1 });
+	},
+	
+	/**
+	 * Función usada para mostrar la letra siguiente sobreescribiendo el valor del mensaje inicial
+	 * @method mostrarLetraSiguiente
+	 */
+	mostrarLetraSiguiente: function() {
+		this.mapaTexto.text = this.mensaje.substr(0, this.contador);
+		this.contador += 1;
+	},
+	
+	/**
 	 * Función usada para controlar el evento click en el botón puntuaciones
 	 * @method inicializarParametros
 	 */
 	inicializarParametros: function() {
 		// Cargamos parámetros iniciales de juego
-		game.puntos = 100000;
+		game.puntos = 0;
 		game.nivelNaveEscudo = 1;
 		game.nivelNaveDisparo = 1;
 		game.nivelNaveVelocidad = 1;
@@ -117,11 +136,12 @@ var menuState = {
 		// Si no hemos cargado previamente el logo
 		if (!game.logoIntro) {
 			// Lo cargamos en el menú inicial
-			game.logo = game.add.sprite(400, 300, 'logo');
+			game.logo = game.add.sprite(400, 325, 'logo');
 			game.logo.anchor.set(0.5);
 			game.logo.scale.x = 0.1;
 			game.logo.scale.y = 0.1;
 		}
+		this.mostrarLetraPorLetra(game.mapaTitulo, game.tituloPrincipal);
 	},
 	
 	/**
@@ -143,22 +163,26 @@ var menuState = {
 			game.estrellas[i].scale.set(game.estrellas[i].perspective / 2);
 			game.estrellas[i].rotation += 0.1;
 		}
-		// Si no hemos cargado previamente el logo
-		if (game.logo.width < game.world.centerX*2) { //Logo se amplia hasta ocupar pantalla
+		// Si el ancho del logo no ha ocupado la pantalla
+		if (game.logo.width < game.world.centerX * 2) { 
+			// Ampliamos logo y obtenemos la hora para crear una animación de ampliación
 			game.velocidadLogo += 0.005;
 			game.logo.scale.x += game.velocidadLogo;
 			game.logo.scale.y += game.velocidadLogo;
-			game.logo.y -= 4;//Logo sube para colocarse encima de los botones
+			game.logo.y -= 4;
 			tiempo = this.game.time.totalElapsedSeconds();
 		}
-		if (this.game.time.totalElapsedSeconds() > tiempo+2 && game.logo.width < game.world.centerX*300){// Despues de 2 segundo quieto acelera y sale de la pantalla 
+		// Si ha pasado 1 segundo y se cumple la segunda condición
+		if (this.game.time.totalElapsedSeconds() > tiempo + 1 && game.logo.width < game.world.centerX * 300) {
+			// Subimos logo para colocarlo encima de los botones
 			game.velocidadLogo += 1;
 			game.logo.scale.x += game.velocidadLogo;
 			game.logo.scale.y += game.velocidadLogo;
 			game.logo.y += 10;
-		}
+		} 
+		
 		// Posicionamos por encima los botones y texto mostrados
-		game.world.bringToTop(game.titulo);
+		game.world.bringToTop(game.mapaTitulo);
 		game.world.bringToTop(game.btnJugar);
 		game.world.bringToTop(game.btnOpciones);
 		game.world.bringToTop(game.btnPuntuaciones);

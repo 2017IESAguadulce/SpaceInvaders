@@ -77,7 +77,7 @@ var levelUp = {
 					game.puntos -= game.nivelNaveEscudo * 1000;
 					game.nivelNaveEscudo++;
 					// Cambiando los textos mostrados por pantalla
-					game.costeEscudo.loadTexture('botonMejora' + game.nivelNaveEscudo);
+					game.costeEscudo.loadTexture((game.nivelNaveEscudo <= 5) ? 'botonMejora' + game.nivelNaveEscudo : null);
 					game.escudoNave.text = "Escudo Nv. " + ((game.nivelNaveEscudo <= 5) ? game.nivelNaveEscudo : "Máximo");
 					sw = true;
 				}
@@ -88,7 +88,7 @@ var levelUp = {
 					// Realizamos el mismo proceso que en el caso anterior
 					game.puntos -= game.nivelNaveDisparo * 1000;
 					game.nivelNaveDisparo++;
-					game.costeDisparo.loadTexture('botonMejora' + game.nivelNaveDisparo);
+					game.costeDisparo.loadTexture((game.nivelNaveDisparo <= 5) ? 'botonMejora' + game.nivelNaveDisparo : null);
 					game.velocidadDisparo.text= "Disparo Nv. " + ((game.nivelNaveDisparo <= 5) ? game.nivelNaveDisparo : "Máximo");
 					game.naveBalasRatio /= 1.4;
 					sw = true;
@@ -99,7 +99,7 @@ var levelUp = {
 				if (game.puntos >= game.nivelNaveVelocidad * 1000 && game.nivelNaveVelocidad <= 5) {
 					game.puntos -= game.nivelNaveVelocidad * 1000;
 					game.nivelNaveVelocidad++;
-					game.costeVelocidad.loadTexture('botonMejora' + game.nivelNaveVelocidad);
+					game.costeVelocidad.loadTexture((game.nivelNaveVelocidad <= 5) ? 'botonMejora' + game.nivelNaveVelocidad : null);
 					game.velocidadNave.text= "Disparo Nv. " + ((game.nivelNaveVelocidad <= 5) ? game.nivelNaveVelocidad : "Máximo");
 					game.naveVelocidad *= 1.2;
 					sw = true;

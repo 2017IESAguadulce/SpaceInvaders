@@ -45,7 +45,7 @@ var menuState = {
 	manejadorClickBotonJugar: function() {
 		// Reproducimos audio y llamamos al estado nivel 1 y arrancamos juego
 		game.sfxStart.play();
-		game.state.start('level1');
+		game.state.start('levelUp');
 	},
 	
 	/**
@@ -74,7 +74,7 @@ var menuState = {
 	 */
 	inicializarParametros: function() {
 		// Cargamos parámetros iniciales de juego
-		game.puntos = 0;
+		game.puntos = 100000;
 		game.nivelNaveEscudo = 1;
 		game.nivelNaveDisparo = 1;
 		game.nivelNaveVelocidad = 1;

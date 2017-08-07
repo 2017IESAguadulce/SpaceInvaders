@@ -1,5 +1,4 @@
 // Variable estado usada para cargar el nivel 2 del juego
-//Pequeno comentario: Juan Antonio
 var level2State = {
 	/**
 	 * Metodo usado para cargar el juego
@@ -51,9 +50,13 @@ var level2State = {
 					this.dispararBala();
 				}
 			}
-			// Controlamos evento de disparo de enemigos
-			if (game.time.now > game.alienDisparoHora) {
-				this.disparoEnemigo();
+			// Controlamos evento de disparo de grupo de enemigos 1
+			if (game.time.now > game.alienDisparoHora1) {
+				this.disparoEnemigo1();
+			}
+			// Controlamos evento de disparo de grupo de enemigos 2
+			if (game.time.now > game.alienDisparoHora2) {
+				this.disparoEnemigo2();
 			}
 			// Giramos nave y actualizamos estrellas mostradas en interfaz
 			this.girarNave();
@@ -61,8 +64,10 @@ var level2State = {
 			// Controlamos colisiones de objetos en sus diferentes metodos
 			game.physics.arcade.overlap(game.nave, game.ayudas, this.manejadorColisionNaveAyuda, null, this);
 			game.physics.arcade.overlap(game.balas, game.aliens, this.manejadorDisparoNave, null, this);
+			game.physics.arcade.overlap(game.balas, game.aliens2, this.manejadorDisparoNave, null, this);
 			game.physics.arcade.overlap(game.balasAlien, game.nave, this.manejadorDisparoEnemigo, null, this);
 			game.physics.arcade.overlap(game.nave, game.aliens, this.manejadorColisionNaveAlien, null, this);
+			game.physics.arcade.overlap(game.nave, game.aliens2, this.manejadorColisionNaveAlien, null, this);
 			game.physics.arcade.overlap(game.balasAlien, game.muros, this.manejadorColisionMuro, null, this);
 			game.physics.arcade.overlap(game.balas, game.muros, this.manejadorColisionMuro, null, this);
 			game.physics.arcade.overlap(game.balas, game.invasor, this.manejadorColisionInvasor, null, this);
@@ -70,6 +75,7 @@ var level2State = {
 			game.world.bringToTop(game.balasAlien);
 			game.world.bringToTop(game.ayudas);
 			game.world.bringToTop(game.aliens);
+			game.world.bringToTop(game.aliens2);
 		}
 	},
 	
@@ -94,7 +100,7 @@ var level2State = {
 		explosion.reset(alien.body.x, alien.body.y);
 		explosion.play('boom', 30, false, true);
 		// Si no quedan aliens llamamos al método ganarPartida
-		if (game.aliens.countLiving() == 0) {
+		if (game.aliens.countLiving() == 0 && game.aliens2.countLiving() == 0) {
 			this.ganarPartida();
 		}
 	},
@@ -307,11 +313,24 @@ var level2State = {
 		game.aliens = game.add.group();
 		game.aliens.enableBody = true;
 		game.aliens.physicsBodyType = Phaser.Physics.ARCADE;
-		game.alienDisparoHora = 0;
+		game.alienDisparoHora1 = 0;
+		game.aliens2 = game.add.group();
+		game.aliens2.enableBody = true;
+		game.aliens2.physicsBodyType = Phaser.Physics.ARCADE;
+		game.alienDisparoHora2 = 0;
 		game.alienVelocidad = 2000;
 		game.alienVivos = [];
-		// Cargamos en filas de 4 y columnas de 10 a los enemigos
-		for (var y = 0; y < 4; y++) {
+		// Cargamos primer grupo de enemigos
+		for (var x = 0; x < 6; x++) {
+			var alien = game.aliens2.create(x * 60, y * 50, 'alien');
+			alien.anchor.setTo(0.5, 0.5);
+			alien.animations.add('fly', [ 0, 1, 2, 3 ], 20, true);
+			alien.play('fly');
+			alien.body.moves = false;
+			game.add.tween(alien).to( { y: alien.body.y + 5 }, 500, Phaser.Easing.Sinusoidal.InOut, true, game.rnd.integerInRange(0, 500), 1000, true);
+		}
+		// Cargamos en filas columnas al segundo grupo de enemigos
+		for (var y = 1; y < 4; y++) {
 			for (var x = 0; x < 10; x++) {
 				var alien = game.aliens.create(x * 48, y * 50, 'alien');
 				alien.anchor.setTo(0.5, 0.5);
@@ -322,12 +341,15 @@ var level2State = {
 				game.add.tween(alien).to( { y: alien.body.y + 5 }, 500, Phaser.Easing.Sinusoidal.InOut, true, game.rnd.integerInRange(0, 500), 1000, true);
 			}
 		}
-		// Asignamos coordenadas iniciales a grupo de enemigos de tipo alien
+		// Asignamos coordenadas iniciales a grupos de enemigos
+		game.aliens2.x = 250;
+		game.aliens2.y = 50;
 		game.aliens.x = 100;
 		game.aliens.y = 50;
 		// Agregamos los eventos de movimiento horizontal y vertical para los aliens
-		game.movimientoAlienX = game.add.tween(game.aliens).to( { x: 250 }, game.alienVelocidad / 1.25, Phaser.Easing.Sinusoidal.InOut, true, 0, game.alienVelocidad, true);
-		game.movimientoAlienY = game.time.events.loop(game.alienVelocidad / 1.25 * 2, function() { this.descender(30); }, this);
+		game.time.events.loop(game.alienVelocidad / 1.15 * 2, function() { this.descender(game.aliens2, 30); }, this);
+		game.add.tween(game.aliens).to( { x: 250 }, game.alienVelocidad / 1.15, Phaser.Easing.Sinusoidal.InOut, true, 0, game.alienVelocidad, true);
+		game.time.events.loop(game.alienVelocidad / 1.15 * 2, function() { this.descender(game.aliens, 30); }, this);
 		// Variables referentes a las balas de los aliens
 		game.balasAlien = game.add.group();
 		game.balasAlien.enableBody = true;
@@ -337,9 +359,9 @@ var level2State = {
 		game.balasAlien.setAll('anchor.y', 1);
 		game.balasAlien.setAll('outOfBoundsKill', true);
 		game.balasAlien.setAll('checkWorldBounds', true);
-		// Generamos disparador de evento de forma aleatoria entre los segundos 10 y 30 de juego
 		var tMin = 10;
 		var tMax = 30;
+		// Generamos disparador de evento de forma aleatoria entre los segundos 10 y 30 de juego
 		var tiempo = Math.floor(Math.random() * (tMax - tMin + 1) + tMin);
 		game.time.events.add(Phaser.Timer.SECOND * tiempo, this.cargarAlienTop, this);
 	},
@@ -449,17 +471,18 @@ var level2State = {
 	/**
 	 * Función usada para controlar el descenso de los enemigos de tipo alien
 	 * @method descender
+	 * @param {} grupo
 	 * @param {} descensoY
 	 */
-	descender: function(descensoY) {
-		game.add.tween(game.aliens).to( { y: game.aliens.y + descensoY }, 2500, Phaser.Easing.Linear.None, true, 0, 0, false);
+	descender: function(grupo, descensoY) {
+		game.add.tween(grupo).to( { y: grupo.y + descensoY }, 2500, Phaser.Easing.Linear.None, true, 0, 0, false);
 	},
 
 	/**
-	 * Función usada para gestionar los disparos de los enemigos de tipo alien
-	 * @method disparoEnemigo
+	 * Función usada para gestionar los disparos de los enemigos del primer grupo
+	 * @method disparoEnemigo1
 	 */
-	disparoEnemigo: function() {
+	disparoEnemigo1: function() {
 		// Cargamos todos los aliens que quedan vivos en el vector
 		game.alienVivos.length = 0;
 		game.aliens.forEachAlive(function(alien){
@@ -471,15 +494,40 @@ var level2State = {
 		if (balaAlien && game.alienVivos.length > 0) {
 			// Seleccionamos aleatoriamente un alien entre los que quedan vivos
 			var aleatorio = game.rnd.integerInRange(0, game.alienVivos.length-1);
-			var seleccion = game.alienVivos[aleatorio];
+			var alien = game.alienVivos[aleatorio];
 			// Y lanzamos la bala desde su posicion hacia nuestra nave
-			balaAlien.reset(seleccion.body.x, seleccion.body.y);
+			balaAlien.reset(alien.body.x, alien.body.y);
 			game.physics.arcade.moveToObject(balaAlien, game.nave, 200);
-			game.alienDisparoHora = game.time.now + 1000;
+			game.alienDisparoHora1 = game.time.now + 3000;
 			game.sfxDisparo.play();
 		}
 	},
 
+	/**
+	 * Función usada para gestionar los disparos de los enemigos del segundo grupo
+	 * @method disparoEnemigo2
+	 */
+	disparoEnemigo2: function() {
+		// Cargamos todos los aliens que quedan vivos en el vector
+		game.alienVivos.length = 0;
+		game.aliens2.forEachAlive(function(alien){
+			game.alienVivos.push(alien);
+		});
+		// Obtenemos la primera bala
+		var balaAlien = game.balasAlien.getFirstExists(false);
+		// Si no hay balas en pantalla y existen aliens vivos
+		if (balaAlien && game.alienVivos.length > 0) {
+			// Seleccionamos aleatoriamente un alien entre los que quedan vivos
+			var aleatorio = game.rnd.integerInRange(0, game.alienVivos.length-1);
+			var alien = game.alienVivos[aleatorio];
+			// Y lanzamos la bala desde su posicion hacia nuestra nave
+			balaAlien.reset(alien.body.x, alien.body.y);
+			game.physics.arcade.moveToObject(balaAlien, game.nave, 200);
+			game.alienDisparoHora2 = game.time.now + 1500;
+			game.sfxDisparo.play();
+		}
+	},
+	
 	/**
 	 * Función usada para controlar la aleatoriedad a la hora de lanzar los paquetes de ayuda
 	 * @method lanzarAyuda
@@ -610,12 +658,10 @@ var level2State = {
 	 * @param {} nave
 	 */
 	perderPartida: function(nave) {
-		// Eliminamos la nave y removemos demas elementos de juego
+		// Eliminamos la nave y removemos demás elementos de juego
 		nave.kill();
 		game.sfxInvasor.stop();
 		game.balasAlien.callAll('kill');
-		//game.tweens.remove(game.movimientoAlienX);
-		//game.time.events.remove(game.movimientoAlienY);
 		// Lanzamos el estado lose
 		game.state.start('lose');
 	},
@@ -628,9 +674,6 @@ var level2State = {
 		// Agregamos puntos a marcador
 		game.puntos += 1000;
 		game.puntosTexto.text = 'Puntos: ' + game.puntos;
-		// Eliminamos eventos de movimiento en aliens
-		//game.tweens.remove(game.movimientoAlienX);
-		//game.time.events.remove(game.movimientoAlienY);
 		game.balasAlien.callAll('kill', this);
 		game.sfxInvasor.stop();
 		game.siguienteNivel = 'level2';

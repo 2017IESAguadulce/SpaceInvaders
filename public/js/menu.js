@@ -21,8 +21,7 @@ var menuState = {
 		this.inicializarParametros();
 		this.cargarIntro();
 	},
-
-
+	
 	/**
 	 * Método ejecutado cada frame para actualizar la lógica del juego
 	 * @method update
@@ -47,7 +46,7 @@ var menuState = {
 	manejadorClickBotonJugar: function() {
 		// Reproducimos audio y llamamos al estado nivel 1 y arrancamos juego
 		game.sfxStart.play();
-		game.state.start('levell');
+		game.state.start('level1');
 	},
 	
 	/**
@@ -180,7 +179,6 @@ var menuState = {
 			game.logo.scale.y += game.velocidadLogo;
 			game.logo.y += 10;
 		} 
-		
 		// Posicionamos por encima los botones y texto mostrados
 		game.world.bringToTop(game.mapaTitulo);
 		game.world.bringToTop(game.btnJugar);

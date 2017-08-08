@@ -7,12 +7,12 @@ var menuState = {
 	create: function() {
 		// Cargamos fondo y mostramos título y demás mensajes agregando instrucciones para iniciar el juego
 		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
-		game.mapaTitulo = game.add.bitmapText(50, 35, 'gem', '', 54);
+		game.mapaTitulo = game.add.bitmapText(100, 80, 'gem', '', 54);
 		this.mostrarLetraPorLetra(game.mapaTitulo, 'Space Invaders');
 		// Agregamos botones para controlar las opciones de juego
-		game.btnJugar = game.add.button(game.world.centerX + 100, 275, 'botonJugar', this.manejadorClickBotonJugar, this, 0, 1, 0);
-		game.btnOpciones = game.add.button(game.world.centerX + 100, 375, 'botonOpciones', this.manejadorClickBotonOpciones, this, 0, 1, 0);
-		game.btnPuntuaciones = game.add.button(game.world.centerX + 100, 475, 'botonPuntuaciones', this.manejadorClickBotonPuntuaciones, this, 0, 1, 0);
+		game.btnJugar = game.add.button(game.world.width - 300, 375, 'botonJugar', this.manejadorClickBotonJugar, this, 0, 1, 0);
+		game.btnOpciones = game.add.button(game.world.width - 300, 475, 'botonOpciones', this.manejadorClickBotonOpciones, this, 0, 1, 0);
+		game.btnPuntuaciones = game.add.button(game.world.width - 300, 575, 'botonPuntuaciones', this.manejadorClickBotonPuntuaciones, this, 0, 1, 0);
 		// Controlamos los eventos over de los botones
 		game.btnJugar.onInputOver.add(this.manejadorOverBoton, this);
 		game.btnOpciones.onInputOver.add(this.manejadorOverBoton, this);
@@ -137,7 +137,7 @@ var menuState = {
 		// Si no hemos cargado previamente el logo
 		if (!game.logoIntro) {
 			// Lo cargamos en el menú inicial
-			game.logo = game.add.sprite(400, 325, 'logo');
+			game.logo = game.add.sprite(game.world.width / 2, 425, 'logo');
 			game.logo.anchor.set(0.5);
 			game.logo.scale.x = 0.1;
 			game.logo.scale.y = 0.1;

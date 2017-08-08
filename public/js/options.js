@@ -8,7 +8,7 @@ var optionsState = {
 		// Cargamos skin y mensajes primero para minimizar el delay de la carga del controlador de volúmen
 		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
 		// Cargamos y mostramos mensajes por pantalla
-		game.mapaTitulo = game.add.bitmapText(80, 80, 'gem', '', 54);
+		game.mapaTitulo = game.add.bitmapText(50, 35, 'gem', '', 54);
 		this.mostrarLetraPorLetra(game.mapaTitulo, 'Opciones');
 		game.volumen = game.add.text(game.world.centerX + 150, 300, 'Volúmen', { font: '24px Arial', fill: 'white' });
 		game.slickUI.load('assets/ui/kenney/kenney.json');

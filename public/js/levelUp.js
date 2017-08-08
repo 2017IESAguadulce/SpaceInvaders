@@ -7,9 +7,9 @@ var levelUp = {
     create: function() {
 		// Cargamos fondo y mostramos mensaje final agregando instrucciones para reiniciar el juego
 		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
-		game.mapaTitulo = game.add.bitmapText(80, 80, 'gem', '', 54);
+		game.mapaTitulo = game.add.bitmapText(50, 35, 'gem', '', 54);
 		this.mostrarLetraPorLetra(game.mapaTitulo, 'Mejoras de Nave');
-        game.puntosTexto = game.add.text(80, 200, 'Puntos: ' + game.puntos, {font: '34px Arial', fill: 'white' });
+        game.puntosTexto = game.add.text(80, 220, 'Puntos: ' + game.puntos, {font: '34px Arial', fill: 'white' });
 		game.escudoNave = game.add.text(170, 325, 'Escudo Nv. ' + ((game.nivelNaveEscudo <= 5) ? game.nivelNaveEscudo : "Máximo"), {font: '24px Arial', fill: 'white' });
 		game.velocidadDisparo = game.add.text(170, 400, 'Disparo Nv. ' + ((game.nivelNaveDisparo <= 5) ? game.nivelNaveDisparo : "Máximo"), {font: '24px Arial', fill: 'white' });
 		game.velocidadNave = game.add.text(170, 475, 'Velocidad Nv. ' + ((game.nivelNaveVelocidad <= 5) ? game.nivelNaveVelocidad : "Máximo"), {font: '24px Arial', fill: 'white' });

@@ -7,7 +7,7 @@ var loseState = {
     create: function() {
 		// Cargamos fondo y mostramos mensaje final agregando instrucciones para reiniciar el juego
 		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
-		game.mapaTitulo = game.add.bitmapText(80, 80, 'gem', '', 54);
+		game.mapaTitulo = game.add.bitmapText(50, 35, 'gem', '', 54);
 		this.mostrarLetraPorLetra(game.mapaTitulo, '¡Has Perdido!');
         game.regresar = game.add.text(80, 250, 'Pulse "Volver" para regresar al menú', {font: '30px Arial', fill: 'white' });
 		// Agregamos el botón volver y su manejador para controlar sus eventos

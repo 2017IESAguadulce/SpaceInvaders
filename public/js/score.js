@@ -7,7 +7,7 @@ var scoreState = {
     create: function() {
 		// Cargamos fondo y mostramos mensaje por pantalla
 		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
-		game.mapaTitulo = game.add.bitmapText(80, 80, 'gem', '', 54);
+		game.mapaTitulo = game.add.bitmapText(50, 35, 'gem', '', 54);
 		this.mostrarLetraPorLetra(game.mapaTitulo, 'Puntuaciones');
 		// Agregamos el botón volver y su manejador para controlar sus eventos
 		game.btnVolver = game.add.button(game.world.centerX + 100, 450, 'botonVolver', this.manejadorClickBotonVolver, this, 0, 1, 0);

@@ -1,4 +1,4 @@
-// Variable estado usada para iniciar las físicas del juego
+// Variable estado usada para iniciar las físicas y demás componentes del juego
 var bootState = {
 	/**
 	 * Método estándar llamado automáticamente por Phaser para crear y cargar los recursos usados
@@ -7,6 +7,7 @@ var bootState = {
 	create: function() {
 		//Usamos Scale Manager para definir el modo de escalado mostrando todo el Canvas en pantalla
 		this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+		this.scale.fullScreenScaleMode = Phaser.ScaleManager.EXACT_FIT;
 		//Para centrar el Canvas en la pantalla horizontal y verticalmente
 		this.scale.pageAlignHorizontally = true;
 		this.scale.pageAlignVertically = true;

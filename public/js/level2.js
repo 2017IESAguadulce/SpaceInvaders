@@ -58,9 +58,9 @@ var level2State = {
 			if (game.time.now > game.alienDisparoHora2) {
 				this.disparoEnemigo2();
 			}
-			// Giramos nave y actualizamos estrellas mostradas en interfaz
+			// Giramos nave y actualizamos estrellas mostradas
 			this.girarNave();
-			this.actualizarEstrellas();
+			game.global.actualizarEstrellas();
 			// Controlamos colisiones de objetos en sus diferentes metodos
 			game.physics.arcade.overlap(game.nave, game.ayudas, this.manejadorColisionNaveAyuda, null, this);
 			game.physics.arcade.overlap(game.balas, game.aliens, this.manejadorDisparoNave, null, this);
@@ -71,11 +71,16 @@ var level2State = {
 			game.physics.arcade.overlap(game.balasAlien, game.muros, this.manejadorColisionMuro, null, this);
 			game.physics.arcade.overlap(game.balas, game.muros, this.manejadorColisionMuro, null, this);
 			game.physics.arcade.overlap(game.balas, game.invasor, this.manejadorColisionInvasor, null, this);
+			// Posicionamos por encima botones y texto mostrados
 			game.world.bringToTop(game.balas);
 			game.world.bringToTop(game.balasAlien);
 			game.world.bringToTop(game.ayudas);
 			game.world.bringToTop(game.aliens);
 			game.world.bringToTop(game.aliens2);
+			game.world.bringToTop(game.puntosTexto);
+			game.world.bringToTop(game.vidasTexto);
+			game.world.bringToTop(game.btnVolver);
+			game.world.bringToTop(game.btnSilenciar);			
 		}
 	},
 	
@@ -259,7 +264,7 @@ var level2State = {
 		// Agregamos skin de fondo a tablero
 		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
 		// Variables con textos y puntos mostrados por pantalla
-		game.mapaTitulo = game.add.bitmapText(game.world.centerX - 100, 350, 'gem', '', 36);
+		game.mapaTitulo = game.add.bitmapText(game.world.centerX - 100, 450, 'gem', '', 36);
 		this.mostrarLetraPorLetra(game.mapaTitulo, '  Nivel 2    ');
 		game.puntosTexto = game.add.text(10, 10, 'Puntos: ' + game.puntos, { font: '34px Arial', fill: '#fff' });
 		game.vidas = game.add.group();
@@ -272,11 +277,11 @@ var level2State = {
 			img.alpha = 0.4;
 		}
 		// Agregamos botón volver y silenciar junto con sus manejadores para controlar sus eventos
-		game.btnVolver = game.add.button(game.world.left + 10, game.world.bottom - 50, 'botonVolverPeq', this.manejadorClickBotonVolver, this, 0, 1, 0);
+		game.btnVolver = game.add.button(game.world.left + 10, game.world.height - 50, 'botonVolverPeq', this.manejadorClickBotonVolver, this, 0, 1, 0);
 		game.btnVolver.onInputOver.add(this.manejadorOverBoton, this);
-		game.btnSilenciar = game.add.button(game.world.right - 50, game.world.bottom - 50, 'botonSilenciar', this.manejadorClickBotonSilenciar, this, 0, 1, 0);
+		game.btnSilenciar = game.add.button(game.world.right - 40, game.world.height - 50, 'botonSilenciar', this.manejadorClickBotonSilenciar, this, 0, 1, 0);
 		game.btnSilenciar.onInputOver.add(this.manejadorOverBoton, this);
-		this.cargarEstrellas();
+		game.global.cargarEstrellas();
 	},
 	
 	/**
@@ -285,7 +290,7 @@ var level2State = {
 	 */
 	cargarNave: function() {
 		// Variables de nuestra nave
-		game.nave = game.add.sprite(400, 500, 'nave');
+		game.nave = game.add.sprite(game.world.centerX, game.world.height - 100, 'nave');
 		game.nave.anchor.setTo(0.5, 0.5);
 		game.physics.enable(game.nave, Phaser.Physics.ARCADE);
 		game.nave.body.collideWorldBounds = true;
@@ -320,10 +325,10 @@ var level2State = {
 		game.aliens2.enableBody = true;
 		game.aliens2.physicsBodyType = Phaser.Physics.ARCADE;
 		game.alienDisparoHora2 = 0;
-		game.alienVelocidad = 2000;
+		game.alienVelocidad = 3500;
 		game.alienVivos = [];
 		// Cargamos primer grupo de enemigos
-		for (var x = 0; x < 6; x++) {
+		for (var x = 0; x < 4; x++) {
 			var alien = game.aliens2.create(x * 60, y * 50, 'alien');
 			alien.anchor.setTo(0.5, 0.5);
 			alien.animations.add('fly', [ 0, 1, 2, 3 ], 20, true);
@@ -332,8 +337,8 @@ var level2State = {
 			game.add.tween(alien).to( { y: alien.body.y + 5 }, 500, Phaser.Easing.Sinusoidal.InOut, true, game.rnd.integerInRange(0, 500), 1000, true);
 		}
 		// Cargamos en filas columnas al segundo grupo de enemigos
-		for (var y = 1; y < 4; y++) {
-			for (var x = 0; x < 10; x++) {
+		for (var y = 1; y < 5; y++) {
+			for (var x = 0; x < 12; x++) {
 				var alien = game.aliens.create(x * 48, y * 50, 'alien');
 				alien.anchor.setTo(0.5, 0.5);
 				alien.animations.add('fly', [ 0, 1, 2, 3 ], 20, true);
@@ -344,14 +349,14 @@ var level2State = {
 			}
 		}
 		// Asignamos coordenadas iniciales a grupos de enemigos
-		game.aliens2.x = 250;
-		game.aliens2.y = 50;
-		game.aliens.x = 100;
-		game.aliens.y = 50;
+		game.aliens2.x = 420;
+		game.aliens2.y = 120;
+		game.aliens.x = 70;
+		game.aliens.y = 120;
 		// Agregamos los eventos de movimiento horizontal y vertical para los aliens
-		game.time.events.loop(game.alienVelocidad / 1.15 * 2, function() { this.descender(game.aliens2, 30); }, this);
-		game.add.tween(game.aliens).to( { x: 250 }, game.alienVelocidad / 1.15, Phaser.Easing.Sinusoidal.InOut, true, 0, game.alienVelocidad, true);
-		game.time.events.loop(game.alienVelocidad / 1.15 * 2, function() { this.descender(game.aliens, 30); }, this);
+		game.time.events.loop(game.alienVelocidad * 2, function() { this.descender(game.aliens2, 30); }, this);
+		game.add.tween(game.aliens).to( { x: 410 }, game.alienVelocidad, Phaser.Easing.Sinusoidal.InOut, true, 0, game.alienVelocidad, true);
+		game.time.events.loop(game.alienVelocidad * 2, function() { this.descender(game.aliens, 30); }, this);
 		// Variables referentes a las balas de los aliens
 		game.balasAlien = game.add.group();
 		game.balasAlien.enableBody = true;
@@ -374,7 +379,7 @@ var level2State = {
 	 */
 	cargarAlienTop: function() {
 		// Configuramos los parámetros iniciales del invasor
-		game.invasor = game.add.sprite(0, 50, 'invasor');
+		game.invasor = game.add.sprite(0, 80, 'invasor');
 		game.invasor.anchor.setTo(0.5, 0.5);
 		game.physics.enable(game.invasor, Phaser.Physics.ARCADE);
 		game.invasor.body.collideWorldBounds = false;
@@ -394,7 +399,7 @@ var level2State = {
 	cargarMuros: function() {
 		// Cargamos valores iniciales
 		var totalBases = 4;
-		var muroY = 450;
+		var muroY = game.world.height - 170;
 		var ancho = 48;
 		var alto = 32;
 		// Creamos grupo de muros y mapas de bits para almacenar las imagénes a mostrar
@@ -625,60 +630,6 @@ var level2State = {
 	},
 	
 	/**
-	 * Función usada para cargar un halo de estrellas creando asi una sensacion de velocidad
-	 * @method cargarEstrellas
-	 */
-	cargarEstrellas: function() {
-		// Variables vector que contienen las estrellas y sus coordenadas
-		game.estrellas = [];
-		game.estrellasX = [];
-		game.estrellasY = [];
-		game.estrellasZ = [];
-		// Variables usadas para almacenar parametros de las estrellas 
-		game.distanciaEstrellas = 300;
-		game.velocidadEstrellas = 1;
-		game.maxEstrellas = 1000;
-		var sprites = game.add.spriteBatch();
-		for (var i = 0; i < game.maxEstrellas; i++) {
-			// Cargamos las coordenadas de las estrellas aleatoriamente
-			game.estrellasX[i] = Math.floor(Math.random() * 800) - 400;
-			game.estrellasY[i] = Math.floor(Math.random() * 600) - 300;
-			game.estrellasZ[i] = Math.floor(Math.random() * 1700) - 100;
-			var star = game.make.sprite(0, 0, 'star');
-			star.anchor.set(0.5);
-			sprites.addChild(star);
-			// Y las anadimos al vector principal
-			game.estrellas.push(star);
-		}
-	},
-	
-	/**
-	 * Función usada para actualizar el halo de estrellas mostrado durante el juego
-	 * @method actualizarEstrellas
-	 */
-	actualizarEstrellas: function() {
-		// Recorremos vector de estrellas
-		for (var i = 0; i < game.maxEstrellas; i++) {
-			// Y las trasladamos para dar sensacion de movimiento
-			game.estrellas[i].perspective = game.distanciaEstrellas / (game.distanciaEstrellas - game.estrellasZ[i]);
-			game.estrellas[i].x = game.world.centerX + game.estrellasX[i] * game.estrellas[i].perspective;
-			game.estrellas[i].y = game.world.centerY + game.estrellasY[i] * game.estrellas[i].perspective;
-			game.estrellasZ[i] += game.velocidadEstrellas;
-			if (game.estrellasZ[i] > 290) {
-				game.estrellasZ[i] -= 600;
-			}
-			game.estrellas[i].alpha = Math.min(game.estrellas[i].perspective / 2, 1);
-			game.estrellas[i].scale.set(game.estrellas[i].perspective / 2);
-			game.estrellas[i].rotation += 0.1;
-		}
-		// Posicionamos por encima los botones y texto mostrados
-		game.world.bringToTop(game.puntosTexto);
-		game.world.bringToTop(game.vidasTexto);
-		game.world.bringToTop(game.btnVolver);
-		game.world.bringToTop(game.btnSilenciar);
-	},
-	
-	/**
 	 * Función usada para gestionar la partida perdida
 	 * @method perderPartida
 	 * @param {} nave
@@ -705,5 +656,5 @@ var level2State = {
 		game.siguienteNivel = 'level2';
 		// Lanzamos el estado levelUp
 		game.state.start('levelUp');
-	},
+	}
 }

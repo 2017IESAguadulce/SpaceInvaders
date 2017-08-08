@@ -1,7 +1,4 @@
-// Variable global usada para almacenar la propia referencia al juego y sus métodos,
-// los dos primeros enteros son las dimensiones del tamaño en píxeles del contenedor
-// de juego, el tercer parámetro es el método de renderizado, y el cuarto el nombre
-// del elemento que tiene nuestro contenedor, al estar vacío se insertará en el body del index
+// Variable global usada para almacenar la propia referencia al juego y sus métodos
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '');
 
 // Agregamos cada estado de juego para modular la aplicación

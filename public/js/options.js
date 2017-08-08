@@ -10,7 +10,7 @@ var optionsState = {
 		// Cargamos y mostramos mensajes por pantalla
 		game.mapaTitulo = game.add.bitmapText(50, 35, 'gem', '', 54);
 		this.mostrarLetraPorLetra(game.mapaTitulo, 'Opciones');
-		game.volumen = game.add.text(game.world.centerX + 150, 300, 'Volúmen', { font: '24px Arial', fill: 'white' });
+		game.volumen = game.add.text(game.world.centerX + 150, 200, 'Volúmen', { font: '24px Arial', fill: 'white' });
 		game.slickUI.load('assets/ui/kenney/kenney.json');
 	},
 	
@@ -20,15 +20,16 @@ var optionsState = {
 	 */
     create: function() {	
 		// Creamos slider para manejar el volúmen del audio y le asignamos su manejador
-        game.sliderVolumen = new SlickUI.Element.Slider(game.world.centerX + 95, 280, 200);
+        game.sliderVolumen = new SlickUI.Element.Slider(game.world.centerX + 95, 180, 200);
 		game.slickUI.add(game.sliderVolumen);
 		game.sliderVolumen.onDrag.add(this.manejadorControlVolumen, this);
-		// Agregamos el botón volver y su manejador para controlar sus eventos
-		game.btnVolver = game.add.button(game.world.centerX + 100, 450, 'botonVolver', this.manejadorClickBotonVolver, this, 0, 1, 0);
-		game.btnVolver.onInputOver.add(this.manejadorOverBoton, this);
-		// Agregamos el botón cambiar skin y su manejador para controlar sus eventos
+		// Agregamos botones y sus manejadores para controlar sus eventos
+		game.btnPantalla = game.add.button(game.world.centerX + 100, 250, 'botonPantallaCompleta', this.manejadorClickBotonPantalla, this, 0, 1, 0);
+		game.btnPantalla.onInputOver.add(this.manejadorOverBoton, this);
 		game.btnSkin = game.add.button(game.world.centerX + 100, 350, 'botonSkin', this.manejadorClickBotonSkin, this, 0, 1, 0);
 		game.btnSkin.onInputOver.add(this.manejadorOverBoton, this);
+		game.btnVolver = game.add.button(game.world.centerX + 100, 450, 'botonVolver', this.manejadorClickBotonVolver, this, 0, 1, 0);
+		game.btnVolver.onInputOver.add(this.manejadorOverBoton, this);
 		// Iniciamos la carga de las estrellas en pantalla
 		this.cargarEstrellas();
     },
@@ -50,6 +51,21 @@ var optionsState = {
 		game.sfxHover.play();
 	},
 
+	/**
+	 * Función usada para controlar el evento click en el botón cambiar pantalla
+	 * @method manejadorClickBotonPantalla
+	 */
+	manejadorClickBotonPantalla: function() {
+		// Reproducimos audio y r
+		game.sfxStart.play();
+		if (game.scale.isFullScreen) {
+			game.scale.stopFullScreen();
+		} else {
+			game.scale.startFullScreen();
+		}
+		game.btnPantalla.loadTexture((game.scale.isFullScreen) ? 'botonPantallaCompleta' : 'botonPantalla');
+	},
+	
 	/**
 	 * Función usada para controlar el evento click en el botón cambiar skin
 	 * @method manejadorClickBotonSkin
@@ -154,6 +170,7 @@ var optionsState = {
 		// Posicionamos por encima los botones y texto mostrados
 		game.world.bringToTop(game.mapaTitulo);
 		game.world.bringToTop(game.volumen);
+		game.world.bringToTop(game.btnPantalla);
 		game.world.bringToTop(game.btnVolver);
 		game.world.bringToTop(game.btnSkin);
 	}

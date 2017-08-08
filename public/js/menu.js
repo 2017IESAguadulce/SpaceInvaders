@@ -20,7 +20,7 @@ var menuState = {
 		// Inicializamos valores e iniciamos la carga de las estrellas en pantalla
 		this.inicializarParametros();
 		this.cargarIntro();
-	},
+	},	
 	
 	/**
 	 * Método ejecutado cada frame para actualizar la lógica del juego

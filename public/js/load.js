@@ -27,6 +27,8 @@ var loadState = {
 		game.load.spritesheet('botonPuntuaciones', 'assets/buttons/boton_puntuaciones.png', 193, 71);
 		game.load.spritesheet('botonVolver', 'assets/buttons/boton_volver.png', 193, 71);
 		game.load.spritesheet('botonContinuar', 'assets/buttons/boton_continuar.png', 193, 71);
+		game.load.spritesheet('botonPantalla', 'assets/buttons/boton_pantalla.png', 193, 71);
+		game.load.spritesheet('botonPantallaCompleta', 'assets/buttons/boton_pantalla_completa.png', 193, 71);
 		game.load.spritesheet('botonSkin', 'assets/buttons/boton_skin.png', 193, 71);
 		game.load.spritesheet('botonMejora1', 'assets/buttons/boton_1.png', 69, 50);
 		game.load.spritesheet('botonMejora2', 'assets/buttons/boton_2.png', 69, 50);

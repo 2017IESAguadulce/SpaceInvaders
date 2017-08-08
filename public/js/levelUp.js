@@ -7,7 +7,8 @@ var levelUp = {
     create: function() {
 		// Cargamos fondo y mostramos mensaje final agregando instrucciones para reiniciar el juego
 		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
-        game.titulo = game.add.text(80, 80, 'Mejoras de Nave', { font: '54px Arial', fill: 'white' });
+		game.mapaTitulo = game.add.bitmapText(80, 80, 'gem', '', 54);
+		this.mostrarLetraPorLetra(game.mapaTitulo, 'Mejoras de Nave');
         game.puntosTexto = game.add.text(80, 200, 'Puntos: ' + game.puntos, {font: '34px Arial', fill: 'white' });
 		game.escudoNave = game.add.text(170, 325, 'Escudo Nv. ' + ((game.nivelNaveEscudo <= 5) ? game.nivelNaveEscudo : "Máximo"), {font: '24px Arial', fill: 'white' });
 		game.velocidadDisparo = game.add.text(170, 400, 'Disparo Nv. ' + ((game.nivelNaveDisparo <= 5) ? game.nivelNaveDisparo : "Máximo"), {font: '24px Arial', fill: 'white' });
@@ -113,6 +114,25 @@ var levelUp = {
 	},
 	
 	/**
+	 * Función usada para mostrar animación de texto cargando un mensaje letra a letra
+	 * @method mostrarLetraPorLetra
+	 * @param {} mapaTexto
+	 * @param {} mensaje
+	 */
+	mostrarLetraPorLetra: function(mapaTexto, mensaje) {
+		game.time.events.repeat(150, mensaje.length, this.mostrarLetraSiguiente, { mapaTexto: mapaTexto, mensaje: mensaje, contador: 1 });
+	},
+	
+	/**
+	 * Función usada para mostrar la letra siguiente sobreescribiendo el valor del mensaje inicial
+	 * @method mostrarLetraSiguiente
+	 */
+	mostrarLetraSiguiente: function() {
+		this.mapaTexto.text = this.mensaje.substr(0, this.contador);
+		this.contador += 1;
+	},
+	
+	/**
 	 * Función usada para controlar el evento click en el botón volver
 	 * @method prepararBotonMejora
 	 * @param {} tipo
@@ -180,7 +200,7 @@ var levelUp = {
 			game.estrellas[i].rotation += 0.1;
 		}
 		// Posicionamos por encima los botones y texto mostrados
-		game.world.bringToTop(game.titulo);
+		game.world.bringToTop(game.mapaTitulo);
 		game.world.bringToTop(game.btnContinuar);
 		game.world.bringToTop(game.btnVolver);
 	}

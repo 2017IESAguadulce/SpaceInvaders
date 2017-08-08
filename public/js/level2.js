@@ -259,6 +259,8 @@ var level2State = {
 		// Agregamos skin de fondo a tablero
 		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
 		// Variables con textos y puntos mostrados por pantalla
+		game.mapaTitulo = game.add.bitmapText(game.world.centerX - 100, 350, 'gem', '', 36);
+		this.mostrarLetraPorLetra(game.mapaTitulo, '  Nivel 2    ');
 		game.puntosTexto = game.add.text(10, 10, 'Puntos: ' + game.puntos, { font: '34px Arial', fill: '#fff' });
 		game.vidas = game.add.group();
 		game.vidasTexto = game.add.text(game.world.width - 140, 10, 'Escudos: ', { font: '30px Arial', fill: '#fff' });
@@ -586,6 +588,30 @@ var level2State = {
 		}
 	},
 
+	/**
+	 * Función usada para mostrar animación de texto cargando un mensaje letra a letra
+	 * @method mostrarLetraPorLetra
+	 * @param {} mapaTexto
+	 * @param {} mensaje
+	 * @param {} locY
+	 */
+	mostrarLetraPorLetra: function(mapaTexto, mensaje) {
+		game.time.events.repeat(200, mensaje.length + 1, this.mostrarLetraSiguiente, { mapaTexto: mapaTexto, mensaje: mensaje, contador: 1 , total: mensaje.length });
+	},
+	
+	/**
+	 * Función auxiliar usada para mostrar la siguiente letra sobreescribiendo el valor del mensaje inicial
+	 * @method mostrarLetraSiguiente
+	 */
+	mostrarLetraSiguiente: function() {
+		if (this.contador > this.total) {
+			this.mapaTexto.text = '';
+		} else {
+			this.mapaTexto.text = this.mensaje.substr(0, this.contador);
+			this.contador += 1;
+		}
+	},
+	
 	/**
 	 * Función usada para girar la nave y dar la sensacion de movilidad
 	 * @method girarNave

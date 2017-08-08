@@ -8,9 +8,8 @@ var optionsState = {
 		// Cargamos skin y mensajes primero para minimizar el delay de la carga del controlador de volúmen
 		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
 		// Cargamos y mostramos mensajes por pantalla
-		game.mapaTitulo = game.add.bitmapText(50, 35, 'gem', '', 54);
+		game.mapaTitulo = game.add.bitmapText(100, 80, 'gem', '', 54);
 		this.mostrarLetraPorLetra(game.mapaTitulo, 'Opciones');
-		game.volumen = game.add.text(game.world.centerX + 150, 200, 'Volúmen', { font: '24px Arial', fill: 'white' });
 		game.slickUI.load('assets/ui/kenney/kenney.json');
 	},
 	
@@ -20,15 +19,16 @@ var optionsState = {
 	 */
     create: function() {	
 		// Creamos slider para manejar el volúmen del audio y le asignamos su manejador
-        game.sliderVolumen = new SlickUI.Element.Slider(game.world.centerX + 95, 180, 200);
+        game.sliderVolumen = new SlickUI.Element.Slider(game.world.width - 310, 275, 200);
 		game.slickUI.add(game.sliderVolumen);
 		game.sliderVolumen.onDrag.add(this.manejadorControlVolumen, this);
+		game.volumen = game.add.text(game.world.width - 250, 300, 'Volúmen', { font: '24px Arial', fill: 'white' });
 		// Agregamos botones y sus manejadores para controlar sus eventos
-		game.btnPantalla = game.add.button(game.world.centerX + 100, 250, 'botonPantallaCompleta', this.manejadorClickBotonPantalla, this, 0, 1, 0);
+		game.btnPantalla = game.add.button(game.world.width - 300, 375, 'botonPantallaCompleta', this.manejadorClickBotonPantalla, this, 0, 1, 0);
 		game.btnPantalla.onInputOver.add(this.manejadorOverBoton, this);
-		game.btnSkin = game.add.button(game.world.centerX + 100, 350, 'botonSkin', this.manejadorClickBotonSkin, this, 0, 1, 0);
+		game.btnSkin = game.add.button(game.world.width - 300, 475, 'botonSkin', this.manejadorClickBotonSkin, this, 0, 1, 0);
 		game.btnSkin.onInputOver.add(this.manejadorOverBoton, this);
-		game.btnVolver = game.add.button(game.world.centerX + 100, 450, 'botonVolver', this.manejadorClickBotonVolver, this, 0, 1, 0);
+		game.btnVolver = game.add.button(game.world.width - 300, 575, 'botonVolver', this.manejadorClickBotonVolver, this, 0, 1, 0);
 		game.btnVolver.onInputOver.add(this.manejadorOverBoton, this);
 		// Iniciamos la carga de las estrellas en pantalla
 		this.cargarEstrellas();

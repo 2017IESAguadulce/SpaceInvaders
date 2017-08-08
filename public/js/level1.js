@@ -253,7 +253,7 @@ var level1State = {
 		// Agregamos skin de fondo a tablero
 		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
 		// Variables con textos y puntos mostrados por pantalla
-		game.mapaTitulo = game.add.bitmapText(game.world.centerX - 100, 350, 'gem', '', 36);
+		game.mapaTitulo = game.add.bitmapText(game.world.centerX - 100, 450, 'gem', '', 36);
 		this.mostrarLetraPorLetra(game.mapaTitulo, '  Nivel 1    ');
 		game.puntosTexto = game.add.text(10, 10, 'Puntos: ' + game.puntos, { font: '34px Arial', fill: '#fff' });
 		game.vidas = game.add.group();
@@ -266,9 +266,9 @@ var level1State = {
 			img.alpha = 0.4;
 		}
 		// Agregamos botón volver y silenciar junto con sus manejadores para controlar sus eventos
-		game.btnVolver = game.add.button(game.world.left + 10, game.world.bottom - 50, 'botonVolverPeq', this.manejadorClickBotonVolver, this, 0, 1, 0);
+		game.btnVolver = game.add.button(game.world.left + 10, game.world.height - 50, 'botonVolverPeq', this.manejadorClickBotonVolver, this, 0, 1, 0);
 		game.btnVolver.onInputOver.add(this.manejadorOverBoton, this);
-		game.btnSilenciar = game.add.button(game.world.right - 50, game.world.bottom - 50, 'botonSilenciar', this.manejadorClickBotonSilenciar, this, 0, 1, 0);
+		game.btnSilenciar = game.add.button(game.world.right - 40, game.world.height - 50, 'botonSilenciar', this.manejadorClickBotonSilenciar, this, 0, 1, 0);
 		game.btnSilenciar.onInputOver.add(this.manejadorOverBoton, this);
 		this.cargarEstrellas();
 	},
@@ -279,7 +279,7 @@ var level1State = {
 	 */
 	cargarNave: function() {
 		// Variables de nuestra nave
-		game.nave = game.add.sprite(400, 500, 'nave');
+		game.nave = game.add.sprite(game.world.centerX, game.world.height - 100, 'nave');
 		game.nave.anchor.setTo(0.5, 0.5);
 		game.physics.enable(game.nave, Phaser.Physics.ARCADE);
 		game.nave.body.collideWorldBounds = true;
@@ -310,7 +310,7 @@ var level1State = {
 		game.aliens.enableBody = true;
 		game.aliens.physicsBodyType = Phaser.Physics.ARCADE;
 		game.alienDisparoHora = 0;
-		game.alienVelocidad = 2000;
+		game.alienVelocidad = 4000;
 		game.alienVivos = [];
 		// Cargamos en filas de 4 y columnas de 10 a los enemigos
 		for (var y = 0; y < 4; y++) {
@@ -326,9 +326,9 @@ var level1State = {
 		}
 		// Asignamos coordenadas iniciales a grupo de enemigos de tipo alien
 		game.aliens.x = 100;
-		game.aliens.y = 50;
+		game.aliens.y = 120;
 		// Agregamos los eventos de movimiento horizontal y vertical para los aliens
-		game.movimientoAlienX = game.add.tween(game.aliens).to( { x: 250 }, game.alienVelocidad, Phaser.Easing.Sinusoidal.InOut, true, 0, game.alienVelocidad, true);
+		game.movimientoAlienX = game.add.tween(game.aliens).to( { x: 500 }, game.alienVelocidad, Phaser.Easing.Sinusoidal.InOut, true, 0, game.alienVelocidad, true);
 		game.movimientoAlienY = game.time.events.loop(game.alienVelocidad * 2, function() { this.descender(30); }, this);
 		// Variables referentes a las balas de los aliens
 		game.balasAlien = game.add.group();
@@ -339,9 +339,9 @@ var level1State = {
 		game.balasAlien.setAll('anchor.y', 1);
 		game.balasAlien.setAll('outOfBoundsKill', true);
 		game.balasAlien.setAll('checkWorldBounds', true);
-		// Generamos disparador de evento de forma aleatoria entre los segundos 10 y 30 de juego
 		var tMin = 10;
 		var tMax = 30;
+		// Generamos disparador de evento de forma aleatoria entre los segundos 10 y 30 de juego
 		var tiempo = Math.floor(Math.random() * (tMax - tMin + 1) + tMin);
 		game.time.events.add(Phaser.Timer.SECOND * tiempo, this.cargarAlienTop, this);
 	},
@@ -352,7 +352,7 @@ var level1State = {
 	 */
 	cargarAlienTop: function() {
 		// Configuramos los parámetros iniciales del invasor
-		game.invasor = game.add.sprite(0, 50, 'invasor');
+		game.invasor = game.add.sprite(0, 80, 'invasor');
 		game.invasor.anchor.setTo(0.5, 0.5);
 		game.physics.enable(game.invasor, Phaser.Physics.ARCADE);
 		game.invasor.body.collideWorldBounds = false;
@@ -372,7 +372,7 @@ var level1State = {
 	cargarMuros: function() {
 		// Cargamos valores iniciales
 		var totalBases = 4;
-		var muroY = 450;
+		var muroY = game.world.height - 170;
 		var ancho = 48;
 		var alto = 32;
 		// Creamos grupo de muros y mapas de bits para almacenar las imagénes a mostrar

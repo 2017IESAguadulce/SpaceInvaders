@@ -7,19 +7,19 @@ var levelUp = {
     create: function() {
 		// Cargamos fondo y mostramos mensaje final agregando instrucciones para reiniciar el juego
 		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
-		game.mapaTitulo = game.add.bitmapText(50, 35, 'gem', '', 54);
+		game.mapaTitulo = game.add.bitmapText(100, 80, 'gem', '', 54);
 		this.mostrarLetraPorLetra(game.mapaTitulo, 'Mejoras de Nave');
-        game.puntosTexto = game.add.text(80, 220, 'Puntos: ' + game.puntos, {font: '34px Arial', fill: 'white' });
-		game.escudoNave = game.add.text(170, 325, 'Escudo Nv. ' + ((game.nivelNaveEscudo <= 5) ? game.nivelNaveEscudo : "Máximo"), {font: '24px Arial', fill: 'white' });
-		game.velocidadDisparo = game.add.text(170, 400, 'Disparo Nv. ' + ((game.nivelNaveDisparo <= 5) ? game.nivelNaveDisparo : "Máximo"), {font: '24px Arial', fill: 'white' });
-		game.velocidadNave = game.add.text(170, 475, 'Velocidad Nv. ' + ((game.nivelNaveVelocidad <= 5) ? game.nivelNaveVelocidad : "Máximo"), {font: '24px Arial', fill: 'white' });
+        game.puntosTexto = game.add.text(120, 280, 'Puntos: ' + game.puntos, {font: '34px Arial', fill: 'white' });
+		game.escudoNave = game.add.text(210, 440, 'Escudo Nv. ' + ((game.nivelNaveEscudo <= 5) ? game.nivelNaveEscudo : "Máximo"), {font: '24px Arial', fill: 'white' });		
+		game.velocidadDisparo = game.add.text(210, 515, 'Disparo Nv. ' + ((game.nivelNaveDisparo <= 5) ? game.nivelNaveDisparo : "Máximo"), {font: '24px Arial', fill: 'white' });
+		game.velocidadNave = game.add.text(210, 590, 'Velocidad Nv. ' + ((game.nivelNaveVelocidad <= 5) ? game.nivelNaveVelocidad : "Máximo"), {font: '24px Arial', fill: 'white' });
 		// Agregamos botones y manejadores para controlar sus eventos
-		game.costeEscudo = this.prepararBotonMejora("escudo", game.nivelNaveEscudo, 315);
-		game.costeDisparo = this.prepararBotonMejora("disparo", game.nivelNaveDisparo, 390);
-		game.costeVelocidad = this.prepararBotonMejora("velocidad", game.nivelNaveVelocidad, 465);
-		game.btnContinuar = game.add.button(game.world.centerX + 100, 350, 'botonContinuar', this.manejadorClickBotonContinuar, this, 0, 1, 0);
+		game.costeEscudo = this.prepararBotonMejora("escudo", game.nivelNaveEscudo, 430);
+		game.costeDisparo = this.prepararBotonMejora("disparo", game.nivelNaveDisparo, 505);
+		game.costeVelocidad = this.prepararBotonMejora("velocidad", game.nivelNaveVelocidad, 580);
+		game.btnContinuar = game.add.button(game.world.width - 300, 475, 'botonContinuar', this.manejadorClickBotonContinuar, this, 0, 1, 0);
 		game.btnContinuar.onInputOver.add(this.manejadorOverBoton, this);
-		game.btnVolver = game.add.button(game.world.centerX + 100, 450, 'botonVolver', this.manejadorClickBotonVolver, this, 0, 1, 0);
+		game.btnVolver = game.add.button(game.world.width - 300, 575, 'botonVolver', this.manejadorClickBotonVolver, this, 0, 1, 0);
 		game.btnVolver.onInputOver.add(this.manejadorOverBoton, this);
 		// Iniciamos la carga de las estrellas en pantalla
 		this.cargarEstrellas();
@@ -146,7 +146,7 @@ var levelUp = {
 		if (nivel <= 5) {
 			// Almacenamos manejador en variable y lo asignamos al botón para devolverlo
 			var manejadorEvento = function() { this.manejadorClickBotonMejora(tipo); }.bind(this);
-			boton = game.add.button(80, coorY, 'botonMejora' + nivel, manejadorEvento, this, 0, 1, 0)
+			boton = game.add.button(120, coorY, 'botonMejora' + nivel, manejadorEvento, this, 0, 1, 0)
 			boton.onInputOver.add(this.manejadorOverBoton, this);
 		}
 		return boton;

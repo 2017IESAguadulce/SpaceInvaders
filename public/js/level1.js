@@ -328,8 +328,8 @@ var level1State = {
 		game.aliens.x = 100;
 		game.aliens.y = 120;
 		// Agregamos los eventos de movimiento horizontal y vertical para los aliens
-		game.movimientoAlienX = game.add.tween(game.aliens).to( { x: 500 }, game.alienVelocidad, Phaser.Easing.Sinusoidal.InOut, true, 0, game.alienVelocidad, true);
-		game.movimientoAlienY = game.time.events.loop(game.alienVelocidad * 2, function() { this.descender(30); }, this);
+		game.add.tween(game.aliens).to( { x: 500 }, game.alienVelocidad, Phaser.Easing.Sinusoidal.InOut, true, 0, game.alienVelocidad, true);
+		game.time.events.loop(game.alienVelocidad * 2, function() { this.descender(30); }, this);
 		// Variables referentes a las balas de los aliens
 		game.balasAlien = game.add.group();
 		game.balasAlien.enableBody = true;
@@ -636,12 +636,10 @@ var level1State = {
 	 * @param {} nave
 	 */
 	perderPartida: function(nave) {
-		// Eliminamos la nave y removemos demas elementos de juego
+		// Eliminamos la nave y removemos demás elementos de juego
 		nave.kill();
 		game.sfxInvasor.stop();
 		game.balasAlien.callAll('kill');
-		game.tweens.remove(game.movimientoAlienX);
-		game.time.events.remove(game.movimientoAlienY);
 		// Lanzamos el estado lose
 		game.state.start('lose');
 	},
@@ -654,9 +652,6 @@ var level1State = {
 		// Agregamos puntos a marcador
 		game.puntos += 500;
 		game.puntosTexto.text = 'Puntos: ' + game.puntos;
-		// Eliminamos eventos de movimiento en aliens
-		game.tweens.remove(game.movimientoAlienX);
-		game.time.events.remove(game.movimientoAlienY);
 		game.balasAlien.callAll('kill', this);
 		game.sfxInvasor.stop();
 		game.siguienteNivel = 'level2';

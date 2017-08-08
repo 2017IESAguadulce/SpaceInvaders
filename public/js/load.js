@@ -73,7 +73,7 @@ var loadState = {
 	 */
 	create: function() {
 		// Creamos referencias a variables de skins de pantalla
-		game.skinsTotal = 4;
+		game.skinsTotal = 3;
 		game.skinSeleccionada = 1;
 		// Activamos el hilo musical y llamamos al estado menu
 		this.cargarHiloMusical();

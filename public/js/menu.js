@@ -6,9 +6,9 @@ var menuState = {
 	 */
 	create: function() {
 		// Cargamos fondo y mostramos título y demás mensajes agregando instrucciones para iniciar el juego
-		game.tituloPrincipal = 'Space Invaders';
 		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
 		game.mapaTitulo = game.add.bitmapText(50, 35, 'gem', '', 54);
+		this.mostrarLetraPorLetra(game.mapaTitulo, 'Space Invaders');
 		// Agregamos botones para controlar las opciones de juego
 		game.btnJugar = game.add.button(game.world.centerX + 100, 275, 'botonJugar', this.manejadorClickBotonJugar, this, 0, 1, 0);
 		game.btnOpciones = game.add.button(game.world.centerX + 100, 375, 'botonOpciones', this.manejadorClickBotonOpciones, this, 0, 1, 0);
@@ -46,7 +46,7 @@ var menuState = {
 	manejadorClickBotonJugar: function() {
 		// Reproducimos audio y llamamos al estado nivel 1 y arrancamos juego
 		game.sfxStart.play();
-		game.state.start('level1');
+		game.state.start('win');
 	},
 	
 	/**
@@ -72,6 +72,8 @@ var menuState = {
 	/**
 	 * Función usada para mostrar animación de texto cargando un mensaje letra a letra
 	 * @method mostrarLetraPorLetra
+	 * @param {} mapaTexto
+	 * @param {} mensaje
 	 */
 	mostrarLetraPorLetra: function(mapaTexto, mensaje) {
 		game.time.events.repeat(150, mensaje.length, this.mostrarLetraSiguiente, { mapaTexto: mapaTexto, mensaje: mensaje, contador: 1 });
@@ -140,7 +142,6 @@ var menuState = {
 			game.logo.scale.x = 0.1;
 			game.logo.scale.y = 0.1;
 		}
-		this.mostrarLetraPorLetra(game.mapaTitulo, game.tituloPrincipal);
 	},
 	
 	/**

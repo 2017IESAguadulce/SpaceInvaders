@@ -7,7 +7,8 @@ var scoreState = {
     create: function() {
 		// Cargamos fondo y mostramos mensaje por pantalla
 		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
-        game.titulo = game.add.text(80, 80, 'Puntuaciones', { font: '54px Arial', fill: 'white' });
+		game.mapaTitulo = game.add.bitmapText(50, 35, 'gem', '', 54);
+		this.mostrarLetraPorLetra(game.mapaTitulo, 'Puntuaciones');
 		// Agregamos el botón volver y su manejador para controlar sus eventos
 		game.btnVolver = game.add.button(game.world.centerX + 100, 450, 'botonVolver', this.manejadorClickBotonVolver, this, 0, 1, 0);
 		game.btnVolver.onInputOver.add(this.manejadorOverBoton, this);
@@ -40,6 +41,25 @@ var scoreState = {
 		// Reproducimos audio y llamamos al estado menu para volver al inicio
 		game.sfxStart.play();
 		game.state.start('menu');
+	},
+	
+	/**
+	 * Función usada para mostrar animación de texto cargando un mensaje letra a letra
+	 * @method mostrarLetraPorLetra
+	 * @param {} mapaTexto
+	 * @param {} mensaje
+	 */
+	mostrarLetraPorLetra: function(mapaTexto, mensaje) {
+		game.time.events.repeat(150, mensaje.length, this.mostrarLetraSiguiente, { mapaTexto: mapaTexto, mensaje: mensaje, contador: 1 });
+	},
+	
+	/**
+	 * Función usada para mostrar la letra siguiente sobreescribiendo el valor del mensaje inicial
+	 * @method mostrarLetraSiguiente
+	 */
+	mostrarLetraSiguiente: function() {
+		this.mapaTexto.text = this.mensaje.substr(0, this.contador);
+		this.contador += 1;
 	},
 	
 	/**
@@ -90,7 +110,7 @@ var scoreState = {
 			game.estrellas[i].rotation += 0.1;
 		}
 		// Posicionamos por encima los botones y texto mostrados
-		game.world.bringToTop(game.titulo);
+		game.world.bringToTop(game.mapaTitulo);
 		game.world.bringToTop(game.btnVolver);
 	}
 }

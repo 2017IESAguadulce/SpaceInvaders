@@ -47,6 +47,7 @@ var loadState = {
 		game.load.audio('hiloMusical', 'assets/audio/SpaceArp1Kit.mp3');
 		game.load.audio('muro', 'assets/audio/SoundEffects/battery.wav');
 		game.load.audio('invasor', 'assets/audio/SoundEffects/invasor.mp3');
+		game.load.bitmapFont('gem', 'assets/fonts/bitmapFonts/gem.png', 'assets/fonts/bitmapFonts/gem.xml');
 		// Si ejecutamos el juego desde el móvil cargamos el pad virtual
 		if (!game.escritorio) {
 			game.load.spritesheet('gamepad', 'assets/buttons/gamepad_spritesheet.png', 100, 100);

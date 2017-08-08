@@ -253,6 +253,8 @@ var level1State = {
 		// Agregamos skin de fondo a tablero
 		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
 		// Variables con textos y puntos mostrados por pantalla
+		game.mapaTitulo = game.add.bitmapText(game.world.centerX - 100, 350, 'gem', '', 36);
+		this.mostrarLetraPorLetra(game.mapaTitulo, '  Nivel 1    ');
 		game.puntosTexto = game.add.text(10, 10, 'Puntos: ' + game.puntos, { font: '34px Arial', fill: '#fff' });
 		game.vidas = game.add.group();
 		game.vidasTexto = game.add.text(game.world.width - 140, 10, 'Escudos: ', { font: '30px Arial', fill: '#fff' });
@@ -318,14 +320,16 @@ var level1State = {
 				alien.animations.add('fly', [ 0, 1, 2, 3 ], 20, true);
 				alien.play('fly');
 				alien.body.moves = false;
+				// Agregamos movimiendo de vaivén en aliens
+				game.add.tween(alien).to( { y: alien.body.y + 5 }, 500, Phaser.Easing.Sinusoidal.InOut, true, game.rnd.integerInRange(0, 500), 1000, true);
 			}
 		}
 		// Asignamos coordenadas iniciales a grupo de enemigos de tipo alien
 		game.aliens.x = 100;
 		game.aliens.y = 50;
 		// Agregamos los eventos de movimiento horizontal y vertical para los aliens
-		game.movimientoAlienX = game.add.tween(game.aliens).to( { x: 250 }, game.alienVelocidad, Phaser.Easing.Linear.None, true, 0, game.alienVelocidad, true);
-		game.movimientoAlienY = game.time.events.loop(game.alienVelocidad * 2, this.descender, this);
+		game.movimientoAlienX = game.add.tween(game.aliens).to( { x: 250 }, game.alienVelocidad, Phaser.Easing.Sinusoidal.InOut, true, 0, game.alienVelocidad, true);
+		game.movimientoAlienY = game.time.events.loop(game.alienVelocidad * 2, function() { this.descender(30); }, this);
 		// Variables referentes a las balas de los aliens
 		game.balasAlien = game.add.group();
 		game.balasAlien.enableBody = true;
@@ -447,9 +451,10 @@ var level1State = {
 	/**
 	 * Función usada para controlar el descenso de los enemigos de tipo alien
 	 * @method descender
+	 * @param {} descensoY
 	 */
-	descender: function() {
-		game.aliens.y += 30;
+	descender: function(descensoY) {
+		game.add.tween(game.aliens).to( { y: game.aliens.y + descensoY }, 2500, Phaser.Easing.Linear.None, true, 0, 0, false);
 	},
 
 	/**
@@ -535,6 +540,30 @@ var level1State = {
 		}
 	},
 
+	/**
+	 * Función usada para mostrar animación de texto cargando un mensaje letra a letra
+	 * @method mostrarLetraPorLetra
+	 * @param {} mapaTexto
+	 * @param {} mensaje
+	 * @param {} locY
+	 */
+	mostrarLetraPorLetra: function(mapaTexto, mensaje) {
+		game.time.events.repeat(200, mensaje.length + 1, this.mostrarLetraSiguiente, { mapaTexto: mapaTexto, mensaje: mensaje, contador: 1 , total: mensaje.length });
+	},
+	
+	/**
+	 * Función auxiliar usada para mostrar la siguiente letra sobreescribiendo el valor del mensaje inicial
+	 * @method mostrarLetraSiguiente
+	 */
+	mostrarLetraSiguiente: function() {
+		if (this.contador > this.total) {
+			this.mapaTexto.text = '';
+		} else {
+			this.mapaTexto.text = this.mensaje.substr(0, this.contador);
+			this.contador += 1;
+		}
+	},
+	
 	/**
 	 * Función usada para girar la nave y dar la sensacion de movilidad
 	 * @method girarNave

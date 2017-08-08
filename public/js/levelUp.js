@@ -7,8 +7,9 @@ var levelUp = {
     create: function() {
 		// Cargamos fondo y mostramos mensaje final agregando instrucciones para reiniciar el juego
 		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
-        game.titulo = game.add.text(80, 80, 'Mejoras de Nave', { font: '54px Arial', fill: 'white' });
-        game.puntosTexto = game.add.text(80, 200, 'Puntos: ' + game.puntos, {font: '34px Arial', fill: 'white' });
+		game.mapaTitulo = game.add.bitmapText(50, 35, 'gem', '', 54);
+		this.mostrarLetraPorLetra(game.mapaTitulo, 'Mejoras de Nave');
+        game.puntosTexto = game.add.text(80, 220, 'Puntos: ' + game.puntos, {font: '34px Arial', fill: 'white' });
 		game.escudoNave = game.add.text(170, 325, 'Escudo Nv. ' + ((game.nivelNaveEscudo <= 5) ? game.nivelNaveEscudo : "Máximo"), {font: '24px Arial', fill: 'white' });
 		game.velocidadDisparo = game.add.text(170, 400, 'Disparo Nv. ' + ((game.nivelNaveDisparo <= 5) ? game.nivelNaveDisparo : "Máximo"), {font: '24px Arial', fill: 'white' });
 		game.velocidadNave = game.add.text(170, 475, 'Velocidad Nv. ' + ((game.nivelNaveVelocidad <= 5) ? game.nivelNaveVelocidad : "Máximo"), {font: '24px Arial', fill: 'white' });
@@ -77,7 +78,7 @@ var levelUp = {
 					game.puntos -= game.nivelNaveEscudo * 1000;
 					game.nivelNaveEscudo++;
 					// Cambiando los textos mostrados por pantalla
-					game.costeEscudo.loadTexture('botonMejora' + game.nivelNaveEscudo);
+					game.costeEscudo.loadTexture((game.nivelNaveEscudo <= 5) ? 'botonMejora' + game.nivelNaveEscudo : null);
 					game.escudoNave.text = "Escudo Nv. " + ((game.nivelNaveEscudo <= 5) ? game.nivelNaveEscudo : "Máximo");
 					sw = true;
 				}
@@ -88,7 +89,7 @@ var levelUp = {
 					// Realizamos el mismo proceso que en el caso anterior
 					game.puntos -= game.nivelNaveDisparo * 1000;
 					game.nivelNaveDisparo++;
-					game.costeDisparo.loadTexture('botonMejora' + game.nivelNaveDisparo);
+					game.costeDisparo.loadTexture((game.nivelNaveDisparo <= 5) ? 'botonMejora' + game.nivelNaveDisparo : null);
 					game.velocidadDisparo.text= "Disparo Nv. " + ((game.nivelNaveDisparo <= 5) ? game.nivelNaveDisparo : "Máximo");
 					game.naveBalasRatio /= 1.4;
 					sw = true;
@@ -99,7 +100,7 @@ var levelUp = {
 				if (game.puntos >= game.nivelNaveVelocidad * 1000 && game.nivelNaveVelocidad <= 5) {
 					game.puntos -= game.nivelNaveVelocidad * 1000;
 					game.nivelNaveVelocidad++;
-					game.costeVelocidad.loadTexture('botonMejora' + game.nivelNaveVelocidad);
+					game.costeVelocidad.loadTexture((game.nivelNaveVelocidad <= 5) ? 'botonMejora' + game.nivelNaveVelocidad : null);
 					game.velocidadNave.text= "Disparo Nv. " + ((game.nivelNaveVelocidad <= 5) ? game.nivelNaveVelocidad : "Máximo");
 					game.naveVelocidad *= 1.2;
 					sw = true;
@@ -110,6 +111,25 @@ var levelUp = {
 		(sw) ? game.sfxStart.play() : game.sfxCancel.play();
 		// Actualizamos puntos en pantalla
 		game.puntosTexto.text = "Puntos: " + game.puntos;
+	},
+	
+	/**
+	 * Función usada para mostrar animación de texto cargando un mensaje letra a letra
+	 * @method mostrarLetraPorLetra
+	 * @param {} mapaTexto
+	 * @param {} mensaje
+	 */
+	mostrarLetraPorLetra: function(mapaTexto, mensaje) {
+		game.time.events.repeat(150, mensaje.length, this.mostrarLetraSiguiente, { mapaTexto: mapaTexto, mensaje: mensaje, contador: 1 });
+	},
+	
+	/**
+	 * Función usada para mostrar la letra siguiente sobreescribiendo el valor del mensaje inicial
+	 * @method mostrarLetraSiguiente
+	 */
+	mostrarLetraSiguiente: function() {
+		this.mapaTexto.text = this.mensaje.substr(0, this.contador);
+		this.contador += 1;
 	},
 	
 	/**
@@ -180,7 +200,7 @@ var levelUp = {
 			game.estrellas[i].rotation += 0.1;
 		}
 		// Posicionamos por encima los botones y texto mostrados
-		game.world.bringToTop(game.titulo);
+		game.world.bringToTop(game.mapaTitulo);
 		game.world.bringToTop(game.btnContinuar);
 		game.world.bringToTop(game.btnVolver);
 	}

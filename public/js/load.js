@@ -19,7 +19,6 @@ var loadState = {
 		game.load.image('skin1', 'assets/skins/skin1.jpg');
 		game.load.image('skin2', 'assets/skins/skin2.jpg');
 		game.load.image('skin3', 'assets/skins/skin3.jpg');
-		game.load.image('skin4', 'assets/skins/skin4.jpg');
 		game.load.spritesheet('alien', 'assets/games/invaders/invader32x32x4.png', 32, 32);
 		game.load.spritesheet('boom', 'assets/games/invaders/explode.png', 128, 128);
 		game.load.spritesheet('botonJugar', 'assets/buttons/boton_jugar.png', 193, 71);

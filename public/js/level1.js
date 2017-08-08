@@ -55,9 +55,9 @@ var level1State = {
 			if (game.time.now > game.alienDisparoHora) {
 				this.disparoEnemigo();
 			}
-			// Giramos nave y actualizamos estrellas mostradas en interfaz
+			// Giramos nave y actualizamos estrellas mostradas
 			this.girarNave();
-			this.actualizarEstrellas();
+			game.global.actualizarEstrellas();
 			// Controlamos colisiones de objetos en sus diferentes metodos
 			game.physics.arcade.overlap(game.nave, game.ayudas, this.manejadorColisionNaveAyuda, null, this);
 			game.physics.arcade.overlap(game.balas, game.aliens, this.manejadorDisparoNave, null, this);
@@ -66,10 +66,15 @@ var level1State = {
 			game.physics.arcade.overlap(game.balasAlien, game.muros, this.manejadorColisionMuro, null, this);
 			game.physics.arcade.overlap(game.balas, game.muros, this.manejadorColisionMuro, null, this);
 			game.physics.arcade.overlap(game.balas, game.invasor, this.manejadorColisionInvasor, null, this);
+			// Posicionamos por encima botones y texto mostrados
 			game.world.bringToTop(game.balas);
 			game.world.bringToTop(game.balasAlien);
 			game.world.bringToTop(game.ayudas);
 			game.world.bringToTop(game.aliens);
+			game.world.bringToTop(game.puntosTexto);
+			game.world.bringToTop(game.vidasTexto);
+			game.world.bringToTop(game.btnVolver);
+			game.world.bringToTop(game.btnSilenciar);
 		}
 	},
 	
@@ -270,7 +275,7 @@ var level1State = {
 		game.btnVolver.onInputOver.add(this.manejadorOverBoton, this);
 		game.btnSilenciar = game.add.button(game.world.right - 40, game.world.height - 50, 'botonSilenciar', this.manejadorClickBotonSilenciar, this, 0, 1, 0);
 		game.btnSilenciar.onInputOver.add(this.manejadorOverBoton, this);
-		this.cargarEstrellas();
+		game.global.cargarEstrellas();
 	},
 	
 	/**
@@ -577,60 +582,6 @@ var level1State = {
 	},
 	
 	/**
-	 * Función usada para cargar un halo de estrellas creando asi una sensacion de velocidad
-	 * @method cargarEstrellas
-	 */
-	cargarEstrellas: function() {
-		// Variables vector que contienen las estrellas y sus coordenadas
-		game.estrellas = [];
-		game.estrellasX = [];
-		game.estrellasY = [];
-		game.estrellasZ = [];
-		// Variables usadas para almacenar parametros de las estrellas 
-		game.distanciaEstrellas = 300;
-		game.velocidadEstrellas = 1;
-		game.maxEstrellas = 1000;
-		var sprites = game.add.spriteBatch();
-		for (var i = 0; i < game.maxEstrellas; i++) {
-			// Cargamos las coordenadas de las estrellas aleatoriamente
-			game.estrellasX[i] = Math.floor(Math.random() * 800) - 400;
-			game.estrellasY[i] = Math.floor(Math.random() * 600) - 300;
-			game.estrellasZ[i] = Math.floor(Math.random() * 1700) - 100;
-			var star = game.make.sprite(0, 0, 'star');
-			star.anchor.set(0.5);
-			sprites.addChild(star);
-			// Y las anadimos al vector principal
-			game.estrellas.push(star);
-		}
-	},
-	
-	/**
-	 * Función usada para actualizar el halo de estrellas mostrado durante el juego
-	 * @method actualizarEstrellas
-	 */
-	actualizarEstrellas: function() {
-		// Recorremos vector de estrellas
-		for (var i = 0; i < game.maxEstrellas; i++) {
-			// Y las trasladamos para dar sensacion de movimiento
-			game.estrellas[i].perspective = game.distanciaEstrellas / (game.distanciaEstrellas - game.estrellasZ[i]);
-			game.estrellas[i].x = game.world.centerX + game.estrellasX[i] * game.estrellas[i].perspective;
-			game.estrellas[i].y = game.world.centerY + game.estrellasY[i] * game.estrellas[i].perspective;
-			game.estrellasZ[i] += game.velocidadEstrellas;
-			if (game.estrellasZ[i] > 290) {
-				game.estrellasZ[i] -= 600;
-			}
-			game.estrellas[i].alpha = Math.min(game.estrellas[i].perspective / 2, 1);
-			game.estrellas[i].scale.set(game.estrellas[i].perspective / 2);
-			game.estrellas[i].rotation += 0.1;
-		}
-		// Posicionamos por encima los botones y texto mostrados
-		game.world.bringToTop(game.puntosTexto);
-		game.world.bringToTop(game.vidasTexto);
-		game.world.bringToTop(game.btnVolver);
-		game.world.bringToTop(game.btnSilenciar);
-	},
-	
-	/**
 	 * Función usada para gestionar la partida perdida
 	 * @method perderPartida
 	 * @param {} nave
@@ -657,5 +608,5 @@ var level1State = {
 		game.siguienteNivel = 'level2';
 		// Lanzamos el estado levelUp
 		game.state.start('levelUp');
-	},
+	}
 }

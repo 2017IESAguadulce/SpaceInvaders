@@ -400,8 +400,8 @@ var level3State = {
 		if (!game.escritorio) {
 			// Agregamos un pad virtual con su joystick y botón
 			game.gamepad = game.plugins.add(Phaser.Plugin.VirtualGamepad);
-			game.joystick = game.gamepad.addJoystick(150, 500, 1.2, 'gamepad');
-			game.botonA = game.gamepad.addButton(650, 500, 1.0, 'gamepad');
+			game.joystick = game.gamepad.addJoystick(game.world.left + 150, game.world.height - 100, 1.2, 'gamepad');
+			game.botonA = game.gamepad.addButton(game.world.right - 150, game.world.height - 100, 1.0, 'gamepad');
 		}
 		// Posicionamos por encima botones y texto mostrados
 		game.world.bringToTop(game.balas);

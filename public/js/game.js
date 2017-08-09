@@ -10,6 +10,7 @@ game.state.add('score', scoreState);
 game.state.add('level1', level1State);
 game.state.add('levelUp', levelUp);
 game.state.add('level2', level2State);
+game.state.add('level3', level3State);
 game.state.add('win', winState);
 game.state.add('lose', loseState);
 

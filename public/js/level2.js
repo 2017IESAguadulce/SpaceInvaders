@@ -58,8 +58,9 @@ var level2State = {
 			if (game.time.now > game.alienDisparoHora2) {
 				this.disparoEnemigo2();
 			}
-			// Giramos nave y actualizamos estrellas mostradas
+			// Giramos nave, sincronizamos estela y estrellas
 			this.girarNave();
+			game.naveEstela.x = game.nave.x;
 			game.global.actualizarEstrellas();
 			// Controlamos colisiones de objetos en sus diferentes metodos
 			game.physics.arcade.overlap(game.nave, game.ayudas, this.manejadorColisionNaveAyuda, null, this);
@@ -70,17 +71,7 @@ var level2State = {
 			game.physics.arcade.overlap(game.nave, game.aliens2, this.manejadorColisionNaveAlien, null, this);
 			game.physics.arcade.overlap(game.balasAlien, game.muros, this.manejadorColisionMuro, null, this);
 			game.physics.arcade.overlap(game.balas, game.muros, this.manejadorColisionMuro, null, this);
-			game.physics.arcade.overlap(game.balas, game.invasor, this.manejadorColisionInvasor, null, this);
-			// Posicionamos por encima botones y texto mostrados
-			game.world.bringToTop(game.balas);
-			game.world.bringToTop(game.balasAlien);
-			game.world.bringToTop(game.ayudas);
-			game.world.bringToTop(game.aliens);
-			game.world.bringToTop(game.aliens2);
-			game.world.bringToTop(game.puntosTexto);
-			game.world.bringToTop(game.vidasTexto);
-			game.world.bringToTop(game.btnVolver);
-			game.world.bringToTop(game.btnSilenciar);			
+			game.physics.arcade.overlap(game.balas, game.invasor, this.manejadorColisionInvasor, null, this);		
 		}
 	},
 	
@@ -163,8 +154,8 @@ var level2State = {
 		game.puntos += 20;
 		game.puntosTexto.text = 'Puntos: ' + game.puntos;
 		vida = game.vidas.getFirstAlive();
+		// Si tenemos vidas eliminamos una
 		if (vida) {
-			// Si tenemos vidas quitamos una
 			vida.kill();
 		}
 		// Mostramos la animación de explosión en las coordenadas de nuestra nave
@@ -295,6 +286,23 @@ var level2State = {
 		game.physics.enable(game.nave, Phaser.Physics.ARCADE);
 		game.nave.body.collideWorldBounds = true;
 		game.naveDisparoHora = 0;
+		// Creamos una estela que sigue a la nave
+		game.naveEstela = game.add.emitter(game.nave.x, game.nave.y + 10, 400);
+		game.naveEstela.width = 10;
+		game.naveEstela.makeParticles('bala');
+		game.naveEstela.setXSpeed(30, -30);
+		game.naveEstela.setYSpeed(200, 180);
+		game.naveEstela.setRotation(50,-50);
+		game.naveEstela.setAlpha(1, 0.01, 800);
+		game.naveEstela.setScale(0.05, 0.4, 0.05, 0.4, 2000, Phaser.Easing.Quintic.Out);
+		game.naveEstela.start(false, 5000, 10);
+		// Asignamos una explosión grande para cuando seamos vencidos
+		game.naveMuerte = game.add.emitter(game.nave.x, game.nave.y);
+		game.naveMuerte.width = 50;
+		game.naveMuerte.height = 50;
+		game.naveMuerte.makeParticles('boom', [0,1,2,3,4,5,6,7], 10);
+		game.naveMuerte.setAlpha(0.9, 0, 800);
+		game.naveMuerte.setScale(0.1, 0.6, 0.1, 0.6, 1000, Phaser.Easing.Quintic.Out);
 		// Variables referentes a las balas de nuestra nave
 		game.balas = game.add.group();
 		game.balas.enableBody = true;
@@ -459,9 +467,19 @@ var level2State = {
 		if (!game.escritorio) {
 			// Agregamos un pad virtual con su joystick y botón
 			game.gamepad = game.plugins.add(Phaser.Plugin.VirtualGamepad);
-			game.joystick = game.gamepad.addJoystick(150, 500, 1.2, 'gamepad');
-			game.botonA = game.gamepad.addButton(650, 500, 1.0, 'gamepad');
+			game.joystick = game.gamepad.addJoystick(game.world.left + 150, game.world.height - 100, 1.2, 'gamepad');
+			game.botonA = game.gamepad.addButton(game.world.right - 150, game.world.height - 100, 1.0, 'gamepad');
 		}
+		// Posicionamos por encima botones y texto mostrados
+		game.world.bringToTop(game.balas);
+		game.world.bringToTop(game.balasAlien);
+		game.world.bringToTop(game.ayudas);
+		game.world.bringToTop(game.aliens);
+		game.world.bringToTop(game.aliens2);
+		game.world.bringToTop(game.puntosTexto);
+		game.world.bringToTop(game.vidasTexto);
+		game.world.bringToTop(game.btnVolver);
+		game.world.bringToTop(game.btnSilenciar);
 	},	
 	
 	/**
@@ -637,10 +655,16 @@ var level2State = {
 	perderPartida: function(nave) {
 		// Eliminamos la nave y removemos demás elementos de juego
 		nave.kill();
+		game.naveEstela.kill();
 		game.sfxInvasor.stop();
 		game.balasAlien.callAll('kill');
-		// Lanzamos el estado lose
-		game.state.start('lose');
+		game.naveMuerte.x = nave.x;
+		game.naveMuerte.y = nave.y;
+		game.naveMuerte.start(false, 1000, 10, 10);
+		// Lanzamos estado lose tras 3 segundos de delay
+		game.time.events.add(2000, function() {
+			game.state.start('lose');
+		});
 	},
 	
 	/**
@@ -653,7 +677,7 @@ var level2State = {
 		game.puntosTexto.text = 'Puntos: ' + game.puntos;
 		game.balasAlien.callAll('kill', this);
 		game.sfxInvasor.stop();
-		game.siguienteNivel = 'level2';
+		game.siguienteNivel = 'level3';
 		// Lanzamos el estado levelUp
 		game.state.start('levelUp');
 	}

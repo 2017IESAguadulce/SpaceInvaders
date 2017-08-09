@@ -18,9 +18,9 @@ var menuState = {
 		game.btnOpciones.onInputOver.add(this.manejadorOverBoton, this);
 		game.btnPuntuaciones.onInputOver.add(this.manejadorOverBoton, this);
 		// Inicializamos valores e iniciamos la carga de las estrellas en pantalla
-		this.inicializarParametros();
 		this.cargarLogo();
 		game.global.cargarEstrellas();
+		this.inicializarParametros();
 	},	
 	
 	/**
@@ -28,13 +28,9 @@ var menuState = {
 	 * @method update
 	 */
     update: function() {
-		// Actualizamos estrellas mostradas, logo y posicionamos por encima botones y texto mostrados
+		// Actualizamos estrellas mostradas y logo
 		this.actualizarLogo();
 		game.global.actualizarEstrellas();
-		game.world.bringToTop(game.mapaTitulo);
-		game.world.bringToTop(game.btnJugar);
-		game.world.bringToTop(game.btnOpciones);
-		game.world.bringToTop(game.btnPuntuaciones);
 	},
 	
 	/**
@@ -89,6 +85,11 @@ var menuState = {
 		game.naveVelocidad = 200;
 		game.velocidadLogo = 0.1;
 		game.siguienteNivel = 'level1';
+		// Posicionamos por encima botones y texto mostrados
+		game.world.bringToTop(game.mapaTitulo);
+		game.world.bringToTop(game.btnJugar);
+		game.world.bringToTop(game.btnOpciones);
+		game.world.bringToTop(game.btnPuntuaciones);
 		// Cargamos audios iniciales
 		game.sfxHover = game.add.audio('botonHover');
 		game.sfxStart = game.add.audio('botonStart');

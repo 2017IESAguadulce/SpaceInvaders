@@ -1,5 +1,5 @@
-// Variable estado usada para cargar el nivel 1 del juego
-var level1State = {
+// Variable estado usada para cargar el nivel 3 del juego
+var level3State = {
 	/**
 	 * Metodo usado para cargar el juego
 	 * @method create
@@ -8,7 +8,7 @@ var level1State = {
 		// Cargamos e iniciamos las diferentes variables usadas por el juego
 		this.cargarInterfaz();
 		this.cargarNave();
-		this.cargarAliens();
+		this.cargarJefe();
 		this.cargarMuros();
 		this.cargarAnimaciones();
 		this.cargarAudios();
@@ -23,7 +23,34 @@ var level1State = {
 		// Si la nave esta viva
 		if (game.nave.alive) {
 			game.nave.body.velocity.setTo(0, 0);
-			// Si estamos en el movil
+			game.jefe.body.acceleration.x = 0;
+			// Si el jefe esta vivo gestionamos su lógica
+			if (game.jefe.alive) {	
+				if (game.jefe.y > 200) {
+					game.jefe.body.acceleration.y = -80;
+				} else if (game.jefe.y < 200) {
+					game.jefe.body.acceleration.y = 80;
+				}
+				if (game.jefe.x > game.nave.x + 50) {
+					game.jefe.body.acceleration.x = -50;
+				} else if (game.jefe.x < game.nave.x - 50) {
+					game.jefe.body.acceleration.x = 50;
+				} else {
+					game.jefe.body.acceleration.x = 0;
+				}
+				// Creamos efecto de rotación en jefe para simular movimiento
+				var rotacion = game.jefe.body.velocity.x / 400;
+				game.jefe.scale.x = 0.6 - Math.abs(rotacion) / 3;
+				game.jefe.angle = 180 - rotacion * 20;
+				game.jefeEstela.x = game.jefe.x + -5 * rotacion;
+				game.jefeEstela.y = game.jefe.y + 10 * Math.abs(rotacion) - game.jefe.height / 2;
+				// Capturamos ángulos para lanzar el disparo del jefe si la nave está en posición
+				var anguloHaciaJugador = game.math.radToDeg(game.physics.arcade.angleBetween(game.jefe, game.nave)) - 90;
+				if (Math.abs(180 - Math.abs(game.jefe.angle) - anguloHaciaJugador) < 18) {
+					this.disparoJefe();
+				}
+			}
+			// Gestionamos movimiento de nave si estamos en una plataforma móvil
 			if (!game.escritorio) {
 				// Y si pulsamos el joystick
 				if (game.joystick.properties.inUse) {
@@ -50,58 +77,48 @@ var level1State = {
 					this.dispararBala();
 				}
 			}
-			// Controlamos evento de disparo de enemigos
-			if (game.time.now > game.alienDisparoHora) {
-				this.disparoEnemigo();
-			}
 			// Giramos nave, sincronizamos estela y estrellas
 			this.girarNave();
 			game.naveEstela.x = game.nave.x;
 			game.global.actualizarEstrellas();
 			// Controlamos colisiones de objetos en sus diferentes metodos
-			game.physics.arcade.overlap(game.nave, game.ayudas, this.manejadorColisionNaveAyuda, null, this);
-			game.physics.arcade.overlap(game.balas, game.aliens, this.manejadorDisparoNave, null, this);
-			game.physics.arcade.overlap(game.balasAlien, game.nave, this.manejadorDisparoEnemigo, null, this);
-			game.physics.arcade.overlap(game.nave, game.aliens, this.manejadorColisionNaveAlien, null, this);
-			game.physics.arcade.overlap(game.balasAlien, game.muros, this.manejadorColisionMuro, null, this);
+			game.physics.arcade.overlap(game.jefe, game.balas, this.manejadorDisparoNave, this.comprobarColisionJefe, this);
+			game.physics.arcade.overlap(game.nave, game.torpedoJefe, this.manejadorDisparoJefe, null, this);
+			game.physics.arcade.overlap(game.torpedoJefe, game.torpedoJefe, this.manejadorColisionEntreTorpedos, null, this);
+			game.physics.arcade.overlap(game.torpedoJefe, game.muros, this.manejadorColisionMuro, null, this);
 			game.physics.arcade.overlap(game.balas, game.muros, this.manejadorColisionMuro, null, this);
-			game.physics.arcade.overlap(game.balas, game.invasor, this.manejadorColisionInvasor, null, this);
 		}
 	},
 	
 	/**
-	 * Función usada para gestionar las colisiones producidas entre nuestras balas y los aliens
+	 * Función usada para gestionar las colisiones producidas entre nuestras balas y el jefe
 	 * @method manejadorDisparoNave
+	 * @param {} jefe
 	 * @param {} bala
-	 * @param {} alien
 	 */
-	manejadorDisparoNave: function(bala, alien) {
-		// Calculamos posibilidad de lanzar o no ayuda
-		this.lanzarAyuda(alien);
+	manejadorDisparoNave: function(jefe, bala) {
 		// Eliminamos bala y alien colisionados
 		bala.kill();
-		alien.kill();
-		// Agregamos puntos a marcador y reproducimos audio
-		game.puntos += 20;
-		game.puntosTexto.text = 'Puntos: ' + game.puntos;
 		game.sfxExplosion.play();
-		// Lanzamos animación de explosión para ese alien concreto
+		// Lanzamos animación de impacto en el jefe
 		var explosion = game.explosiones.getFirstExists(false);
-		explosion.reset(alien.body.x, alien.body.y);
+		explosion.reset(bala.body.x + bala.body.halfWidth, bala.body.y + bala.body.halfHeight);
+		explosion.alpha = 0.7;
 		explosion.play('boom', 30, false, true);
-		// Si no quedan aliens llamamos al método ganarPartida
-		if (game.aliens.countLiving() == 0) {
-			this.ganarPartida();
+		// Asignamos daño y comprobamos si hemos destruído al jefe
+		jefe.vida -= jefe.danioRecibido;
+		if (jefe.vida < 1) {
+			this.eliminarJefe();
 		}
 	},
-
+	
 	/**
-	 * Función usada para gestionar las colisiones producidas entre las balas enemigas y nuestra nave
-	 * @method manejadorDisparoEnemigo
+	 * Función usada para gestionar las colisiones producidas entre las balas del jefe y nuestra nave
+	 * @method manejadorDisparoJefe
 	 * @param {} nave
 	 * @param {} bala
 	 */
-	manejadorDisparoEnemigo: function(nave, bala) {
+	manejadorDisparoJefe: function(nave, bala) {
 		// Eliminamos bala y reproducimos sonido
 		bala.kill();
 		game.sfxExplosion.play();
@@ -119,49 +136,24 @@ var level1State = {
 			this.perderPartida(nave);
 		}
 	},
-
+	
 	/**
-	 * Función usada para gestionar las colisiones producidas entre nuestra nave y las ayudas
-	 * @method manejadorColisionNaveAyuda
-	 * @param {} nave
-	 * @param {} ayudaPuntos
+	 * Función usada para gestionar las colisiones producidas entre los torpedos del jefe
+	 * @method manejadorColisionEntreTorpedos
+	 * @param {} torpedo1
+	 * @param {} torpedo2
 	 */
-	manejadorColisionNaveAyuda: function(nave, ayudaPuntos) {
-		// Eliminamos ayuda y reproducimos sonido
-		ayudaPuntos.kill();
-		game.sfxAyuda.play();
-		// Agregamos puntos a marcador y reproducimos audio
-		game.puntos += parseInt(ayudaPuntos.name);
-		game.puntosTexto.text = 'Puntos: ' + game.puntos;
-	},
-
-	/**
-	 * Función usada para gestionar las colisiones producidas entre nuestra nave y los aliens
-	 * @method manejadorColisionNaveAlien
-	 * @param {} nave
-	 * @param {} alien
-	 */
-	manejadorColisionNaveAlien: function(nave, alien) {
-		// Eliminamos alien, reproducimos sonido y agregamos puntos a marcador
-		alien.kill();
-		game.sfxExplosion.play();
-		game.puntos += 20;
-		game.puntosTexto.text = 'Puntos: ' + game.puntos;
-		vida = game.vidas.getFirstAlive();
-		// Si tenemos vidas eliminamos una
-		if (vida) {
-			vida.kill();
-		}
-		// Mostramos la animación de explosión en las coordenadas de nuestra nave
-		var explosion = game.explosiones.getFirstExists(false);
-		explosion.reset(nave.body.x, nave.body.y);
-		explosion.play('boom', 20, false, true);
-		// Si no nos quedan vidas llamamos al método perderPartida
-		if (game.vidas.countLiving() < 1) {
-			this.perderPartida(nave);
-		// Si no quedan aliens llamamos al método ganarPartida
-		} else if (game.aliens.countLiving() == 0) {
-			this.ganarPartida();
+	manejadorColisionEntreTorpedos: function(torpedo1, torpedo2) {
+		// Si ambos torpedos han pasado el eje y de la nave
+		if (torpedo1.body.y > game.nave.y && torpedo2.body.y > game.nave.y) {
+			// Eliminamos torpedos y reproducimos sonido
+			torpedo1.kill();
+			torpedo2.kill();
+			game.sfxExplosion.play();
+			// Mostramos la animación de explosión en las coordenadas de los torpedos
+			var explosion = game.explosiones.getFirstExists(false);
+			explosion.reset(torpedo1.body.x, torpedo1.body.y);
+			explosion.play('boom', 20, false, true);
 		}
 	},
 	
@@ -190,26 +182,6 @@ var level1State = {
 			game.sfxMuro.play();
 			bala.kill();
 		}
-	},
-	
-	/**
-	 * Función usada para gestionar las colisiones producidas entre las balas y el invasor superior
-	 * @method manejadorColisionInvasor
-	 * @param {} bala
-	 * @param {} invasor
-	 */
-	manejadorColisionInvasor: function(bala, invasor) {
-		// Eliminamos bala y reproducimos sonido
-		bala.kill();
-		game.sfxExplosion.play();
-		// Mostramos la animación de explosión en las coordenadas del invasor
-		var explosion = game.explosiones.getFirstExists(false);
-		explosion.reset(invasor.body.x, invasor.body.y);
-		explosion.play('boom', 20, false, true);
-		// Lanzamos paquete de puntos y eliminamos al insavor
-		this.cargarPowerUp('500', invasor.body.x, invasor.body.y);
-		game.sfxInvasor.stop();
-		invasor.kill();
 	},
 	
 	/**
@@ -250,7 +222,7 @@ var level1State = {
 		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
 		// Variables con textos y puntos mostrados por pantalla
 		game.mapaTitulo = game.add.bitmapText(game.world.centerX - 100, 450, 'gem', '', 36);
-		this.mostrarLetraPorLetra(game.mapaTitulo, '  Nivel 1    ');
+		this.mostrarLetraPorLetra(game.mapaTitulo, '  Nivel 3    ');
 		game.puntosTexto = game.add.text(10, 10, 'Puntos: ' + game.puntos, { font: '34px Arial', fill: '#fff' });
 		game.vidas = game.add.group();
 		game.vidasTexto = game.add.text(game.world.width - 140, 10, 'Escudos: ', { font: '30px Arial', fill: '#fff' });
@@ -306,76 +278,62 @@ var level1State = {
 		game.balas.setAll('anchor.y', 1);
 		game.balas.setAll('outOfBoundsKill', true);
 		game.balas.setAll('checkWorldBounds', true);
-		// Variables con las ayudas y powerups para nuestra nave
-		game.ayudas = game.add.group();
-		game.ayudas.enableBody = true;
-		game.ayudas.physicsBodyType = Phaser.Physics.ARCADE;
-		game.physics.arcade.gravity.y = 50;
+		//game.physics.arcade.gravity.y = 50;
 	},
 	
 	/**
-	 * Función usada para crear, inicializar y posicionar los enemigos en pantalla agregándoles movimiento
-	 * @method cargarAliens
+	 * Función usada para crear e inicializar los parámetos del jefe de nivel
+	 * @method cargarJefe
 	 */
-	cargarAliens: function() {
-		// Variables de los aliens
-		game.aliens = game.add.group();
-		game.aliens.enableBody = true;
-		game.aliens.physicsBodyType = Phaser.Physics.ARCADE;
-		game.alienDisparoHora = 0;
-		game.alienVelocidad = 4000;
-		game.alienVivos = [];
-		// Cargamos en filas de 4 y columnas de 10 a los enemigos
-		for (var y = 0; y < 4; y++) {
-			for (var x = 0; x < 10; x++) {
-				var alien = game.aliens.create(x * 48, y * 50, 'alien');
-				alien.anchor.setTo(0.5, 0.5);
-				alien.animations.add('fly', [ 0, 1, 2, 3 ], 20, true);
-				alien.play('fly');
-				alien.body.moves = false;
-				// Agregamos movimiendo de vaivén en aliens
-				game.add.tween(alien).to( { y: alien.body.y + 5 }, 500, Phaser.Easing.Sinusoidal.InOut, true, game.rnd.integerInRange(0, 500), 1000, true);
-			}
-		}
-		// Asignamos coordenadas iniciales a grupo de enemigos de tipo alien
-		game.aliens.x = 100;
-		game.aliens.y = 120;
-		// Agregamos los eventos de movimiento horizontal y vertical para los aliens
-		game.add.tween(game.aliens).to( { x: 500 }, game.alienVelocidad, Phaser.Easing.Sinusoidal.InOut, true, 0, game.alienVelocidad, true);
-		game.time.events.loop(game.alienVelocidad * 2, function() { this.descender(30); }, this);
-		// Variables referentes a las balas de los aliens
-		game.balasAlien = game.add.group();
-		game.balasAlien.enableBody = true;
-		game.balasAlien.physicsBodyType = Phaser.Physics.ARCADE;
-		game.balasAlien.createMultiple(30, 'balaAlien');
-		game.balasAlien.setAll('anchor.x', 0.5);
-		game.balasAlien.setAll('anchor.y', 1);
-		game.balasAlien.setAll('outOfBoundsKill', true);
-		game.balasAlien.setAll('checkWorldBounds', true);
-		var tMin = 10;
-		var tMax = 30;
-		// Generamos disparador de evento de forma aleatoria entre los segundos 10 y 30 de juego
-		var tiempo = Math.floor(Math.random() * (tMax - tMin + 1) + tMin);
-		game.time.events.add(Phaser.Timer.SECOND * tiempo, this.cargarAlienTop, this);
-	},
-	
-	/**
-	 * Función usada para crear y configurar el alien que aparece en la parte superior de la pantalla
-	 * @method cargarAliens
-	 */
-	cargarAlienTop: function() {
-		// Configuramos los parámetros iniciales del invasor
-		game.invasor = game.add.sprite(0, 80, 'invasor');
-		game.invasor.anchor.setTo(0.5, 0.5);
-		game.physics.enable(game.invasor, Phaser.Physics.ARCADE);
-		game.invasor.body.collideWorldBounds = false;
-		game.physics.arcade.enable(game.invasor);
-		game.invasor.body.allowGravity = false;
-		var bucle = 1;
-		// Le asignamos los eventos de movimiento para que sólo se produzca un bucle de transición hasta que desaparezca
-		movimientoAlienTop = game.add.tween(game.invasor).to( { x: game.width - game.invasor.width }, game.alienVelocidad * 5, Phaser.Easing.Linear.None, true, 0, game.alienVelocidad, true);
-		movimientoAlienTop.onRepeat.add( function() { if (bucle == 0) { game.tweens.remove(movimientoAlienTop); game.invasor.kill(); } bucle--; }, this);
-		game.sfxInvasor.play();
+	cargarJefe: function() {
+		// Creamos valores iniciales del jefe
+		game.jefe = game.add.sprite(0, 0, 'boss');
+		game.jefe.exists = false;
+		game.jefe.alive = false;
+		game.jefe.dying = false;
+		game.jefe.vida = 1000;
+		game.jefe.danioRecibido = 50;	
+		game.jefe.anchor.setTo(0.5, 0.5);
+		game.jefe.angle = 180;
+		game.jefe.scale.x = 0.6;
+		game.jefe.scale.y = 0.6;
+		game.horaDisparoJefe = 0;
+		game.physics.enable(game.jefe, Phaser.Physics.ARCADE);
+		game.jefe.body.maxVelocity.setTo(100, 80);
+		// Variables relativas a las estelas del jefe
+		game.jefeEstela = game.add.emitter(game.jefe.body.x, game.jefe.body.y - game.jefe.height / 2);
+		game.jefeEstela.width = 0;
+		game.jefeEstela.makeParticles('jefeEstela');
+		game.jefeEstela.forEach(function(p) {
+			// Creamos 2 estelas con valores aleatorios para la cola de la nave del jefe
+			p.crop({x: 120, y: 0, width: 45, height: 50});
+			p.anchor.x = game.rnd.pick([1,-1]) * 0.95 + 0.5;
+			p.anchor.y = 0.75;
+		});
+		game.jefeEstela.setXSpeed(0, 0);
+		game.jefeEstela.setRotation(0,0);
+		game.jefeEstela.setYSpeed(-30, -50);
+		game.jefeEstela.gravity = 0;
+		game.jefeEstela.setAlpha(1, 0.1, 400);
+		game.jefeEstela.setScale(0.3, 0, 0.7, 0, 5000, Phaser.Easing.Quadratic.Out);
+		game.jefe.bringToTop();
+		// Asignamos una explosión grande para cuando venzamos al jefe
+		game.bossMuerte = game.add.emitter(game.jefe.x, game.jefe.y);
+		game.bossMuerte.width = game.jefe.width / 2;
+		game.bossMuerte.height = game.jefe.height / 2;
+		game.bossMuerte.makeParticles('boom', [0,1,2,3,4,5,6,7], 20);
+		game.bossMuerte.setAlpha(0.9, 0, 900);
+		game.bossMuerte.setScale(0.3, 1.0, 0.3, 1.0, 1000, Phaser.Easing.Quintic.Out);
+		// Torpedos que lanzará el jefe al atacar al jugador 
+		game.torpedoJefe = game.add.group();
+		game.torpedoJefe.enableBody = true;
+		game.torpedoJefe.alpha = 0.5;
+		game.torpedoJefe.physicsBodyType = Phaser.Physics.ARCADE;
+		game.torpedoJefe.setAll('outOfBoundsKill', true);
+		game.torpedoJefe.setAll('checkWorldBounds', false);
+		game.torpedoJefe.setAll('anchor.x', 0.5);
+		game.torpedoJefe.setAll('anchor.y', 0.5);
+		this.iniciarJefe();
 	},
 	
 	/**
@@ -384,7 +342,7 @@ var level1State = {
 	 */
 	cargarMuros: function() {
 		// Cargamos valores iniciales
-		var totalBases = 4;
+		var totalBases = 2;
 		var muroY = game.world.height - 170;
 		var ancho = 48;
 		var alto = 32;
@@ -426,11 +384,12 @@ var level1State = {
 	 */
 	cargarAudios: function() {
 		// Variables con los audios utilizados en el juego
-		game.sfxAyuda = game.add.audio('ayuda');
 		game.sfxDisparo = game.add.audio('disparo');
 		game.sfxExplosion = game.add.audio('explosion');
 		game.sfxMuro = game.add.audio('muro');
-		game.sfxInvasor = game.add.audio('invasor');
+		game.sfxCargaTorpedo = game.add.audio('cargaTorpedo');
+		game.sfxTorpedo = game.add.audio('torpedo');
+		game.sfxJefeMuerte = game.add.audio('jefeMuerte');
 	},
 	
 	/**
@@ -450,14 +409,62 @@ var level1State = {
 		}
 		// Posicionamos por encima botones y texto mostrados
 		game.world.bringToTop(game.balas);
-		game.world.bringToTop(game.balasAlien);
-		game.world.bringToTop(game.ayudas);
-		game.world.bringToTop(game.aliens);
 		game.world.bringToTop(game.puntosTexto);
 		game.world.bringToTop(game.vidasTexto);
 		game.world.bringToTop(game.btnVolver);
 		game.world.bringToTop(game.btnSilenciar);
 	},	
+	
+	/**
+	 * Función usada para lanzar al jefe del nivel
+	 * @method iniciarJefe
+	 */
+	iniciarJefe: function() {
+		game.jefe.reset(game.width / 2, -game.jefe.height);
+		game.jefeEstela.start(false, 1000, 10);
+		game.horaDisparoJefe = game.time.now + 5000;
+	},
+	
+	/**
+	 * Función usada para gestionar la destrucción del jefe de nivel
+	 * @method eliminarJefe
+	 */
+	eliminarJefe: function() {
+		// Si el jefe no esta muerto
+		if (!game.jefe.dying) {
+			// Actualizamos valores de referencia
+			game.jefe.dying = true;
+			game.bossMuerte.x = game.jefe.x;
+			game.bossMuerte.y = game.jefe.y;
+			game.bossMuerte.start(false, 1000, 50, 20);
+			game.sfxJefeMuerte.play();
+			// Y lo destruímos tras lanzar una animación
+			game.time.events.add(1000, function() {
+				// Lanzamos animación de explosión en el jefe
+				var explosion = game.explosiones.getFirstExists(false);
+				var auxEscalaX = game.explosiones.scale.x;
+				var auxEscalaY = game.explosiones.scale.y;
+				var auxAlfa = game.explosiones.alpha;
+				explosion.reset(game.jefe.body.x + game.jefe.body.halfWidth, game.jefe.body.y + game.jefe.body.halfHeight);
+				explosion.alpha = 0.4;
+				explosion.scale.x = 3;
+				explosion.scale.y = 3;
+				var animacion = explosion.play('boom', 30, false, true);
+				animacion.onComplete.addOnce(function(){
+					explosion.scale.x = auxEscalaX;
+					explosion.scale.y = auxEscalaY;
+					explosion.alpha = auxAlfa;
+				});
+				// Y eliminamos sus referencias en el juego
+				game.jefe.kill();
+				game.jefeEstela.kill();
+				game.jefe.dying = false;
+				game.bossMuerte.on = false;
+			});
+			// Lanzamos función ganarPartida tras 3 segundos de delay
+			game.time.events.add(3000, this.ganarPartida);
+		}
+	},
 	
 	/**
 	 * Función usada para configurar objetos agregándoles una animación
@@ -469,80 +476,23 @@ var level1State = {
 		objeto.anchor.y = 0.5;
 		objeto.animations.add('boom');
 	},
-
+	
 	/**
-	 * Función usada para controlar el descenso de los enemigos de tipo alien
-	 * @method descender
-	 * @param {} descensoY
+	 * Función usada para comprobar la correcta colisión de las balas contra el jefe
+	 * @method comprobarColisionJefe
+	 * @param {} jefe
+	 * @param {} bala
+	 * @return
 	 */
-	descender: function(descensoY) {
-		game.add.tween(game.aliens).to( { y: game.aliens.y + descensoY }, 2500, Phaser.Easing.Linear.None, true, 0, 0, false);
-	},
-
-	/**
-	 * Función usada para gestionar los disparos de los enemigos de tipo alien
-	 * @method disparoEnemigo
-	 */
-	disparoEnemigo: function() {
-		// Cargamos todos los aliens que quedan vivos en el vector
-		game.alienVivos.length = 0;
-		game.aliens.forEachAlive(function(alien){
-			game.alienVivos.push(alien);
-		});
-		// Obtenemos la primera bala
-		var balaAlien = game.balasAlien.getFirstExists(false);
-		// Si no hay balas en pantalla y existen aliens vivos
-		if (balaAlien && game.alienVivos.length > 0) {
-			// Seleccionamos aleatoriamente un alien entre los que quedan vivos
-			var aleatorio = game.rnd.integerInRange(0, game.alienVivos.length-1);
-			var seleccion = game.alienVivos[aleatorio];
-			// Y lanzamos la bala desde su posicion hacia nuestra nave
-			balaAlien.reset(seleccion.body.x, seleccion.body.y);
-			game.physics.arcade.moveToObject(balaAlien, game.nave, 200);
-			game.alienDisparoHora = game.time.now + 2000;
-			game.sfxDisparo.play();
+	comprobarColisionJefe: function(jefe, bala) {
+		if ((bala.x > jefe.x + jefe.width / 5 && bala.y > jefe.y) ||
+			(bala.x < jefe.x - jefe.width / 5 && bala.y > jefe.y)) {
+			return false;
+		} else {
+			return true;
 		}
 	},
-
-	/**
-	 * Función usada para controlar la aleatoriedad a la hora de lanzar los paquetes de ayuda
-	 * @method lanzarAyuda
-	 * @param {} alien
-	 */
-	lanzarAyuda: function(alien) {
-		// Obtenemos un número aleatorio entre 0 y 1 y si es menor que 0.15 lanzamos una mejora
-		var aleatorio = Math.random();
-		if (aleatorio < 0.15) {
-			// Inicialmente cargamos una mejora con 100 puntos
-			var mejora = "100";
-			// Si el número está entre 0.05 y 0.1 cargamos una mejora de 200 puntos
-			if (aleatorio > 0.05 && aleatorio < 0.1) {
-				mejora = "200";
-			// Si es menor de 0.05 cargamos una mejora de 300 puntos
-			} else if (aleatorio <= 0.05) {
-				mejora = "300";
-			}
-			this.cargarPowerUp(mejora, alien.body.x, alien.body.y);
-		}
-	},
-
-	/**
-	 * Función usada para cargar la ayuda en pantalla a partir de su nombre y localizacion
-	 * @method cargarPowerUp
-	 * @param {} tipoMejora
-	 * @param {} locX
-	 * @param {} locY
-	 */
-	cargarPowerUp: function(tipoMejora, locX, locY) {
-		// Creamos una mejora del tipo especificado desde la localizacion concretada
-		var objeto = game.ayudas.create(locX, locY, tipoMejora);
-		objeto.name = tipoMejora;
-		objeto.body.collideWorldBounds = false;
-		// Y la hacemos semitransparente ademas de anadirle gravedad
-		objeto.alpha = 0.4;
-		game.physics.arcade.gravity.y = 50;
-	},
-
+	
 	/**
 	 * Función usada para disparar balas desde nuestra nave
 	 * @method dispararBala
@@ -554,12 +504,85 @@ var level1State = {
 			var bala = game.balas.getFirstExists(false);
 			if (bala) {
 				game.sfxDisparo.play();
-				// Y la lanzamos desde la ubicacion de la nave
+				// Y la lanzamos desde la ubicación de la nave
 				bala.reset(game.nave.x, game.nave.y + 8);
 				bala.body.velocity.y = -400;
 				game.naveDisparoHora = game.time.now + game.naveBalasRatio;
 			}
 		}
+	},
+
+	/**
+	 * Función usada para controlar los disparos del jefe de nivel
+	 * @method disparoJefe
+	 */
+	disparoJefe: function() {
+		if (game.time.now > game.horaDisparoJefe) {
+			// Procesamos la carga y disparo del jefe
+			this.cargarYDisparar('Der');
+			this.cargarYDisparar('Izq');
+			game.horaDisparoJefe = game.time.now + 3000;
+		}
+	},
+	
+	/**
+	 * Función usada para iniciar la carga y disparo del arma del jefe
+	 * @method cargarYDisparar
+	 * @param {} lado
+	 */
+	cargarYDisparar: function(lado) {
+		// Creamos los 2 torpedos que lanzaremos
+		this.crearAnimacionDisparo(1);
+		this.crearAnimacionDisparo(-1);
+		// Les asignamos algunos parámetros
+		torpedo = game['torpedo' + lado];
+		torpedo.name = lado;
+		torpedo.revive();
+		torpedo.y = 50;
+		torpedo.alpha = 0;
+		if (game.jefe.alive) {
+			game.sfxCargaTorpedo.play();
+		}
+		// Lanzamos animaciones de carga de disparo cambiando el canal alfa de la imagen durante 2 segundos 
+		game.add.tween(torpedo).to({alpha: 0.8}, 2000, Phaser.Easing.Linear.In, true).onComplete.add(function(torpedo, posibiblidadDisparo) {
+			// Tras lanzar la animación comprobamos si el jefe sigue en ángulo y no es muerto
+			var anguloHaciaJugador = game.math.radToDeg(game.physics.arcade.angleBetween(game.jefe, game.nave)) - 90;
+			if (Math.abs(180 - Math.abs(game.jefe.angle) - anguloHaciaJugador) < 18 && game.jefe.alive) {
+				// En caso afirmativo lanzamos el torpedo a la posición del jugador
+				var laser = game.torpedoJefe.create(game.jefe.body.x + ((torpedo.name == 'Der') ? 5 : 155), game.jefe.body.y, 'laser');			
+				laser.y += 100;
+				game.sfxTorpedo.play();
+				game.physics.enable(laser, Phaser.Physics.ARCADE);
+				game.physics.arcade.moveToObject(laser, game.nave, 800);
+			}
+			// Después de lanzar la animación de disparo eliminamos dicha animación e imagen
+			game.add.tween(torpedo).to({alpha: 0}, 500, Phaser.Easing.Linear.In, true).onComplete.add(function(torpedo) {
+				torpedo.kill();
+			});
+		});
+	},
+	
+	/**
+	 * Función usada para crear y preparar las animaciones de disparo del jefe
+	 * @method crearAnimacionDisparo
+	 * @param {} disparo
+	 */
+	crearAnimacionDisparo: function(disparo) {
+		// Creamos torpedo y le asignamos sus variables iniciales
+		var torpedo = game.add.sprite(disparo * game.jefe.width * 0.75, 0, 'laserEfecto');
+		torpedo.alive = false;
+		torpedo.visible = false;
+		// Lo añadimos al jefe para sincronizar sus movimientos y posición
+		game.jefe.addChild(torpedo);
+		torpedo.crop({x: 0, y: 0, width: 40, height: 40});
+		torpedo.anchor.x = 0.5;
+		torpedo.anchor.y = 0.5;
+		torpedo.scale.y = 15;
+		torpedo.scale.x = 3;
+		// Le agregamos el sistema de físicas y lo asignamos a la variable global
+		game.physics.enable(torpedo, Phaser.Physics.ARCADE);
+		torpedo.body.setSize(torpedo.width / 5, torpedo.height / 4);
+		game['torpedo' + (disparo > 0 ? 'Der' : 'Izq')] = torpedo;
 	},
 
 	/**
@@ -607,8 +630,6 @@ var level1State = {
 		// Eliminamos la nave y removemos demás elementos de juego
 		nave.kill();
 		game.naveEstela.kill();
-		game.sfxInvasor.stop();
-		game.balasAlien.callAll('kill');
 		game.naveMuerte.x = nave.x;
 		game.naveMuerte.y = nave.y;
 		game.naveMuerte.start(false, 1000, 10, 10);
@@ -624,12 +645,9 @@ var level1State = {
 	 */
 	ganarPartida: function() {
 		// Agregamos puntos a marcador
-		game.puntos += 500;
+		game.puntos += 2000;
 		game.puntosTexto.text = 'Puntos: ' + game.puntos;
-		game.balasAlien.callAll('kill', this);
-		game.sfxInvasor.stop();
-		game.siguienteNivel = 'level2';
-		// Lanzamos el estado levelUp
-		game.state.start('levelUp');
+		// Lanzamos el estado win
+		game.state.start('win');
 	}
 }

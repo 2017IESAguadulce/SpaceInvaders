@@ -26,9 +26,9 @@ var level3State = {
 			game.jefe.body.acceleration.x = 0;
 			// Si el jefe esta vivo gestionamos su lógica
 			if (game.jefe.alive) {	
-				if (game.jefe.y > 140) {
+				if (game.jefe.y > 200) {
 					game.jefe.body.acceleration.y = -80;
-				} else if (game.jefe.y < 140) {
+				} else if (game.jefe.y < 200) {
 					game.jefe.body.acceleration.y = 80;
 				}
 				if (game.jefe.x > game.nave.x + 50) {
@@ -536,7 +536,9 @@ var level3State = {
 		torpedo.revive();
 		torpedo.y = 50;
 		torpedo.alpha = 0;
-		game.sfxCargaTorpedo.play();
+		if (game.jefe.alive) {
+			game.sfxCargaTorpedo.play();
+		}
 		// Lanzamos animaciones de carga de disparo cambiando el canal alfa de la imagen durante 2 segundos 
 		game.add.tween(torpedo).to({alpha: 1}, 2000, Phaser.Easing.Linear.In, true).onComplete.add(function(torpedo, posibiblidadDisparo) {
 			// Tras lanzar la animación comprobamos si el jefe sigue en ángulo y no es muerto

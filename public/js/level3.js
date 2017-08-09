@@ -133,9 +133,6 @@ var level3State = {
 		explosion.play('boom', 20, false, true);
 		// Si no nos quedan vidas llamamos al método perderPartida
 		if (game.vidas.countLiving() < 1) {
-			//game.playerDeath.x = nave.x;
-			//game.playerDeath.y = nave.y;
-			//game.playerDeath.start(false, 1000, 10, 10);
 			this.perderPartida(nave);
 		}
 	},
@@ -265,6 +262,13 @@ var level3State = {
 		game.naveEstela.setAlpha(1, 0.01, 800);
 		game.naveEstela.setScale(0.05, 0.4, 0.05, 0.4, 2000, Phaser.Easing.Quintic.Out);
 		game.naveEstela.start(false, 5000, 10);
+		// Asignamos una explosión grande para cuando seamos vencidos
+		game.naveMuerte = game.add.emitter(game.nave.x, game.nave.y);
+		game.naveMuerte.width = 50;
+		game.naveMuerte.height = 50;
+		game.naveMuerte.makeParticles('boom', [0,1,2,3,4,5,6,7], 10);
+		game.naveMuerte.setAlpha(0.9, 0, 800);
+		game.naveMuerte.setScale(0.1, 0.6, 0.1, 0.6, 1000, Phaser.Easing.Quintic.Out);
 		// Variables referentes a las balas de nuestra nave
 		game.balas = game.add.group();
 		game.balas.enableBody = true;
@@ -540,7 +544,7 @@ var level3State = {
 			game.sfxCargaTorpedo.play();
 		}
 		// Lanzamos animaciones de carga de disparo cambiando el canal alfa de la imagen durante 2 segundos 
-		game.add.tween(torpedo).to({alpha: 1}, 2000, Phaser.Easing.Linear.In, true).onComplete.add(function(torpedo, posibiblidadDisparo) {
+		game.add.tween(torpedo).to({alpha: 0.8}, 2000, Phaser.Easing.Linear.In, true).onComplete.add(function(torpedo, posibiblidadDisparo) {
 			// Tras lanzar la animación comprobamos si el jefe sigue en ángulo y no es muerto
 			var anguloHaciaJugador = game.math.radToDeg(game.physics.arcade.angleBetween(game.jefe, game.nave)) - 90;
 			if (Math.abs(180 - Math.abs(game.jefe.angle) - anguloHaciaJugador) < 18 && game.jefe.alive) {
@@ -626,8 +630,13 @@ var level3State = {
 		// Eliminamos la nave y removemos demás elementos de juego
 		nave.kill();
 		game.naveEstela.kill();
-		// Lanzamos el estado lose
-		game.state.start('lose');
+		game.naveMuerte.x = nave.x;
+		game.naveMuerte.y = nave.y;
+		game.naveMuerte.start(false, 1000, 10, 10);
+		// Lanzamos estado lose tras 3 segundos de delay
+		game.time.events.add(2000, function() {
+			game.state.start('lose');
+		});
 	},
 	
 	/**

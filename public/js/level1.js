@@ -148,8 +148,8 @@ var level1State = {
 		game.puntos += 20;
 		game.puntosTexto.text = 'Puntos: ' + game.puntos;
 		vida = game.vidas.getFirstAlive();
+		// Si tenemos vidas eliminamos una
 		if (vida) {
-			// Si tenemos vidas quitamos una
 			vida.kill();
 		}
 		// Mostramos la animación de explosión en las coordenadas de nuestra nave
@@ -290,6 +290,13 @@ var level1State = {
 		game.naveEstela.setAlpha(1, 0.01, 800);
 		game.naveEstela.setScale(0.05, 0.4, 0.05, 0.4, 2000, Phaser.Easing.Quintic.Out);
 		game.naveEstela.start(false, 5000, 10);
+		// Asignamos una explosión grande para cuando seamos vencidos
+		game.naveMuerte = game.add.emitter(game.nave.x, game.nave.y);
+		game.naveMuerte.width = 50;
+		game.naveMuerte.height = 50;
+		game.naveMuerte.makeParticles('boom', [0,1,2,3,4,5,6,7], 10);
+		game.naveMuerte.setAlpha(0.9, 0, 800);
+		game.naveMuerte.setScale(0.1, 0.6, 0.1, 0.6, 1000, Phaser.Easing.Quintic.Out);
 		// Variables referentes a las balas de nuestra nave
 		game.balas = game.add.group();
 		game.balas.enableBody = true;
@@ -599,11 +606,16 @@ var level1State = {
 	perderPartida: function(nave) {
 		// Eliminamos la nave y removemos demás elementos de juego
 		nave.kill();
-		game.sfxInvasor.stop();
 		game.naveEstela.kill();
+		game.sfxInvasor.stop();
 		game.balasAlien.callAll('kill');
-		// Lanzamos el estado lose
-		game.state.start('lose');
+		game.naveMuerte.x = nave.x;
+		game.naveMuerte.y = nave.y;
+		game.naveMuerte.start(false, 1000, 10, 10);
+		// Lanzamos estado lose tras 3 segundos de delay
+		game.time.events.add(2000, function() {
+			game.state.start('lose');
+		});
 	},
 	
 	/**

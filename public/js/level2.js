@@ -233,6 +233,7 @@ var level2State = {
 	manejadorClickBotonVolver: function() {
 		// Reproducimos audio y llamamos al estado menu para volver al inicio
 		game.sfxStart.play();
+		game.sfxInvasor.stop();
 		game.state.start('menu');
 	},
 	

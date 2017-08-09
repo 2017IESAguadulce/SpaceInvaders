@@ -87,12 +87,6 @@ var level3State = {
 			game.physics.arcade.overlap(game.torpedoJefe, game.torpedoJefe, this.manejadorColisionEntreTorpedos, null, this);
 			game.physics.arcade.overlap(game.torpedoJefe, game.muros, this.manejadorColisionMuro, null, this);
 			game.physics.arcade.overlap(game.balas, game.muros, this.manejadorColisionMuro, null, this);
-			// Posicionamos por encima botones y texto mostrados
-			game.world.bringToTop(game.balas);
-			game.world.bringToTop(game.puntosTexto);
-			game.world.bringToTop(game.vidasTexto);
-			game.world.bringToTop(game.btnVolver);
-			game.world.bringToTop(game.btnSilenciar);
 		}
 	},
 	
@@ -409,6 +403,12 @@ var level3State = {
 			game.joystick = game.gamepad.addJoystick(150, 500, 1.2, 'gamepad');
 			game.botonA = game.gamepad.addButton(650, 500, 1.0, 'gamepad');
 		}
+		// Posicionamos por encima botones y texto mostrados
+		game.world.bringToTop(game.balas);
+		game.world.bringToTop(game.puntosTexto);
+		game.world.bringToTop(game.vidasTexto);
+		game.world.bringToTop(game.btnVolver);
+		game.world.bringToTop(game.btnSilenciar);
 	},	
 	
 	/**

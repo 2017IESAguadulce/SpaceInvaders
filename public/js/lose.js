@@ -13,8 +13,12 @@ var loseState = {
 		// Agregamos el botón volver y su manejador para controlar sus eventos
 		game.btnVolver = game.add.button(game.world.width - 300, 575, 'botonVolver', this.manejadorClickBotonVolver, this, 0, 1, 0);
 		game.btnVolver.onInputOver.add(this.manejadorOverBoton, this);
-		// Iniciamos la carga de las estrellas en pantalla
+		// Iniciamos carga de estrellas en pantalla y posicionamos por encima botones y texto mostrados
 		game.global.cargarEstrellas();
+		game.global.actualizarEstrellas();
+		game.world.bringToTop(game.mapaTitulo);
+		game.world.bringToTop(game.regresar);
+		game.world.bringToTop(game.btnVolver);
     },
     
 	/**
@@ -22,11 +26,8 @@ var loseState = {
 	 * @method update
 	 */
     update: function() {
-		// Actualizamos estrellas mostradas y posicionamos por encima botones y texto mostrados
+		// Actualizamos estrellas mostradas
 		game.global.actualizarEstrellas();
-		game.world.bringToTop(game.mapaTitulo);
-		game.world.bringToTop(game.regresar);
-		game.world.bringToTop(game.btnVolver);
 	},
 	
 	/**

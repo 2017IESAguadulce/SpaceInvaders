@@ -653,7 +653,7 @@ var level2State = {
 		game.puntosTexto.text = 'Puntos: ' + game.puntos;
 		game.balasAlien.callAll('kill', this);
 		game.sfxInvasor.stop();
-		game.siguienteNivel = 'level2';
+		game.siguienteNivel = 'level3';
 		// Lanzamos el estado levelUp
 		game.state.start('levelUp');
 	}

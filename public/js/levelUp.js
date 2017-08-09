@@ -33,9 +33,9 @@ var levelUp = {
 		// Actualizamos estrellas mostradas y posicionamos por encima botones y texto mostrados
 		game.global.actualizarEstrellas();
 		game.world.bringToTop(game.mapaTitulo);
-		game.world.bringToTop(game.costeEscudo);
-		game.world.bringToTop(game.costeDisparo);
-		game.world.bringToTop(game.costeVelocidad);
+ 		//game.world.bringToTop(game.costeEscudo);
+		//game.world.bringToTop(game.costeDisparo);
+		//game.world.bringToTop(game.costeVelocidad);
 		game.world.bringToTop(game.btnContinuar);
 		game.world.bringToTop(game.btnVolver);
 	},

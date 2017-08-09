@@ -389,6 +389,8 @@ var level3State = {
 		game.sfxDisparo = game.add.audio('disparo');
 		game.sfxExplosion = game.add.audio('explosion');
 		game.sfxMuro = game.add.audio('muro');
+		game.sfxCargaTorpedo = game.add.audio('cargaTorpedo');
+		game.sfxTorpedo = game.add.audio('torpedo');
 		game.sfxJefeMuerte = game.add.audio('jefeMuerte');
 	},
 	
@@ -534,6 +536,7 @@ var level3State = {
 		torpedo.revive();
 		torpedo.y = 50;
 		torpedo.alpha = 0;
+		game.sfxCargaTorpedo.play();
 		// Lanzamos animaciones de carga de disparo cambiando el canal alfa de la imagen durante 2 segundos 
 		game.add.tween(torpedo).to({alpha: 1}, 2000, Phaser.Easing.Linear.In, true).onComplete.add(function(torpedo, posibiblidadDisparo) {
 			// Tras lanzar la animación comprobamos si el jefe sigue en ángulo y no es muerto
@@ -542,7 +545,7 @@ var level3State = {
 				// En caso afirmativo lanzamos el torpedo a la posición del jugador
 				var laser = game.torpedoJefe.create(game.jefe.body.x + ((torpedo.name == 'Der') ? 5 : 155), game.jefe.body.y, 'laser');			
 				laser.y += 100;
-				game.sfxDisparo.play();
+				game.sfxTorpedo.play();
 				game.physics.enable(laser, Phaser.Physics.ARCADE);
 				game.physics.arcade.moveToObject(laser, game.nave, 800);
 			}

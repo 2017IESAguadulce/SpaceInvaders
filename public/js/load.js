@@ -51,6 +51,8 @@ var loadState = {
 		game.load.audio('hiloMusical', 'assets/audio/SpaceArp1Kit.mp3');
 		game.load.audio('muro', 'assets/audio/SoundEffects/battery.wav');
 		game.load.audio('invasor', 'assets/audio/SoundEffects/invasor.mp3');
+		game.load.audio('torpedo', 'assets/audio/SoundEffects/rocket.mp3');
+		game.load.audio('cargaTorpedo', 'assets/audio/SoundEffects/cargaTorpedo.mp3');
 		game.load.audio('jefeMuerte', 'assets/audio/SoundEffects/lazer_wall_off.mp3');
 		game.load.bitmapFont('gem', 'assets/fonts/bitmapFonts/gem.png', 'assets/fonts/bitmapFonts/gem.xml');
 		// Si ejecutamos el juego desde el móvil cargamos el pad virtual

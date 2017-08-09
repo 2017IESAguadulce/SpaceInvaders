@@ -24,8 +24,11 @@ var optionsState = {
 		game.sliderVolumen.onDrag.add(this.manejadorControlVolumen, this);
 		game.volumen = game.add.text(game.world.width - 250, 300, 'Volúmen', { font: '24px Arial', fill: 'white' });
 		// Agregamos botones y sus manejadores para controlar sus eventos
-		game.btnPantalla = game.add.button(game.world.width - 300, 375, 'botonPantallaCompleta', this.manejadorClickBotonPantalla, this, 0, 1, 0);
-		game.btnPantalla.onInputOver.add(this.manejadorOverBoton, this);
+		// Si ejecutamos el juego desde el móvil cargamos el pad virtual
+		if (!game.escritorio) {
+			game.btnPantalla = game.add.button(game.world.width - 300, 375, 'botonPantallaCompleta', this.manejadorClickBotonPantalla, this, 0, 1, 0);
+			game.btnPantalla.onInputOver.add(this.manejadorOverBoton, this);
+		}
 		game.btnSkin = game.add.button(game.world.width - 300, 475, 'botonSkin', this.manejadorClickBotonSkin, this, 0, 1, 0);
 		game.btnSkin.onInputOver.add(this.manejadorOverBoton, this);
 		game.btnVolver = game.add.button(game.world.width - 300, 575, 'botonVolver', this.manejadorClickBotonVolver, this, 0, 1, 0);
@@ -43,7 +46,9 @@ var optionsState = {
 		game.global.actualizarEstrellas();
 		game.world.bringToTop(game.mapaTitulo);
 		game.world.bringToTop(game.volumen);
-		game.world.bringToTop(game.btnPantalla);
+		if (!game.escritorio) {
+			game.world.bringToTop(game.btnPantalla);
+		}
 		game.world.bringToTop(game.btnVolver);
 		game.world.bringToTop(game.btnSkin);
 	},

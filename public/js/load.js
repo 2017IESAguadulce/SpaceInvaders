@@ -24,6 +24,7 @@ var loadState = {
 		game.load.image('laser', 'assets/games/invaders/laser.png');
 		game.load.image('laserEfecto', 'assets/sprites/death-ray.png');
 		game.load.image('jefeEstela', 'assets/sprites/enemy-blue-bullet.png');
+		game.load.image('balaAlien', 'assets/games/invaders/enemy-bullet.png');
 		game.load.spritesheet('alien', 'assets/games/invaders/invader32x32x4.png', 32, 32);
 		game.load.spritesheet('boom', 'assets/games/invaders/explode.png', 128, 128);
 		game.load.spritesheet('botonJugar', 'assets/buttons/boton_jugar.png', 193, 71);

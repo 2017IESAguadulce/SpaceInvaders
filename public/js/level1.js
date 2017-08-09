@@ -1,5 +1,4 @@
 // Variable estado usada para cargar el nivel 1 del juego
-//Pequeno comentario: Juan Antonio
 var level1State = {
 	/**
 	 * Metodo usado para cargar el juego
@@ -55,8 +54,9 @@ var level1State = {
 			if (game.time.now > game.alienDisparoHora) {
 				this.disparoEnemigo();
 			}
-			// Giramos nave y actualizamos estrellas mostradas
+			// Giramos nave, sincronizamos estela y estrellas
 			this.girarNave();
+			game.naveEstela.x = game.nave.x;
 			game.global.actualizarEstrellas();
 			// Controlamos colisiones de objetos en sus diferentes metodos
 			game.physics.arcade.overlap(game.nave, game.ayudas, this.manejadorColisionNaveAyuda, null, this);
@@ -289,6 +289,16 @@ var level1State = {
 		game.physics.enable(game.nave, Phaser.Physics.ARCADE);
 		game.nave.body.collideWorldBounds = true;
 		game.naveDisparoHora = 0;
+		// Creamos una estela que sigue a la nave
+		game.naveEstela = game.add.emitter(game.nave.x, game.nave.y + 10, 400);
+		game.naveEstela.width = 10;
+		game.naveEstela.makeParticles('bala');
+		game.naveEstela.setXSpeed(30, -30);
+		game.naveEstela.setYSpeed(200, 180);
+		game.naveEstela.setRotation(50,-50);
+		game.naveEstela.setAlpha(1, 0.01, 800);
+		game.naveEstela.setScale(0.05, 0.4, 0.05, 0.4, 2000, Phaser.Easing.Quintic.Out);
+		game.naveEstela.start(false, 5000, 10);
 		// Variables referentes a las balas de nuestra nave
 		game.balas = game.add.group();
 		game.balas.enableBody = true;
@@ -590,6 +600,7 @@ var level1State = {
 		// Eliminamos la nave y removemos demás elementos de juego
 		nave.kill();
 		game.sfxInvasor.stop();
+		game.naveEstela.kill();
 		game.balasAlien.callAll('kill');
 		// Lanzamos el estado lose
 		game.state.start('lose');

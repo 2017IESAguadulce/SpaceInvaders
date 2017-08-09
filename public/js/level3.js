@@ -25,9 +25,7 @@ var level3State = {
 			game.nave.body.velocity.setTo(0, 0);
 			game.jefe.body.acceleration.x = 0;
 			// Si el jefe esta vivo gestionamos su lógica
-			if (game.jefe.alive) {
-				//game.jefe.rayLeft.update();
-				//game.jefe.rayRight.update();
+			if (game.jefe.alive) {	
 				if (game.jefe.y > 140) {
 					game.jefe.body.acceleration.y = -80;
 				} else if (game.jefe.y < 140) {
@@ -48,8 +46,7 @@ var level3State = {
 				game.jefeEstela.y = game.jefe.y + 10 * Math.abs(rotacion) - game.jefe.height / 2;
 				// Capturamos ángulos para lanzar el disparo del jefe si la nave está en posición
 				var anguloHaciaJugador = game.math.radToDeg(game.physics.arcade.angleBetween(game.jefe, game.nave)) - 90;
-				var puntoAngular = 180 - Math.abs(game.jefe.angle);
-				if (puntoAngular - anguloHaciaJugador < 18) {
+				if (Math.abs(180 - Math.abs(game.jefe.angle) - anguloHaciaJugador) < 18) {
 					this.disparoJefe();
 				}
 			}
@@ -86,15 +83,9 @@ var level3State = {
 			game.global.actualizarEstrellas();
 			// Controlamos colisiones de objetos en sus diferentes metodos
 			game.physics.arcade.overlap(game.jefe, game.balas, this.manejadorDisparoNave, this.comprobarColisionJefe, this);
-			//game.physics.arcade.overlap(game.nave, game.jefe.rayLeft, this.manejadorDisparoJefe, null, this);
-			//game.physics.arcade.overlap(game.nave, game.jefe.rayRight, this.manejadorDisparoJefe, null, this);
-			game.physics.arcade.overlap(game.nave, game.rayo, this.manejadorDisparoJefe, null, this);
-			//game.physics.arcade.overlap(game.nave, game.rayoDer, this.manejadorDisparoJefe, null, this);
-			//game.physics.arcade.overlap(game.nave, game.rayoIzq, this.manejadorDisparoJefe, null, this);
-			game.physics.arcade.overlap(game.nave, game.jefe.rayoDer, this.manejadorDisparoJefe, null, this);
-			game.physics.arcade.overlap(game.nave, game.jefe.rayoIzq, this.manejadorDisparoJefe, null, this);
-			//game.physics.arcade.overlap(game.balasAlien, game.nave, this.manejadorDisparoEnemigo, null, this);
-			//game.physics.arcade.overlap(game.balasAlien, game.muros, this.manejadorColisionMuro, null, this);
+			game.physics.arcade.overlap(game.nave, game.torpedoJefe, this.manejadorDisparoJefe, null, this);
+			game.physics.arcade.overlap(game.torpedoJefe, game.torpedoJefe, this.manejadorColisionEntreTorpedos, null, this);
+			game.physics.arcade.overlap(game.torpedoJefe, game.muros, this.manejadorColisionMuro, null, this);
 			game.physics.arcade.overlap(game.balas, game.muros, this.manejadorColisionMuro, null, this);
 			// Posicionamos por encima botones y texto mostrados
 			game.world.bringToTop(game.balas);
@@ -123,7 +114,7 @@ var level3State = {
 		// Asignamos daño y comprobamos si hemos destruído al jefe
 		jefe.vida -= jefe.danioRecibido;
 		if (jefe.vida < 1) {
-			this.destruirJefe();
+			this.eliminarJefe();
 		}
 	},
 	
@@ -134,7 +125,6 @@ var level3State = {
 	 * @param {} bala
 	 */
 	manejadorDisparoJefe: function(nave, bala) {
-		console.log("manejadorDisparoJefe");
 		// Eliminamos bala y reproducimos sonido
 		bala.kill();
 		game.sfxExplosion.play();
@@ -155,7 +145,27 @@ var level3State = {
 			this.perderPartida(nave);
 		}
 	},
-		
+	
+	/**
+	 * Función usada para gestionar las colisiones producidas entre los torpedos del jefe
+	 * @method manejadorColisionEntreTorpedos
+	 * @param {} torpedo1
+	 * @param {} torpedo2
+	 */
+	manejadorColisionEntreTorpedos: function(torpedo1, torpedo2) {
+		// Si ambos torpedos han pasado el eje y de la nave
+		if (torpedo1.body.y > game.nave.y && torpedo2.body.y > game.nave.y) {
+			// Eliminamos torpedos y reproducimos sonido
+			torpedo1.kill();
+			torpedo2.kill();
+			game.sfxExplosion.play();
+			// Mostramos la animación de explosión en las coordenadas de los torpedos
+			var explosion = game.explosiones.getFirstExists(false);
+			explosion.reset(torpedo1.body.x, torpedo1.body.y);
+			explosion.play('boom', 20, false, true);
+		}
+	},
+	
 	/**
 	 * Función usada para gestionar las colisiones producidas entre las balas y los muros
 	 * @method manejadorColisionMuro
@@ -182,7 +192,7 @@ var level3State = {
 			bala.kill();
 		}
 	},
-		
+	
 	/**
 	 * Función usada para controlar el evento hover en todos los botones a nivel general
 	 * @method manejadorOverBoton
@@ -278,10 +288,12 @@ var level3State = {
 	 * @method cargarJefe
 	 */
 	cargarJefe: function() {
+		// Creamos valores iniciales del jefe
 		game.jefe = game.add.sprite(0, 0, 'boss');
 		game.jefe.exists = false;
 		game.jefe.alive = false;
-		game.jefe.dying = false;	
+		game.jefe.dying = false;
+		game.jefe.vida = 1000;
 		game.jefe.danioRecibido = 50;	
 		game.jefe.anchor.setTo(0.5, 0.5);
 		game.jefe.angle = 180;
@@ -308,30 +320,21 @@ var level3State = {
 		game.jefeEstela.setScale(0.3, 0, 0.7, 0, 5000, Phaser.Easing.Quadratic.Out);
 		game.jefe.bringToTop();
 		// Asignamos una explosión grande para cuando venzamos al jefe
-		game.bossDeath = game.add.emitter(game.jefe.x, game.jefe.y);
-		game.bossDeath.width = game.jefe.width / 2;
-		game.bossDeath.height = game.jefe.height / 2;
-		game.bossDeath.makeParticles('boom', [0,1,2,3,4,5,6,7], 20);
-		game.bossDeath.setAlpha(0.9, 0, 900);
-		game.bossDeath.setScale(0.3, 1.0, 0.3, 1.0, 1000, Phaser.Easing.Quintic.Out);
-		
-		game.rayoIzq = game.add.group();
-		game.rayoIzq.enableBody = true;
-		game.rayoIzq.physicsBodyType = Phaser.Physics.ARCADE;
-		game.rayoIzq.createMultiple(5, 'rayoMuerte');
-		game.rayoIzq.setAll('anchor.x', 0.5);
-		game.rayoIzq.setAll('anchor.y', 1);
-		game.rayoIzq.setAll('outOfBoundsKill', true);
-		game.rayoIzq.setAll('checkWorldBounds', true);
-		game.rayoDer = game.add.group();
-		game.rayoDer.enableBody = true;
-		game.rayoDer.physicsBodyType = Phaser.Physics.ARCADE;
-		game.rayoDer.createMultiple(5, 'rayoMuerte');
-		game.rayoDer.setAll('anchor.x', 0.5);
-		game.rayoDer.setAll('anchor.y', 1);
-		game.rayoDer.setAll('outOfBoundsKill', true);
-		game.rayoDer.setAll('checkWorldBounds', true);
-		
+		game.bossMuerte = game.add.emitter(game.jefe.x, game.jefe.y);
+		game.bossMuerte.width = game.jefe.width / 2;
+		game.bossMuerte.height = game.jefe.height / 2;
+		game.bossMuerte.makeParticles('boom', [0,1,2,3,4,5,6,7], 20);
+		game.bossMuerte.setAlpha(0.9, 0, 900);
+		game.bossMuerte.setScale(0.3, 1.0, 0.3, 1.0, 1000, Phaser.Easing.Quintic.Out);
+		// Torpedos que lanzará el jefe al atacar al jugador 
+		game.torpedoJefe = game.add.group();
+		game.torpedoJefe.enableBody = true;
+		game.torpedoJefe.alpha = 0.5;
+		game.torpedoJefe.physicsBodyType = Phaser.Physics.ARCADE;
+		game.torpedoJefe.setAll('outOfBoundsKill', true);
+		game.torpedoJefe.setAll('checkWorldBounds', false);
+		game.torpedoJefe.setAll('anchor.x', 0.5);
+		game.torpedoJefe.setAll('anchor.y', 0.5);
 		this.iniciarJefe();
 	},
 	
@@ -341,7 +344,7 @@ var level3State = {
 	 */
 	cargarMuros: function() {
 		// Cargamos valores iniciales
-		var totalBases = 4;
+		var totalBases = 2;
 		var muroY = game.world.height - 170;
 		var ancho = 48;
 		var alto = 32;
@@ -386,6 +389,7 @@ var level3State = {
 		game.sfxDisparo = game.add.audio('disparo');
 		game.sfxExplosion = game.add.audio('explosion');
 		game.sfxMuro = game.add.audio('muro');
+		game.sfxJefeMuerte = game.add.audio('jefeMuerte');
 	},
 	
 	/**
@@ -412,23 +416,23 @@ var level3State = {
 	iniciarJefe: function() {
 		game.jefe.reset(game.width / 2, -game.jefe.height);
 		game.jefeEstela.start(false, 1000, 10);
-		game.jefe.vida = 500;
 		game.horaDisparoJefe = game.time.now + 5000;
 	},
 	
 	/**
 	 * Función usada para gestionar la destrucción del jefe de nivel
-	 * @method destruirJefe
+	 * @method eliminarJefe
 	 */
-	destruirJefe: function() {
+	eliminarJefe: function() {
 		// Si el jefe no esta muerto
 		if (!game.jefe.dying) {
 			// Actualizamos valores de referencia
 			game.jefe.dying = true;
-			game.bossDeath.x = game.jefe.x;
-			game.bossDeath.y = game.jefe.y;
-			game.bossDeath.start(false, 1000, 50, 20);
-			// Y destruímos a jefe tras animación
+			game.bossMuerte.x = game.jefe.x;
+			game.bossMuerte.y = game.jefe.y;
+			game.bossMuerte.start(false, 1000, 50, 20);
+			game.sfxJefeMuerte.play();
+			// Y lo destruímos tras lanzar una animación
 			game.time.events.add(1000, function() {
 				// Lanzamos animación de explosión en el jefe
 				var explosion = game.explosiones.getFirstExists(false);
@@ -445,11 +449,11 @@ var level3State = {
 					explosion.scale.y = auxEscalaY;
 					explosion.alpha = auxAlfa;
 				});
+				// Y eliminamos sus referencias en el juego
 				game.jefe.kill();
 				game.jefeEstela.kill();
 				game.jefe.dying = false;
-				game.bossDeath.on = false;
-				
+				game.bossMuerte.on = false;
 			});
 			// Lanzamos función ganarPartida tras 3 segundos de delay
 			game.time.events.add(3000, this.ganarPartida);
@@ -472,6 +476,7 @@ var level3State = {
 	 * @method comprobarColisionJefe
 	 * @param {} jefe
 	 * @param {} bala
+	 * @return
 	 */
 	comprobarColisionJefe: function(jefe, bala) {
 		if ((bala.x > jefe.x + jefe.width / 5 && bala.y > jefe.y) ||
@@ -507,80 +512,70 @@ var level3State = {
 	 */
 	disparoJefe: function() {
 		if (game.time.now > game.horaDisparoJefe) {
-			// Lanzamos animaciones para mostrar los rayos
-			this.animacionCargaDisparo('Right');
-			this.animacionCargaDisparo('Left');
+			// Procesamos la carga y disparo del jefe
+			this.cargarYDisparar('Der');
+			this.cargarYDisparar('Izq');
 			game.horaDisparoJefe = game.time.now + 3000;
 		}
 	},
 	
 	/**
-	 * Función usada para cargar la animación de carga y disparo del jefe
-	 * @method animacionCargaDisparo
+	 * Función usada para iniciar la carga y disparo del arma del jefe
+	 * @method cargarYDisparar
 	 * @param {} lado
 	 */
-	animacionCargaDisparo: function(lado) {
-		this.crearRayo(1);
-		this.crearRayo(-1);
-		if (lado == 'Right') {
-			game.jefe.rayoDer = game.rayo;
-		} else {
-			game.jefe.rayoIzq = game.rayo;
-		}
-		rayo = game.jefe['ray' + lado];
-		rayo.name = lado;
-		rayo.revive();
-		rayo.y = 80;
-		rayo.alpha = 0;
-		rayo.scale.y = 13;
-		//rayo.reset(game.jefe.x, game.jefe.y + 8);
-		// Eventos de disparo de rayo
-		game.add.tween(rayo).to({alpha: 1}, 1500, Phaser.Easing.Linear.In, true).onComplete.add(function(rayo) {
-			rayo.scale.y = 150;
-			game.add.tween(rayo).to({y: -1500}, 1500, Phaser.Easing.Linear.In, true).onComplete.add(function(rayo) {
-				rayo.kill();
+	cargarYDisparar: function(lado) {
+		// Creamos los 2 torpedos que lanzaremos
+		this.crearAnimacionDisparo(1);
+		this.crearAnimacionDisparo(-1);
+		// Les asignamos algunos parámetros
+		torpedo = game['torpedo' + lado];
+		torpedo.name = lado;
+		torpedo.revive();
+		torpedo.y = 50;
+		torpedo.alpha = 0;
+		// Lanzamos animaciones de carga de disparo cambiando el canal alfa de la imagen durante 2 segundos 
+		game.add.tween(torpedo).to({alpha: 1}, 2000, Phaser.Easing.Linear.In, true).onComplete.add(function(torpedo, posibiblidadDisparo) {
+			// Tras lanzar la animación comprobamos si el jefe sigue en ángulo y no es muerto
+			var anguloHaciaJugador = game.math.radToDeg(game.physics.arcade.angleBetween(game.jefe, game.nave)) - 90;
+			if (Math.abs(180 - Math.abs(game.jefe.angle) - anguloHaciaJugador) < 18 && game.jefe.alive) {
+				// En caso afirmativo lanzamos el torpedo a la posición del jugador
+				var laser = game.torpedoJefe.create(game.jefe.body.x + ((torpedo.name == 'Der') ? 5 : 155), game.jefe.body.y, 'laser');			
+				laser.y += 100;
+				game.sfxDisparo.play();
+				game.physics.enable(laser, Phaser.Physics.ARCADE);
+				game.physics.arcade.moveToObject(laser, game.nave, 800);
+			}
+			// Después de lanzar la animación de disparo eliminamos dicha animación e imagen
+			game.add.tween(torpedo).to({alpha: 0}, 500, Phaser.Easing.Linear.In, true).onComplete.add(function(torpedo) {
+				torpedo.kill();
 			});
 		});
 	},
 	
 	/**
-	 * Función usada para crear los rayos disparados por el jefe
-	 * @method crearRayo
+	 * Función usada para crear y preparar las animaciones de disparo del jefe
+	 * @method crearAnimacionDisparo
 	 * @param {} disparo
 	 */
-	crearRayo: function(disparo) {
-		var rayo = game.add.sprite(disparo * game.jefe.width * 0.75, 0, 'rayoMuerte');
-		rayo.alive = false;
-		rayo.visible = false;
-		game.jefe.addChild(rayo);
-		rayo.crop({x: 0, y: 0, width: 40, height: 40});
-		rayo.anchor.x = 0.5;
-		rayo.anchor.y = 0.5;
-		rayo.scale.x = 2.5;
-		rayo.danioRecibido = game.jefe.danioRecibido;
-		game.physics.enable(rayo, Phaser.Physics.ARCADE);
-		rayo.body.setSize(rayo.width / 5, rayo.height / 4);
-		//rayo.reset(game.jefe.x, game.jefe.y + 8);
-		if (disparo > 0) {
-			game.jefe.rayoDer = rayo;
-		} else {
-			game.jefe.rayoIzq = rayo;
-		}
-		game.jefe['ray' + (disparo > 0 ? 'Right' : 'Left')] = rayo;
-		//return rayo;
-		// var bala;
-		// if (disparo > 0) {
-			// bala = game.rayoDer.getFirstExists(false);
-		// } else {
-			// bala = game.rayoIzq.getFirstExists(false);
-		// }
-		// if (bala) {
-			// game.sfxDisparo.play();
-			// bala.reset(game.jefe.x, game.jefe.y + 8);
-			// bala.body.velocity.y = 1000;
-		// }
+	crearAnimacionDisparo: function(disparo) {
+		// Creamos torpedo y le asignamos sus variables iniciales
+		var torpedo = game.add.sprite(disparo * game.jefe.width * 0.75, 0, 'laserEfecto');
+		torpedo.alive = false;
+		torpedo.visible = false;
+		// Lo añadimos al jefe para sincronizar sus movimientos y posición
+		game.jefe.addChild(torpedo);
+		torpedo.crop({x: 0, y: 0, width: 40, height: 40});
+		torpedo.anchor.x = 0.5;
+		torpedo.anchor.y = 0.5;
+		torpedo.scale.y = 15;
+		torpedo.scale.x = 3;
+		// Le agregamos el sistema de físicas y lo asignamos a la variable global
+		game.physics.enable(torpedo, Phaser.Physics.ARCADE);
+		torpedo.body.setSize(torpedo.width / 5, torpedo.height / 4);
+		game['torpedo' + (disparo > 0 ? 'Der' : 'Izq')] = torpedo;
 	},
-	
+
 	/**
 	 * Función usada para mostrar animación de texto cargando un mensaje letra a letra
 	 * @method mostrarLetraPorLetra

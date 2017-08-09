@@ -7,7 +7,6 @@ var loadState = {
 	preload: function() {
 		var cargando = game.add.text(80, 50, 'Cargando...', { font: '34px Arial', fill: 'white' });
 		game.load.image('bala', 'assets/games/invaders/bullet.png');
-		game.load.image('balaAlien', 'assets/games/invaders/enemy-bullet.png');
 		game.load.image('nave', 'assets/games/invaders/player.png');
 		game.load.image('invasor', 'assets/games/invaders/invader.png');
 		game.load.image('fondo', 'assets/games/invaders/starfield.png');
@@ -22,7 +21,8 @@ var loadState = {
 		game.load.image('star', 'assets/sprites/star2.png');
 		game.load.image('logo', 'assets/sprites/phaser.png');
 		game.load.image('boss', 'assets/sprites/boss.png');
-		game.load.image('rayoMuerte', 'assets/sprites/death-ray.png');
+		game.load.image('laser', 'assets/games/invaders/laser.png');
+		game.load.image('laserEfecto', 'assets/sprites/death-ray.png');
 		game.load.image('jefeEstela', 'assets/sprites/enemy-blue-bullet.png');
 		game.load.spritesheet('alien', 'assets/games/invaders/invader32x32x4.png', 32, 32);
 		game.load.spritesheet('boom', 'assets/games/invaders/explode.png', 128, 128);
@@ -51,6 +51,7 @@ var loadState = {
 		game.load.audio('hiloMusical', 'assets/audio/SpaceArp1Kit.mp3');
 		game.load.audio('muro', 'assets/audio/SoundEffects/battery.wav');
 		game.load.audio('invasor', 'assets/audio/SoundEffects/invasor.mp3');
+		game.load.audio('jefeMuerte', 'assets/audio/SoundEffects/lazer_wall_off.mp3');
 		game.load.bitmapFont('gem', 'assets/fonts/bitmapFonts/gem.png', 'assets/fonts/bitmapFonts/gem.xml');
 		// Si ejecutamos el juego desde el móvil cargamos el pad virtual
 		if (!game.escritorio) {

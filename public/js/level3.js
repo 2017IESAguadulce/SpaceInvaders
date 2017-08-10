@@ -222,7 +222,7 @@ var level3State = {
 		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
 		// Variables con textos y puntos mostrados por pantalla
 		game.mapaTitulo = game.add.bitmapText(game.world.centerX - 100, 450, 'gem', '', 36);
-		this.mostrarLetraPorLetra(game.mapaTitulo, '  Nivel 3    ');
+		game.global.mostrarLetraPorLetraNivel(game.mapaTitulo, '  Nivel 3    ');
 		game.puntosTexto = game.add.text(10, 10, 'Puntos: ' + game.puntos, { font: '34px Arial', fill: '#fff' });
 		game.vidas = game.add.group();
 		game.vidasTexto = game.add.text(game.world.width - 140, 10, 'Escudos: ', { font: '30px Arial', fill: '#fff' });
@@ -584,30 +584,6 @@ var level3State = {
 		game.physics.enable(torpedo, Phaser.Physics.ARCADE);
 		torpedo.body.setSize(torpedo.width / 5, torpedo.height / 4);
 		game['torpedo' + (disparo > 0 ? 'Der' : 'Izq')] = torpedo;
-	},
-
-	/**
-	 * Función usada para mostrar animación de texto cargando un mensaje letra a letra
-	 * @method mostrarLetraPorLetra
-	 * @param {} mapaTexto
-	 * @param {} mensaje
-	 * @param {} locY
-	 */
-	mostrarLetraPorLetra: function(mapaTexto, mensaje) {
-		game.time.events.repeat(200, mensaje.length + 1, this.mostrarLetraSiguiente, { mapaTexto: mapaTexto, mensaje: mensaje, contador: 1 , total: mensaje.length });
-	},
-	
-	/**
-	 * Función auxiliar usada para mostrar la siguiente letra sobreescribiendo el valor del mensaje inicial
-	 * @method mostrarLetraSiguiente
-	 */
-	mostrarLetraSiguiente: function() {
-		if (this.contador > this.total) {
-			this.mapaTexto.text = '';
-		} else {
-			this.mapaTexto.text = this.mensaje.substr(0, this.contador);
-			this.contador += 1;
-		}
 	},
 	
 	/**

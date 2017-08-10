@@ -630,7 +630,9 @@ var level1State = {
 		game.balasAlien.callAll('kill', this);
 		game.sfxInvasor.stop();
 		game.siguienteNivel = 'level2';
-		// Lanzamos el estado levelUp
-		game.state.start('levelUp');
+		// Lanzamos estado levelUp tras 2 segundos de delay
+		game.time.events.add(2000, function() {
+			game.state.start('levelUp');
+		});
 	}
 }

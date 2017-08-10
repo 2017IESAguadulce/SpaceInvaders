@@ -662,7 +662,7 @@ var level2State = {
 		game.naveMuerte.x = nave.x;
 		game.naveMuerte.y = nave.y;
 		game.naveMuerte.start(false, 1000, 10, 10);
-		// Lanzamos estado lose tras 3 segundos de delay
+		// Lanzamos estado lose tras 2 segundos de delay
 		game.time.events.add(2000, function() {
 			game.state.start('lose');
 		});
@@ -679,7 +679,9 @@ var level2State = {
 		game.balasAlien.callAll('kill', this);
 		game.sfxInvasor.stop();
 		game.siguienteNivel = 'level3';
-		// Lanzamos el estado levelUp
-		game.state.start('levelUp');
+		// Lanzamos estado levelUp tras 2 segundos de delay
+		game.time.events.add(2000, function() {
+			game.state.start('levelUp');
+		});
 	}
 }

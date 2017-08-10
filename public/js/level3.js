@@ -633,7 +633,7 @@ var level3State = {
 		game.naveMuerte.x = nave.x;
 		game.naveMuerte.y = nave.y;
 		game.naveMuerte.start(false, 1000, 10, 10);
-		// Lanzamos estado lose tras 3 segundos de delay
+		// Lanzamos estado lose tras 2 segundos de delay
 		game.time.events.add(2000, function() {
 			game.state.start('lose');
 		});
@@ -647,7 +647,9 @@ var level3State = {
 		// Agregamos puntos a marcador
 		game.puntos += 2000;
 		game.puntosTexto.text = 'Puntos: ' + game.puntos;
-		// Lanzamos el estado win
-		game.state.start('win');
+		// Lanzamos estado win tras 2 segundos de delay
+		game.time.events.add(2000, function() {
+			game.state.start('win');
+		});
 	}
 }

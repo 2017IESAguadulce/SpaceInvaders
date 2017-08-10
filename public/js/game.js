@@ -39,6 +39,30 @@ game.global = {
 	},
 	
 	/**
+	 * Función usada para mostrar animación de texto cargando un mensaje letra a letra
+	 * @method mostrarLetraPorLetra
+	 * @param {} mapaTexto
+	 * @param {} mensaje
+	 * @param {} locY
+	 */
+	mostrarLetraPorLetraNivel: function(mapaTexto, mensaje) {
+		game.time.events.repeat(200, mensaje.length + 1, this.mostrarLetraSiguienteNivel, { mapaTexto: mapaTexto, mensaje: mensaje, contador: 1 , total: mensaje.length });
+	},
+	
+	/**
+	 * Función auxiliar usada para mostrar la siguiente letra sobreescribiendo el valor del mensaje inicial
+	 * @method mostrarLetraSiguiente
+	 */
+	mostrarLetraSiguienteNivel: function() {
+		if (this.contador > this.total) {
+			this.mapaTexto.text = '';
+		} else {
+			this.mapaTexto.text = this.mensaje.substr(0, this.contador);
+			this.contador += 1;
+		}
+	},
+	
+	/**
 	 * Función usada para cargar un halo de estrellas creando así una sensación de velocidad
 	 * @method cargarEstrellas
 	 */

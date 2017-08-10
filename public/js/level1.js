@@ -227,6 +227,7 @@ var level1State = {
 	manejadorClickBotonVolver: function() {
 		// Reproducimos audio y llamamos al estado menu para volver al inicio
 		game.sfxStart.play();
+		game.sfxInvasor.stop();
 		game.state.start('menu');
 	},
 	
@@ -250,7 +251,7 @@ var level1State = {
 		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
 		// Variables con textos y puntos mostrados por pantalla
 		game.mapaTitulo = game.add.bitmapText(game.world.centerX - 100, 450, 'gem', '', 36);
-		this.mostrarLetraPorLetra(game.mapaTitulo, '  Nivel 1    ');
+		game.global.mostrarLetraPorLetraNivel(game.mapaTitulo, '  Nivel 1    ');
 		game.puntosTexto = game.add.text(10, 10, 'Puntos: ' + game.puntos, { font: '34px Arial', fill: '#fff' });
 		game.vidas = game.add.group();
 		game.vidasTexto = game.add.text(game.world.width - 140, 10, 'Escudos: ', { font: '30px Arial', fill: '#fff' });
@@ -310,7 +311,6 @@ var level1State = {
 		game.ayudas = game.add.group();
 		game.ayudas.enableBody = true;
 		game.ayudas.physicsBodyType = Phaser.Physics.ARCADE;
-		game.physics.arcade.gravity.y = 50;
 	},
 	
 	/**
@@ -465,6 +465,7 @@ var level1State = {
 	 * @param {} objeto
 	 */
 	configurarExplosion: function(objeto) {
+		objeto.alpha = 0.7;
 		objeto.anchor.x = 0.5;
 		objeto.anchor.y = 0.5;
 		objeto.animations.add('boom');
@@ -498,7 +499,7 @@ var level1State = {
 			var seleccion = game.alienVivos[aleatorio];
 			// Y lanzamos la bala desde su posicion hacia nuestra nave
 			balaAlien.reset(seleccion.body.x, seleccion.body.y);
-			game.physics.arcade.moveToObject(balaAlien, game.nave, 200);
+			game.physics.arcade.moveToObject(balaAlien, game.nave, 300);
 			game.alienDisparoHora = game.time.now + 2000;
 			game.sfxDisparo.play();
 		}
@@ -538,9 +539,10 @@ var level1State = {
 		var objeto = game.ayudas.create(locX, locY, tipoMejora);
 		objeto.name = tipoMejora;
 		objeto.body.collideWorldBounds = false;
-		// Y la hacemos semitransparente ademas de anadirle gravedad
 		objeto.alpha = 0.4;
-		game.physics.arcade.gravity.y = 50;
+		// Le agregamos velocidad
+		objeto.body.velocity.y = 100;
+		objeto.body.gravity.y = Math.random() * 100;
 	},
 
 	/**
@@ -559,30 +561,6 @@ var level1State = {
 				bala.body.velocity.y = -400;
 				game.naveDisparoHora = game.time.now + game.naveBalasRatio;
 			}
-		}
-	},
-
-	/**
-	 * Función usada para mostrar animación de texto cargando un mensaje letra a letra
-	 * @method mostrarLetraPorLetra
-	 * @param {} mapaTexto
-	 * @param {} mensaje
-	 * @param {} locY
-	 */
-	mostrarLetraPorLetra: function(mapaTexto, mensaje) {
-		game.time.events.repeat(200, mensaje.length + 1, this.mostrarLetraSiguiente, { mapaTexto: mapaTexto, mensaje: mensaje, contador: 1 , total: mensaje.length });
-	},
-	
-	/**
-	 * Función auxiliar usada para mostrar la siguiente letra sobreescribiendo el valor del mensaje inicial
-	 * @method mostrarLetraSiguiente
-	 */
-	mostrarLetraSiguiente: function() {
-		if (this.contador > this.total) {
-			this.mapaTexto.text = '';
-		} else {
-			this.mapaTexto.text = this.mensaje.substr(0, this.contador);
-			this.contador += 1;
 		}
 	},
 	
@@ -612,7 +590,7 @@ var level1State = {
 		game.naveMuerte.x = nave.x;
 		game.naveMuerte.y = nave.y;
 		game.naveMuerte.start(false, 1000, 10, 10);
-		// Lanzamos estado lose tras 3 segundos de delay
+		// Lanzamos estado lose tras 2 segundos de delay
 		game.time.events.add(2000, function() {
 			game.state.start('lose');
 		});
@@ -629,7 +607,9 @@ var level1State = {
 		game.balasAlien.callAll('kill', this);
 		game.sfxInvasor.stop();
 		game.siguienteNivel = 'level2';
-		// Lanzamos el estado levelUp
-		game.state.start('levelUp');
+		// Lanzamos estado levelUp tras 2 segundos de delay
+		game.time.events.add(2000, function() {
+			game.state.start('levelUp');
+		});
 	}
 }

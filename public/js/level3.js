@@ -278,7 +278,6 @@ var level3State = {
 		game.balas.setAll('anchor.y', 1);
 		game.balas.setAll('outOfBoundsKill', true);
 		game.balas.setAll('checkWorldBounds', true);
-		//game.physics.arcade.gravity.y = 50;
 	},
 	
 	/**

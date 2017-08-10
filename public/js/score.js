@@ -5,16 +5,21 @@ var scoreState = {
 	 * @method create
 	 */
     create: function() {
-		// Cargamos fondo y mostramos mensaje por pantalla
+		// Cargamos fondo y mostramos mensajes por pantalla
 		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
 		game.mapaTitulo = game.add.bitmapText(100, 80, 'gem', '', 54);
 		game.global.mostrarLetraPorLetra(game.mapaTitulo, 'Puntuaciones');
-		// Agregamos el botón volver y su manejador para controlar sus eventos
+		game.mapaPuntuaciones = game.add.bitmapText(250, 280, 'gem', '', 34);
+		game.global.mostrarLetraPorLetra(game.mapaPuntuaciones, this.leerPuntuaciones());
+		// Agregamos botones y manejadores para controlar sus eventos
+		game.btnReiniciar = game.add.button(game.world.width - 300, 475, 'botonReiniciar', this.manejadorClickBotonReiniciar, this, 0, 1, 0);
+		game.btnReiniciar.onInputOver.add(this.manejadorOverBoton, this);
 		game.btnVolver = game.add.button(game.world.width - 300, 575, 'botonVolver', this.manejadorClickBotonVolver, this, 0, 1, 0);
 		game.btnVolver.onInputOver.add(this.manejadorOverBoton, this);
 		// Iniciamos carga de estrellas en pantalla y posicionamos por encima botones y texto mostrados
 		game.global.cargarEstrellas();
 		game.world.bringToTop(game.mapaTitulo);
+		game.world.bringToTop(game.btnReiniciar);
 		game.world.bringToTop(game.btnVolver);
     },
 
@@ -36,6 +41,17 @@ var scoreState = {
 	},
 
 	/**
+	 * Función usada para controlar el evento click en el botón reiniciar
+	 * @method manejadorClickBotonReiniciar
+	 */
+	manejadorClickBotonReiniciar: function() {
+		// Reproducimos audio, borramos datos y actualizamos mensaje
+		game.sfxStart.play();
+		localStorage.clear();
+		game.global.mostrarLetraPorLetra(game.mapaPuntuaciones, 'No hay datos guardados');
+	},
+	
+	/**
 	 * Función usada para controlar el evento click en el botón volver
 	 * @method manejadorClickBotonVolver
 	 */
@@ -43,5 +59,20 @@ var scoreState = {
 		// Reproducimos audio y llamamos al estado menu para volver al inicio
 		game.sfxStart.play();
 		game.state.start('menu');
+	},
+	
+	/**
+	 * Función usada para 
+	 * @method leerPuntuaciones
+	 */
+	leerPuntuaciones: function() {
+		var puntuaciones = "No hay datos guardados";
+		if (localStorage.length != 0) {
+			puntuaciones = "";
+			for (var i = 0; i < localStorage.length; i++) {
+				puntuaciones += (i + 1) + ". " + localStorage.key(i) + " -> " + localStorage.getItem(localStorage.key(i)) + "\n";
+			}
+		}
+		return puntuaciones;
 	}
 }

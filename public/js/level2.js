@@ -317,7 +317,6 @@ var level2State = {
 		game.ayudas = game.add.group();
 		game.ayudas.enableBody = true;
 		game.ayudas.physicsBodyType = Phaser.Physics.ARCADE;
-		game.physics.arcade.gravity.y = 50;
 	},
 	
 	/**
@@ -338,7 +337,7 @@ var level2State = {
 		game.alienVivos = [];
 		// Cargamos primer grupo de enemigos
 		for (var x = 0; x < 4; x++) {
-			var alien = game.aliens2.create(x * 60, y * 50, 'alien');
+			var alien = game.aliens2.create(x * 60, y * 50, 'alien2');
 			alien.anchor.setTo(0.5, 0.5);
 			alien.animations.add('fly', [ 0, 1, 2, 3 ], 20, true);
 			alien.play('fly');

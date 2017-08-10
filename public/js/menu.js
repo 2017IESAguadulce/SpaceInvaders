@@ -83,13 +83,14 @@ var menuState = {
 		game.nivelNaveVelocidad = 1;
 		game.naveBalasRatio = 1000;
 		game.naveVelocidad = 200;
-		game.velocidadLogo = 0.1;
+		game.velocidadLogo = 0.01;
 		game.siguienteNivel = 'level1';
 		// Posicionamos por encima botones y texto mostrados
 		game.world.bringToTop(game.mapaTitulo);
 		game.world.bringToTop(game.btnJugar);
 		game.world.bringToTop(game.btnOpciones);
 		game.world.bringToTop(game.btnPuntuaciones);
+		game.world.bringToTop(game.logo);
 		// Cargamos audios iniciales
 		game.sfxHover = game.add.audio('botonHover');
 		game.sfxStart = game.add.audio('botonStart');
@@ -101,14 +102,11 @@ var menuState = {
 	 * @method cargarLogo
 	 */
 	cargarLogo: function() {
-		// Si no hemos cargado previamente el logo
-		if (!game.logoIntro) {
-			// Lo cargamos en el menú inicial
-			game.logo = game.add.sprite(game.world.width / 2, 425, 'logo');
-			game.logo.anchor.set(0.5);
-			game.logo.scale.x = 0.1;
-			game.logo.scale.y = 0.1;
-		}
+		// Cargamos logo en el menú inicial
+		game.logo = game.add.sprite(game.world.width / 2, game.world.height / 2 - 90, 'logo');
+		game.logo.anchor.set(0.5);
+		game.logo.scale.x = 0.1;
+		game.logo.scale.y = 0.1;
 	},
 	
 	/**
@@ -117,21 +115,22 @@ var menuState = {
 	 */
 	actualizarLogo: function() {
 		// Si el ancho del logo no ha ocupado la pantalla
-		if (game.logo.width < game.world.centerX * 2) { 
+		if (game.logo.width < game.world.width) { 
 			// Ampliamos logo y obtenemos la hora para crear una animación de ampliación
-			game.velocidadLogo += 0.005;
+			game.velocidadLogo += 0.001;
 			game.logo.scale.x += game.velocidadLogo;
 			game.logo.scale.y += game.velocidadLogo;
-			game.logo.y -= 4;
+			game.logo.y -= 1;
 			tiempo = game.time.totalElapsedSeconds();
 		}
 		// Si ha pasado 1 segundo y se cumple la segunda condición
-		if (game.time.totalElapsedSeconds() > tiempo + 1 && game.logo.width < game.world.centerX * 300) {
-			// Subimos logo para colocarlo encima de los botones
-			game.velocidadLogo += 1;
+		if (game.time.totalElapsedSeconds() > tiempo + 1 && game.logo.width < game.world.centerX * 450) {
+			// Colocamos logo en pantalla y lo hacemos transparente
+			game.velocidadLogo += 0.1;
 			game.logo.scale.x += game.velocidadLogo;
 			game.logo.scale.y += game.velocidadLogo;
-			game.logo.y += 10;
+			game.logo.alpha -= game.velocidadLogo / 100;
+			game.logo.x -= 25;
 		}
 	}
 };

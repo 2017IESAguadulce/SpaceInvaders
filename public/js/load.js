@@ -31,7 +31,7 @@ var loadState = {
 		game.load.image('skin2', 'assets/skins/skin2.jpg');
 		game.load.image('skin3', 'assets/skins/skin3.jpg');
 		game.load.image('star', 'assets/sprites/star2.png');
-		game.load.image('logo', 'assets/sprites/phaser.png');
+		game.load.image('logo', 'assets/sprites/logo.png');
 		game.load.image('boss', 'assets/sprites/boss.png');
 		game.load.image('laser', 'assets/games/invaders/laser.png');
 		game.load.image('laserEfecto', 'assets/sprites/death-ray.png');

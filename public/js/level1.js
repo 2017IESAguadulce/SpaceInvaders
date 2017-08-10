@@ -311,7 +311,6 @@ var level1State = {
 		game.ayudas = game.add.group();
 		game.ayudas.enableBody = true;
 		game.ayudas.physicsBodyType = Phaser.Physics.ARCADE;
-		game.physics.arcade.gravity.y = 50;
 	},
 	
 	/**
@@ -499,7 +498,7 @@ var level1State = {
 			var seleccion = game.alienVivos[aleatorio];
 			// Y lanzamos la bala desde su posicion hacia nuestra nave
 			balaAlien.reset(seleccion.body.x, seleccion.body.y);
-			game.physics.arcade.moveToObject(balaAlien, game.nave, 200);
+			game.physics.arcade.moveToObject(balaAlien, game.nave, 300);
 			game.alienDisparoHora = game.time.now + 2000;
 			game.sfxDisparo.play();
 		}
@@ -539,9 +538,10 @@ var level1State = {
 		var objeto = game.ayudas.create(locX, locY, tipoMejora);
 		objeto.name = tipoMejora;
 		objeto.body.collideWorldBounds = false;
-		// Y la hacemos semitransparente ademas de anadirle gravedad
 		objeto.alpha = 0.4;
-		game.physics.arcade.gravity.y = 50;
+		// Le agregamos velocidad
+		objeto.body.velocity.y = 100;
+		objeto.body.gravity.y = Math.random() * 100;
 	},
 
 	/**
@@ -613,7 +613,7 @@ var level1State = {
 		game.naveMuerte.x = nave.x;
 		game.naveMuerte.y = nave.y;
 		game.naveMuerte.start(false, 1000, 10, 10);
-		// Lanzamos estado lose tras 3 segundos de delay
+		// Lanzamos estado lose tras 2 segundos de delay
 		game.time.events.add(2000, function() {
 			game.state.start('lose');
 		});

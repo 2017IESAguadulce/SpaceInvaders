@@ -548,7 +548,7 @@ var level2State = {
 			var alien = game.alienVivos[aleatorio];
 			// Y lanzamos la bala desde su posicion hacia nuestra nave
 			balaAlien.reset(alien.body.x, alien.body.y);
-			game.physics.arcade.moveToObject(balaAlien, game.nave, 200);
+			game.physics.arcade.moveToObject(balaAlien, game.nave, 300);
 			game.alienDisparoHora2 = game.time.now + 1500;
 			game.sfxDisparo.play();
 		}
@@ -588,9 +588,10 @@ var level2State = {
 		var objeto = game.ayudas.create(locX, locY, tipoMejora);
 		objeto.name = tipoMejora;
 		objeto.body.collideWorldBounds = false;
-		// Y la hacemos semitransparente ademas de anadirle gravedad
 		objeto.alpha = 0.4;
-		game.physics.arcade.gravity.y = 50;
+		// Le agregamos velocidad
+		objeto.body.velocity.y = 100;
+		objeto.body.gravity.y = Math.random() * 100;
 	},
 
 	/**

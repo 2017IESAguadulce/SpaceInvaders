@@ -124,6 +124,7 @@ var menuState = {
 			tiempo = game.time.totalElapsedSeconds();
 		}
 		// Si ha pasado 1 segundo y se cumple la segunda condición
+<<<<<<< HEAD
 		if (game.time.totalElapsedSeconds() > tiempo + 1 && game.logo.width < game.world.centerX * 450) {
 			// Colocamos logo en pantalla y lo hacemos transparente
 			game.velocidadLogo += 0.1;
@@ -131,6 +132,15 @@ var menuState = {
 			game.logo.scale.y += game.velocidadLogo;
 			game.logo.alpha -= game.velocidadLogo / 100;
 			game.logo.x -= 25;
+=======
+		if (game.time.totalElapsedSeconds() > tiempo + 1 && game.logo.width < game.world.centerX * 400) {
+			// Subimos logo para colocarlo encima de los botones
+			game.velocidadLogo += 0.1;
+			game.logo.scale.x += game.velocidadLogo;
+			game.logo.scale.y += game.velocidadLogo;
+			game.logo.y += 10;
+			game.logo.x += 35;
+>>>>>>> 4fd55364ceb02f2717425fb6f2e1967a74d51b53
 		}
 	}
 };

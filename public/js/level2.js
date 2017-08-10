@@ -348,7 +348,7 @@ var level2State = {
 		// Cargamos en filas columnas al segundo grupo de enemigos
 		for (var y = 1; y < 5; y++) {
 			for (var x = 0; x < 12; x++) {
-				var alien = game.aliens.create(x * 48, y * 50, 'alien');
+				var alien = game.aliens.create(x * 48, y * 50, 'alien2');
 				alien.anchor.setTo(0.5, 0.5);
 				alien.animations.add('fly', [ 0, 1, 2, 3 ], 20, true);
 				alien.play('fly');
@@ -489,6 +489,7 @@ var level2State = {
 	 * @param {} objeto
 	 */
 	configurarExplosion: function(objeto) {
+		objeto.alpha = 0.7;
 		objeto.anchor.x = 0.5;
 		objeto.anchor.y = 0.5;
 		objeto.animations.add('boom');

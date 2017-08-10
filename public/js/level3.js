@@ -472,6 +472,7 @@ var level3State = {
 	 * @param {} objeto
 	 */
 	configurarExplosion: function(objeto) {
+		objeto.alpha = 0.7;
 		objeto.anchor.x = 0.5;
 		objeto.anchor.y = 0.5;
 		objeto.animations.add('boom');

@@ -26,6 +26,7 @@ var loadState = {
 		game.load.image('jefeEstela', 'assets/sprites/enemy-blue-bullet.png');
 		game.load.image('balaAlien', 'assets/games/invaders/enemy-bullet.png');
 		game.load.spritesheet('alien', 'assets/games/invaders/invader32x32x4.png', 32, 32);
+		game.load.spritesheet('alien2', 'assets/games/invaders/invader232x32x4.png', 32, 32);
 		game.load.spritesheet('boom', 'assets/games/invaders/explode.png', 128, 128);
 		game.load.spritesheet('botonJugar', 'assets/buttons/boton_jugar.png', 193, 71);
 		game.load.spritesheet('botonOpciones', 'assets/buttons/boton_opciones.png', 193, 71);

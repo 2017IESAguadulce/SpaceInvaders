@@ -85,6 +85,13 @@ var loadState = {
 		game.skinSeleccionada = 1;
 		// Activamos el hilo musical y llamamos al estado menu
 		this.cargarHiloMusical();
+		
+		
+		
+
+		game.topMaximo = 3;
+		
+		
 		game.state.start('menu');
 	}
 };

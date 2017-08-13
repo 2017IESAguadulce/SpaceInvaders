@@ -83,31 +83,34 @@ var scoreState = {
 	}, 
 	
 	/**
-	 * Función usada para ordenar las puntuaciones almacenadas
+	 * Función usada para obtener y ordenar las puntuaciones almacenadas
 	 * @method ordenarPuntuaciones
 	 * @return
 	 */
 	ordenarPuntuaciones: function() {
-		// Creamos un prototipo de función para ordenar una colección más adelante
-		Array.prototype.ordenar = function(key) {
-			this.sort(function(a, b) {
-				if (a[key] > b[key]) {
-					return -1;
-				} else if (a[key] < b[key]) {
-					return 1;
-				}
-				return 0;
-			});
-		}
 		var puntuaciones = [];
-		// Obtenemos puntuaciones y las almacenamos en un vector asociativo para ordenarlas después
+		// Obtenemos puntuaciones y las almacenamos en un vector asociativo
 		for (var i = 0; i < localStorage.length; i++) {
 			puntuaciones.push({
 				nombre: localStorage.key(i),
 				puntos: localStorage.getItem(localStorage.key(i))
 			});
 		}
-		puntuaciones.ordenar('puntos');
-		return puntuaciones;
+		// Ordenamos colección y le damos la vuelta para devolverla descendentemente
+		return this.ordenarColeccion(puntuaciones, 'puntos').reverse();
 	},
+	
+	/**
+	 * Función auxiliar usada para ordenar una colección por la clave recibida
+	 * @method ordenarColeccion
+	 * @param {} array
+	 * @param {} clave
+	 * @return
+	 */
+	ordenarColeccion: function(array, clave) {
+		return array.sort(function(a, b) {
+			var x = a[clave]; var y = b[clave];
+			return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+		});
+	}
 }

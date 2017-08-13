@@ -75,7 +75,7 @@ var scoreState = {
 			// Formateamos puntuaciones ya ordenadas por puntos para poder mostrarlas por pantalla
 			for (var key in puntuaciones) {
 				if (puntuaciones.hasOwnProperty(key)) {
-					mensaje += (Object.keys(puntuaciones).indexOf(key) + 1) + ". " + puntuaciones[key].nombre + " -> " + puntuaciones[key].puntos + "\n";
+					mensaje += (Object.keys(puntuaciones).indexOf(key) + 1) + ". " + puntuaciones[key].nombre + "  " + puntuaciones[key].puntos + "\n";
 				}
 			}
 		}
@@ -109,5 +109,5 @@ var scoreState = {
 		}
 		puntuaciones.ordenar('puntos');
 		return puntuaciones;
-	}
+	},
 }

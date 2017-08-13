@@ -48,7 +48,7 @@ var menuState = {
 	manejadorClickBotonJugar: function() {
 		// Reproducimos audio y llamamos al estado nivel 1 y arrancamos juego
 		game.sfxStart.play();
-		game.state.start('win');
+		game.state.start(game.siguienteNivel);
 	},
 	
 	/**

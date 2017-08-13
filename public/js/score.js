@@ -97,20 +97,9 @@ var scoreState = {
 			});
 		}
 		// Ordenamos colección y le damos la vuelta para devolverla descendentemente
-		return this.ordenarColeccion(puntuaciones, 'puntos').reverse();
-	},
-	
-	/**
-	 * Función auxiliar usada para ordenar una colección por la clave recibida
-	 * @method ordenarColeccion
-	 * @param {} array
-	 * @param {} clave
-	 * @return
-	 */
-	ordenarColeccion: function(array, clave) {
-		return array.sort(function(a, b) {
-			var x = a[clave]; var y = b[clave];
-			return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+		puntuaciones.sort(function(a, b) {
+			return a.puntos - b.puntos;
 		});
+		return puntuaciones.reverse();
 	}
 }

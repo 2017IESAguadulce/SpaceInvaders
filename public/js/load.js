@@ -47,6 +47,7 @@ var loadState = {
 		game.load.spritesheet('botonContinuar', 'assets/buttons/boton_continuar.png', 193, 71);
 		game.load.spritesheet('botonPantalla', 'assets/buttons/boton_pantalla.png', 193, 71);
 		game.load.spritesheet('botonReiniciar', 'assets/buttons/boton_reiniciar.png', 193, 71);
+		game.load.spritesheet('botonEnviar', 'assets/buttons/boton_enviar.png', 193, 71);
 		game.load.spritesheet('botonPantallaCompleta', 'assets/buttons/boton_pantalla_completa.png', 193, 71);
 		game.load.spritesheet('botonSkin', 'assets/buttons/boton_skin.png', 193, 71);
 		game.load.spritesheet('botonMejora1', 'assets/buttons/boton_1.png', 69, 50);
@@ -80,9 +81,10 @@ var loadState = {
 	 * @method create
 	 */
 	create: function() {
-		// Creamos referencias a variables de skins de pantalla
+		// Creamos referencias a variables de skins de pantalla y demás
 		game.skinsTotal = 3;
 		game.skinSeleccionada = 1;
+		game.topMaximo = 5;
 		// Activamos el hilo musical y llamamos al estado menu
 		this.cargarHiloMusical();
 		game.state.start('menu');

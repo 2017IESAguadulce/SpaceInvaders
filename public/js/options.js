@@ -17,13 +17,12 @@ var optionsState = {
 	 * Método usado para crear la ventana de opciones
 	 * @method create
 	 */
-    create: function() {	
+    create: function() {
 		// Creamos slider para manejar el volúmen del audio y le asignamos su manejador
         game.sliderVolumen = new SlickUI.Element.Slider(game.world.width - 310, 275, 200);
 		game.slickUI.add(game.sliderVolumen);
 		game.sliderVolumen.onDrag.add(this.manejadorControlVolumen, this);
 		game.volumen = game.add.text(game.world.width - 250, 300, 'Volúmen', { font: '24px Arial', fill: 'white' });
-		
 		// Iniciamos carga de estrellas en pantalla y posicionamos por encima botones y texto mostrados
 		game.global.cargarEstrellas();
 		// Si ejecutamos el juego desde el móvil cargamos el pad virtual

@@ -48,7 +48,7 @@ var scoreState = {
 		// Reproducimos audio, borramos datos y actualizamos mensaje
 		game.sfxStart.play();
 		localStorage.clear();
-		game.global.mostrarLetraPorLetra(game.mapaPuntuaciones, 'No hay datos guardados');
+		game.state.start('score');
 	},
 	
 	/**
@@ -62,17 +62,44 @@ var scoreState = {
 	},
 	
 	/**
-	 * Función usada para 
+	 * Función usada para leer, ordenar y formatear las puntuaciones almacenadas
 	 * @method leerPuntuaciones
+	 * @return
 	 */
 	leerPuntuaciones: function() {
-		var puntuaciones = "No hay datos guardados";
+		var mensaje = "No hay datos guardados";
+		// Si hay puntuaciones guardadas
 		if (localStorage.length != 0) {
-			puntuaciones = "";
-			for (var i = 0; i < localStorage.length; i++) {
-				puntuaciones += (i + 1) + ". " + localStorage.key(i) + " -> " + localStorage.getItem(localStorage.key(i)) + "\n";
+			mensaje = "";
+			puntuaciones = this.ordenarPuntuaciones();
+			// Formateamos puntuaciones ya ordenadas por puntos para poder mostrarlas por pantalla
+			for (var key in puntuaciones) {
+				if (puntuaciones.hasOwnProperty(key)) {
+					mensaje += (Object.keys(puntuaciones).indexOf(key) + 1) + ". " + puntuaciones[key].nombre + "  " + puntuaciones[key].puntos + "\n";
+				}
 			}
 		}
-		return puntuaciones;
+		return mensaje;
+	}, 
+	
+	/**
+	 * Función usada para obtener y ordenar las puntuaciones almacenadas
+	 * @method ordenarPuntuaciones
+	 * @return
+	 */
+	ordenarPuntuaciones: function() {
+		var puntuaciones = [];
+		// Obtenemos puntuaciones y las almacenamos en un vector asociativo
+		for (var i = 0; i < localStorage.length; i++) {
+			puntuaciones.push({
+				nombre: localStorage.key(i),
+				puntos: localStorage.getItem(localStorage.key(i))
+			});
+		}
+		// Ordenamos colección y le damos la vuelta para devolverla descendentemente
+		puntuaciones.sort(function(a, b) {
+			return a.puntos - b.puntos;
+		});
+		return puntuaciones.reverse();
 	}
 }

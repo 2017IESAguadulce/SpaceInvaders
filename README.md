@@ -18,12 +18,12 @@ Las principales características del juego son:
 Las puntuaciones de juego son almacenadas mediante [localStorage], por lo que la persistencia de éstos datos depende 
 exclusivamente de la configuración del propio navegador del usuario.
 
-Para cualquier referencia relacionada con el juego, podemos ver el proyecto desplegado visitando el siguiente enlace: 
-[SpaceInvaders].
-
 [![Nivel2](https://2017iesaguadulce.github.io/SpaceInvaders/public/assets/capturas/juego-nivel2.jpg)][SpaceInvaders]
 [![Mejoras](https://2017iesaguadulce.github.io/SpaceInvaders/public/assets/capturas/juego-mejoras.jpg)][SpaceInvaders]
 [![Opciones](https://2017iesaguadulce.github.io/SpaceInvaders/public/assets/capturas/juego-opciones.jpg)][SpaceInvaders]
+
+Para cualquier referencia relacionada con el juego, podemos ver el proyecto desplegado visitando el siguiente enlace: 
+[SpaceInvaders].
 
 ## Requisitos
 - Navegador Web [Chrome], [Firefox], [Opera], [Microsoft Edge], etc..

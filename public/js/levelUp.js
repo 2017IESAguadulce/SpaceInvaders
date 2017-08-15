@@ -9,7 +9,7 @@ var levelUp = {
 		game.skin = game.add.sprite(0, 0, 'skin' + game.skinSeleccionada);
 		game.mapaTitulo = game.add.bitmapText(100, 80, 'gem', '', 54);
 		game.global.mostrarLetraPorLetra(game.mapaTitulo, 'Mejoras de Nave');
-        game.puntosTexto = game.add.text(120, 280, 'Puntos: ' + game.puntos, {font: '34px Arial', fill: 'white' });
+		game.puntosTexto = game.add.bitmapText(120, 280, 'gem', 'Puntos: ' + game.puntos, 34);
 		game.escudoNave = game.add.text(210, 440, 'Escudo Nv. ' + ((game.nivelNaveEscudo <= 5) ? game.nivelNaveEscudo : "Máximo"), {font: '24px Arial', fill: 'white' });		
 		game.velocidadDisparo = game.add.text(210, 515, 'Disparo Nv. ' + ((game.nivelNaveDisparo <= 5) ? game.nivelNaveDisparo : "Máximo"), {font: '24px Arial', fill: 'white' });
 		game.velocidadNave = game.add.text(210, 590, 'Velocidad Nv. ' + ((game.nivelNaveVelocidad <= 5) ? game.nivelNaveVelocidad : "Máximo"), {font: '24px Arial', fill: 'white' });

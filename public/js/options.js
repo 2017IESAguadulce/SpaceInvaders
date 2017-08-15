@@ -22,7 +22,7 @@ var optionsState = {
         game.sliderVolumen = new SlickUI.Element.Slider(game.world.width - 310, 275, 200);
 		game.slickUI.add(game.sliderVolumen);
 		game.sliderVolumen.onDrag.add(this.manejadorControlVolumen, this);
-		game.volumen = game.add.text(game.world.width - 250, 300, 'Volúmen', { font: '24px Arial', fill: 'white' });
+		game.volumen = game.add.bitmapText(game.world.width - 250, 300, 'gem', 'Volúmen', 24);
 		// Iniciamos carga de estrellas en pantalla y posicionamos por encima botones y texto mostrados
 		game.global.cargarEstrellas();
 		// Si ejecutamos el juego desde el móvil cargamos el pad virtual
@@ -65,7 +65,7 @@ var optionsState = {
 	 * @method manejadorClickBotonPantalla
 	 */
 	manejadorClickBotonPantalla: function() {
-		// Reproducimos audio y r
+		// Reproducimos audio y cambiamos el modo de pantalla
 		game.sfxStart.play();
 		if (game.scale.isFullScreen) {
 			game.scale.stopFullScreen();

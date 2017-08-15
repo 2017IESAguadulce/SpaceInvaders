@@ -122,10 +122,10 @@ var level3State = {
 		// Eliminamos bala y reproducimos sonido
 		bala.kill();
 		game.sfxExplosion.play();
-		vida = game.vidas.getFirstAlive();
+		vida = game.vidas.getAt(game.vidas.length-1);
 		// Si tenemos vidas eliminamos una
 		if (vida) {
-			vida.kill();
+			vida.destroy();
 		}
 		// Mostramos la animación de explosión en las coordenadas de nuestra nave
 		var explosion = game.explosiones.getFirstExists(false);

@@ -80,7 +80,7 @@ var scoreState = {
 			}
 		}
 		return mensaje;
-	}, 
+	},
 	
 	/**
 	 * Función usada para obtener y ordenar las puntuaciones almacenadas

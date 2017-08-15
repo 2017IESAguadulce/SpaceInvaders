@@ -84,7 +84,7 @@ var menuState = {
 		game.naveBalasRatio = 1000;
 		game.naveVelocidad = 200;
 		game.velocidadLogo = 0.01;
-		game.siguienteNivel = 'level3';
+		game.siguienteNivel = 'level1';
 		// Posicionamos por encima botones y texto mostrados
 		game.world.bringToTop(game.mapaTitulo);
 		game.world.bringToTop(game.btnJugar);

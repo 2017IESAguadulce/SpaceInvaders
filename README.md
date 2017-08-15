@@ -1,14 +1,34 @@
-SpaceInvaders
+SpaceInvaders 0.9
 =========================================
+
+<img src="https://github.com/2017IESAguadulce/SpaceInvaders/tree/master/public/assets/capturas/juego-arcade.png" align="right">
 
 Aplicación web desarrollada en JavaScript y HTML que implementa el conocido clásico SpaceInvaders. El juego ha sido
 desarrollado utilizando el motor y framework [Phaser] y es totalmente funcional tanto en plataformas móviles como de
 escritorio.
 
-Las puntuaciones de juego son almacenadas mediante [localStorage], por lo que la persistencia de éstos datos depende exclusivamente de la configuración del propio navegador del usuario.
+Las principales características del juego son:
+- Interfaces animadas e interactivas
+- Diferentes niveles de juego que incluyen un jefe final
+- Gestión de mejoras de nave mediante un sistema de puntos
+- Posibilidad de cambiar skins, pantalla completa y control de volúmen
+- Disponible tanto para plataformas móviles como para entornos de escritorio
+- Gestión y almacenamiento de records de forma local
+
+Las puntuaciones de juego son almacenadas mediante [localStorage], por lo que la persistencia de éstos datos depende 
+exclusivamente de la configuración del propio navegador del usuario.
 
 Para cualquier referencia relacionada con el juego, podemos ver el proyecto desplegado visitando el siguiente enlace: 
 [SpaceInvaders].
+
+[![Game](https://github.com/2017IESAguadulce/SpaceInvaders/tree/master/public/assets/capturas/juego-menu.jpg)][SpaceInvaders]
+[![Game](https://github.com/2017IESAguadulce/SpaceInvaders/tree/master/public/assets/capturas/juego-opciones.jpg)][SpaceInvaders]
+[![Game](https://github.com/2017IESAguadulce/SpaceInvaders/tree/master/public/assets/capturas/juego-puntuaciones.jpg)][SpaceInvaders]
+[![Game](https://github.com/2017IESAguadulce/SpaceInvaders/tree/master/public/assets/capturas/juego-nivel1.jpg)][SpaceInvaders]
+[![Game](https://github.com/2017IESAguadulce/SpaceInvaders/tree/master/public/assets/capturas/juego-nivel2.jpg)][SpaceInvaders]
+[![Game](https://github.com/2017IESAguadulce/SpaceInvaders/tree/master/public/assets/capturas/juego-nivel3.jpg)][SpaceInvaders]
+[![Game](https://github.com/2017IESAguadulce/SpaceInvaders/tree/master/public/assets/capturas/juego-mejoras.jpg)][SpaceInvaders]
+[![Game](https://github.com/2017IESAguadulce/SpaceInvaders/tree/master/public/assets/capturas/juego-record.jpg)][SpaceInvaders]
 
 ## Requisitos
 - Navegador Web [Chrome], [Firefox], [Opera], [Microsoft Edge], etc..

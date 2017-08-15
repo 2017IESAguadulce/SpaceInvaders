@@ -77,6 +77,7 @@ var winState = {
 				this.guardarPuntuacion(game.texto.value, game.puntos);
 				game.global.mostrarLetraPorLetra(game.mapaPuntuaciones, 'Has entrado en el Top ' + game.topMaximo);
 				game.texto.visible = false;
+				game.btnVolver.visible = false;
 			} else {
 				game.global.mostrarLetraPorLetra(game.mapaPuntuaciones, 'Este nombre ya está en uso');
 			}

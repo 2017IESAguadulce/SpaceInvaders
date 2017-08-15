@@ -65,7 +65,7 @@ var optionsState = {
 	 * @method manejadorClickBotonPantalla
 	 */
 	manejadorClickBotonPantalla: function() {
-		// Reproducimos audio y r
+		// Reproducimos audio y cambiamos el modo de pantalla
 		game.sfxStart.play();
 		if (game.scale.isFullScreen) {
 			game.scale.stopFullScreen();

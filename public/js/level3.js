@@ -223,9 +223,9 @@ var level3State = {
 		// Variables con textos y puntos mostrados por pantalla
 		game.mapaTitulo = game.add.bitmapText(game.world.centerX - 100, 450, 'gem', '', 36);
 		game.global.mostrarLetraPorLetraNivel(game.mapaTitulo, '  Nivel 3    ');
-		game.puntosTexto = game.add.text(10, 10, 'Puntos: ' + game.puntos, { font: '34px Arial', fill: '#fff' });
+		game.puntosTexto = game.add.bitmapText(10, 10, 'gem', 'Puntos: ' + game.puntos, 32);
 		game.vidas = game.add.group();
-		game.vidasTexto = game.add.text(game.world.width - 140, 10, 'Escudos: ', { font: '30px Arial', fill: '#fff' });
+		game.vidasTexto = game.add.bitmapText(game.world.width - 140, 10, 'gem', 'Escudos: ', 32);
 		// Mostramos las vidas del jugador
 		for (var i = 0; i < game.nivelNaveEscudo; i++) {
 			var img = game.vidas.create(game.world.width - 135 + (23 * i), 60, 'nave');

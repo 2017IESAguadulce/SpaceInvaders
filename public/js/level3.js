@@ -290,7 +290,7 @@ var level3State = {
 		game.jefe.exists = false;
 		game.jefe.alive = false;
 		game.jefe.dying = false;
-		game.jefe.vida = 1000;
+		game.jefe.vida = 1500;
 		game.jefe.danioRecibido = 50;	
 		game.jefe.anchor.setTo(0.5, 0.5);
 		game.jefe.angle = 180;

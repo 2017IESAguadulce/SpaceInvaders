@@ -10,9 +10,10 @@ var levelUp = {
 		game.mapaTitulo = game.add.bitmapText(100, 80, 'gem', '', 54);
 		game.global.mostrarLetraPorLetra(game.mapaTitulo, 'Mejoras de Nave');
 		game.puntosTexto = game.add.bitmapText(120, 280, 'gem', 'Puntos: ' + game.puntos, 34);
-		game.escudoNave = game.add.text(210, 440, 'Escudo Nv. ' + ((game.nivelNaveEscudo <= 5) ? game.nivelNaveEscudo : "Máximo"), {font: '24px Arial', fill: 'white' });		
-		game.velocidadDisparo = game.add.text(210, 515, 'Disparo Nv. ' + ((game.nivelNaveDisparo <= 5) ? game.nivelNaveDisparo : "Máximo"), {font: '24px Arial', fill: 'white' });
-		game.velocidadNave = game.add.text(210, 590, 'Velocidad Nv. ' + ((game.nivelNaveVelocidad <= 5) ? game.nivelNaveVelocidad : "Máximo"), {font: '24px Arial', fill: 'white' });
+		
+		game.escudoNave = game.add.bitmapText(210, 440, 'gem', 'Escudo Nv. ' + ((game.nivelNaveEscudo <= 5) ? game.nivelNaveEscudo : "Máximo"), 24);
+		game.velocidadDisparo = game.add.bitmapText(210, 515, 'gem', 'Disparo Nv. ' + ((game.nivelNaveDisparo <= 5) ? game.nivelNaveDisparo : "Máximo"), 24);
+		game.velocidadNave = game.add.bitmapText(210, 590, 'gem', 'Velocidad Nv. ' + ((game.nivelNaveVelocidad <= 5) ? game.nivelNaveVelocidad : "Máximo"), 24);
 		// Agregamos botones y manejadores para controlar sus eventos
 		game.costeEscudo = this.prepararBotonMejora("escudo", game.nivelNaveEscudo, 430);
 		game.costeDisparo = this.prepararBotonMejora("disparo", game.nivelNaveDisparo, 505);

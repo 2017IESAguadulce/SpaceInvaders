@@ -1,4 +1,4 @@
-Space Invaders 0.95
+Space Invaders 0.96
 =========================================
 
 <img src="https://2017iesaguadulce.github.io/SpaceInvaders/public/assets/capturas/juego-arcade.png" align="right">
